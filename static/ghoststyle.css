@@ -214,13 +214,34 @@ header {
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background-color: rgba(0, 0, 0, 0);
+    color:#fff;
+    text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    text-align: center;
 }
 
+#edit-progress-bar-container {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    color:#fff;
+    text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    text-align: center;
+}
 #progress-bar {
     width: 30%;
     height: 2%;
+    margin-top: 4px;
+}
+#edit-progress-bar {
+    width: 100%;
+    height: 15px;
     margin-top: 4px;
 }
 #menu-gui {
@@ -539,9 +560,9 @@ display: inline-block;
     position: absolute;
     display: none;
     width:fit-content;
-    top: 15%;
+    top: 5%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     background-color: rgba(2, 0, 162, 0.6);
     color:#fff;
     text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;

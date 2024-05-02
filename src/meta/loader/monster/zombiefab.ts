@@ -15,9 +15,12 @@ export class ZombieFab extends AssetModel implements IAsset {
             this.meshs.name = "zombie"
             this.meshs.castShadow = true
             this.meshs.receiveShadow = true
-            this.meshs.traverse(child => {
+            this.meshs.traverse((child: any) => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
+                if (child.isMesh) {
+                    child.material = new THREE.MeshToonMaterial({ map: child.material.map })
+                }
             })
             const scale = 0.024
             this.meshs.children[0].scale.set(scale, scale, scale)

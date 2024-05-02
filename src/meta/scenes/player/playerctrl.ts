@@ -175,7 +175,9 @@ export class PlayerCtrl implements IGPhysic {
         this.targets.push(...obj)
     }
     remove(obj: THREE.Object3D) {
-        this.targets.splice(this.targets.indexOf(obj), 1)
+        const idx = this.targets.indexOf(obj)
+        if(idx < 0) return
+        this.targets.splice(idx, 1)
     }
     updateInputVector() {
         const cmd = this.inputVQueue.shift()

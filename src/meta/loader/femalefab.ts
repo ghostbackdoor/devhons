@@ -17,9 +17,12 @@ export class FemaleFab extends AssetModel implements IAsset {
             this.meshs = gltf.scene
             this.meshs.castShadow = true
             this.meshs.receiveShadow = true
-            this.meshs.traverse(child => {
+            this.meshs.traverse((child: any) => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
+                if (child.isMesh) {
+                    child.material = new THREE.MeshToonMaterial({ map: child.material.map })
+                }
             })
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "Idle"))
@@ -40,6 +43,7 @@ export class FemaleFab extends AssetModel implements IAsset {
             this.clips.set(Ani.Wartering, gltf.animations.find((clip) => clip.name == "Watering"))
 
             this.meshs.children[0].children[0].position.y = 0
+
             /*
             const right = this.meshs.getObjectByName("mixamorigRightHand")
             //const right = this.meshs

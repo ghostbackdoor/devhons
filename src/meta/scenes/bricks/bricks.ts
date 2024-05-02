@@ -58,9 +58,8 @@ export class Bricks {
     ) {
 
         eventCtrl.RegisterInputEvent((e: any, _real: THREE.Vector3, vir: THREE.Vector3) => {
-            if (this.brickGuide == undefined ||
-                !this.brickGuide.ControllerEnable ||
-                this.mode != this.currentMode) return
+            if (this.brickGuide == undefined || !this.brickGuide.ControllerEnable) return
+            if (this.currentMode != AppMode.LegoDelete && this.mode != this.currentMode) return
             if (e.type == "move") {
                 this.movePos.copy(vir)
                 this.moveEvent(this.movePos)
@@ -71,9 +70,8 @@ export class Bricks {
 
 
         eventCtrl.RegisterKeyDownEvent((keyCommand: IKeyCommand) => {
-            if (this.brickGuide == undefined ||
-                !this.brickGuide.ControllerEnable ||
-                this.mode != this.currentMode) return
+            if (this.brickGuide == undefined || !this.brickGuide.ControllerEnable) return
+            if (this.currentMode != AppMode.LegoDelete && this.mode != this.currentMode) return
             const position = keyCommand.ExecuteKeyDown()
             this.moveEvent(position)
         })
@@ -113,9 +111,13 @@ export class Bricks {
         if (this.brickGuide == undefined) return [undefined, [""]]
         this.brickGuide.position.y -= 1
         const box = this.brickGuide.Box
-        const [target, key] = this.physics.GetCollisionBox(this.brickGuide.position, box)
+        let [target, keys] = this.physics.GetCollisionBox(this.brickGuide.position, box)
         this.brickGuide.position.y += 1
-        return [target?.model, key]
+        if(target) {
+            const [_, key] = this.physics.GetCollisionBox(target.pos, target.box)
+            keys = key
+        }
+        return [target?.model, keys]
     }
 
     DeleteBrick() {
@@ -149,17 +151,13 @@ export class Bricks {
 
         const b = new Brick2(this.brickGuide.position, this.brickSize, this.brickColor)
         b.rotation.copy(this.brickGuide.Meshs.rotation)
-        if (this.brickType == BrickGuideType.Lego) {
-            this.save.push({
-                position: b.position,
-                size: new THREE.Vector3().copy(this.brickSize),
-                rotation: b.rotation,
-                color: (b.Meshs.material as THREE.MeshStandardMaterial).color,
-                type: this.brickGuide.ShapeType,
-            })
-        } else {
-            this.store.Bricks.push({ position: b.position, color: this.brickColor })
-        }
+        this.save.push({
+            position: b.position,
+            size: new THREE.Vector3().copy(this.brickSize),
+            rotation: b.rotation,
+            color: (b.Meshs.material as THREE.MeshStandardMaterial).color,
+            type: this.brickGuide.ShapeType,
+        })
         this.scene.add(b)
         this.bricks2.push(b)
 
@@ -196,6 +194,7 @@ export class Bricks {
         pos.x = Math.ceil(pos.x)
         pos.y = Math.ceil(pos.y)
         pos.z = Math.ceil(pos.z)
+        if (pos.y < 2) pos.y = 2
         if (this.brickGuide == undefined) {
             this.brickGuide = new BrickGuide(pos, this.brickSize, this.brickType)
             this.scene.add(this.brickGuide)
@@ -212,7 +211,10 @@ export class Bricks {
     }
     CheckCollision() {
         if (this.brickGuide == undefined) return
-        console.log(this.brickGuide.position)
+        this.brickGuide.CannonPos.x = Math.ceil(this.brickGuide.CannonPos.x)
+        this.brickGuide.CannonPos.z = Math.ceil(this.brickGuide.CannonPos.z)
+        const min = this.brickGuide.Size.y / 2
+        this.brickGuide.CannonPos.y = (this.brickGuide.CannonPos.y < min) ? min : this.brickGuide.CannonPos.y
         
         if (this.physics.CheckBox(this.brickGuide.position, this.brickGuide.Box)) {
             do {
@@ -222,12 +224,11 @@ export class Bricks {
             do {
                 this.brickGuide.CannonPos.y -= .5
             } while (!this.physics.CheckBox(this.brickGuide.position, this.brickGuide.Box) 
-                && this.brickGuide.CannonPos.y >= this.brickGuide.Size.y / 2)
+                && this.brickGuide.CannonPos.y >= min)
             this.brickGuide.CannonPos.y += .5
         }
-        if(this.brickGuide.CannonPos.y < 1) this.brickGuide.CannonPos.y = 1
       
-        if (this.checkEx) this.checkEx()
+        if (this.currentMode != AppMode.LegoDelete && this.checkEx) this.checkEx()
     }
     ClearEventBrick() {
         this.eventbricks.length = 0

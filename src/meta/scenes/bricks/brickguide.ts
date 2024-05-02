@@ -6,6 +6,7 @@ import { IPhysicsObject } from "../models/iobject";
 export enum BrickGuideType {
     Lego,
     NonLego,
+    Delete,
     Event
 }
 

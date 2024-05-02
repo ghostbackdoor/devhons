@@ -60,16 +60,8 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         this.deadTree = await this.CreateDeadTree()
         this.meshs.add(this.deadTree)
     }
-    Delete(opt: number): void {
-        this.deadTree?.traverse(child => {
-            if('material' in child) {
-                const material = child.material as THREE.MeshStandardMaterial
-                material.transparent = false;
-                material.depthWrite = true;
-                material.opacity = opt;
-            }
-        })
-    }
+    Delete(): void { }
+
     SetOpacity(opacity: number) {
         this.meshs.children[0].traverse(child => {
             if('material' in child) {
@@ -93,6 +85,11 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         if (this.text != undefined) {
             this.text.SetText("물을 주세요")
         }
+
+        this.meshs.add(this.gauge)
+        this.gauge.position.x += 1
+        this.gauge.position.y = this.gauge.CenterPos.y
+        this.gauge.position.z += 2
         this.gauge.Meshs.traverse((child) => {
             if('material' in child) {
                 const material = child.material as THREE.MeshStandardMaterial;
@@ -107,20 +104,19 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
     }
      
     Create() {
-        this.meshs.add(this.gauge)
-        this.gauge.position.x += 1
-        this.gauge.position.y = this.gauge.CenterPos.y
-        this.gauge.position.z += 2
-
         if (this.text != undefined) {
             this.text.position.y = 7
             this.meshs.add(this.text)
         }
     }
 
-    async MassLoader(meshs:THREE.Group, scale: number, position: THREE.Vector3) {
-        this.meshs = meshs
-        this.meshs.scale.set(scale, scale, scale)
+    async MassLoader(position: THREE.Vector3, id?: string) {
+        if(id) {
+            const [_meshs, _exist] = await this.asset.UniqModel("appletree" + id)
+            this.meshs = _meshs
+        } else {
+            this.meshs = await this.asset.CloneModel()
+        }
         this.meshs.position.set(position.x, position.y, position.z)
         this.meshs.castShadow = true
         this.meshs.receiveShadow = true

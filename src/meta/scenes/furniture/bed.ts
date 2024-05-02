@@ -3,26 +3,17 @@ import { GhostModel } from "../models/ghostmodel";
 import { IAsset } from "../../loader/assetmodel";
 import { IPhysicsObject } from "../models/iobject";
 import { IFurnMotions } from "./furnctrl";
-import { ProgressBar } from "../models/progressbar";
 import { FloatingName } from "../../common/floatingtxt";
 
-export class Bed extends GhostModel implements IPhysicsObject, IFurnMotions {
-    gauge = new ProgressBar(0.1, 0.1, 2)
+export class FurnModel extends GhostModel implements IPhysicsObject, IFurnMotions {
     get BoxPos() { return this.asset.GetBoxPos(this.meshs) }
-    constructor(asset: IAsset) {
+    constructor(asset: IAsset, private name: string) {
         super(asset)
         this.text = new FloatingName("제작을 시작해주세요")
     }
+    async Init() { }
+    Building(): void { }
 
-    async Init() {
-    }
-    
-    SetProgress(ratio: number): void {
-        this.gauge.SetProgress(ratio)
-    }
-    Building(): void {
-        
-    }
     Done(): void {
         this.meshs.traverse(child => {
             if('material' in child) {
@@ -35,25 +26,23 @@ export class Bed extends GhostModel implements IPhysicsObject, IFurnMotions {
         if (this.text != undefined) {
             this.text.visible = false
         }
-        this.gauge.Visible = false
     }
     SetText(text: string) {
         this.text?.SetText(text)
     }
-     
     Create() {
-        this.meshs.add(this.gauge)
-        this.gauge.position.y += 3
-        this.gauge.rotation.x = this.meshs.rotation.y
-
         if (this.text != undefined) {
             this.text.position.y = 4
             this.meshs.add(this.text)
         }
     }
-
-    async MassLoader(meshs: THREE.Group, position: THREE.Vector3, rotation?: THREE.Euler) {
-        this.meshs = meshs.clone()
+    async MassLoader(position: THREE.Vector3, rotation?: THREE.Euler, id?: string) {
+        if (id) {
+            const [_meshs, _exist] = await this.asset.UniqModel(this.name + id)
+            this.meshs = _meshs
+        } else {
+            this.meshs = await this.asset.CloneModel()
+        }
         this.meshs.position.set(position.x, position.y, position.z)
         if (rotation) this.meshs.rotation.copy(rotation)
         this.meshs.castShadow = true

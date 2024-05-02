@@ -205,23 +205,29 @@ export class GPhysics {
         keys.forEach((key) => {
             const boxs = this.pboxs.get(key)
             if (boxs == undefined) return false
+            for (let i = boxs.length - 1; i >= 0; i--) {
+                if (boxs[i].model == b) {
+                    boxs.splice(i, 1)
+                }
+            }
+            /*
             for (let i = 0; i < boxs.length; i++) {
                 if (boxs[i].model == b) {
                     boxs.splice(i, 1)
                     i--
                 }
-            }
+            }*/
         })
     }
-    GetCollisionBox(pos: THREE.Vector3, box: THREE.Box3): [PhysicBox | undefined, string[]]{
-        const keys = this.makeHash(pos, box.getSize(new THREE.Vector3))
+    GetCollisionBox(pos: THREE.Vector3, target: THREE.Box3): [PhysicBox | undefined, string[]]{
+        const keys = this.makeHash(pos, target.getSize(new THREE.Vector3))
         let retObj: PhysicBox | undefined
         const retKey: string[] = []
         keys.some((key) => {
             const boxs = this.pboxs.get(key)
             if (boxs == undefined) return false
 
-            const objBox = box
+            const objBox = target
             boxs.some(box => {
                 if (objBox.intersectsBox(box.box)) {
                     //console.log("Collision!!!!", key)

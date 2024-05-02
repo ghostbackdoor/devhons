@@ -6,6 +6,7 @@ import { EventBricks } from "../../bricks/eventbricks";
 import { AttackMState, DyingMState, IdleMState, RunMState } from "./minataurstate";
 import { Minataur } from "./minataur";
 import { IPlayerAction, MonsterBox } from "../../monsters/monsters";
+import { MonsterId } from "../monsterid";
 
 
 export class MinataurCtrl implements IGPhysic{
@@ -38,7 +39,7 @@ export class MinataurCtrl implements IGPhysic{
             opacity: 0,
             color: 0xff0000,
         })
-        this.phybox = new MonsterBox(id, "Minataur", geometry, material)
+        this.phybox = new MonsterBox(id, "Minataur", MonsterId.Minotaur, geometry, material)
         this.phybox.position.copy(this.monster.CannonPos)
         this.phybox.position.y += size.y / 2
     }

@@ -14,7 +14,7 @@ import { Canvas } from "../../common/canvas";
 import { AttackOption, AttackType, PlayerCtrl } from "../player/playerctrl";
 import { FurnCtrl } from "./furnctrl";
 import { FurnDb, FurnId, FurnProperty } from "./furndb";
-import { Bed } from "./bed";
+import { FurnModel } from "./bed";
 
 export enum FurnState {
     NeedBuilding,
@@ -49,7 +49,6 @@ export class Carpenter implements IModelReload, IViewer {
     controllable = false
     target?: IPhysicsObject
     targetId?: string
-    furnDb = new FurnDb()
     furnFab = new Map<string, IPhysicsObject>()
     furnitures: FurnSet[] = []
     saveData = this.store.Furn
@@ -63,11 +62,11 @@ export class Carpenter implements IModelReload, IViewer {
         private gphysic: GPhysics,
         canvas: Canvas,
         private eventCtrl: EventController,
+        private furnDb: FurnDb,
     ){
         canvas.RegisterViewer(this)
         store.RegisterStore(this)
 
-        this.furnFab.set(FurnId.DefaultBed, new Bed(this.loader.BedAsset))
 
         eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag, id: string) => {
             if(mode != AppMode.Furniture) return
@@ -131,6 +130,8 @@ export class Carpenter implements IModelReload, IViewer {
                     } else {
                         z.furnCtrl.BuildingCancel()
                     }
+                } else if (opt.type == AttackType.Delete) {
+                    if (!z.furnCtrl.Delete(opt.damage)) this.DeleteFurn(obj.Id)
                 }
             })
         })
@@ -163,16 +164,16 @@ export class Carpenter implements IModelReload, IViewer {
         this.playerCtrl.add(furnset.furnCtrl.phybox)
         this.game.add(furnset.furn.Meshs, furnset.furnCtrl.phybox)
     }
-    async FurnLoader() {
-        const p = SConf.DefaultPortalPosition
-        // TODO need refac
-        const tree = this.furnFab.get(FurnId.DefaultBed) as Bed
-        const meshs = await this.loader.BedAsset.CloneModel()
-        const ret = await Promise.all([
-            tree.MassLoader(meshs, p)
-        ])
-        return ret
+    DeleteFurn(id: number) {
+        const furnset = this.furnitures[id];
+        if(!furnset.used) return
+        furnset.used = false
+        const idx = this.saveData.findIndex((item) => item.position.x == furnset.furn.CannonPos.x && item.position.z == furnset.furn.CannonPos.z)
+        if (idx > -1) this.saveData.splice(idx, 1)
+        this.playerCtrl.remove(furnset.furnCtrl.phybox)
+        this.game.remove(furnset.furn.Meshs, furnset.furnCtrl.phybox)
     }
+
     
     moveEvent(v: THREE.Vector3) {
         if(!this.target) return
@@ -223,19 +224,10 @@ export class Carpenter implements IModelReload, IViewer {
         })
     }
     async NewPlantEntryPool(furnEntry: FurnEntry, property: FurnProperty): Promise<FurnSet> {
-        let furn;
-        let meshs;
-        switch (furnEntry.id) {
-            case FurnId.DefaultBed:
-                furn = new Bed(this.loader.BedAsset)
-                const [_meshs, _exist] = await this.loader.BedAsset.UniqModel("bed" + this.furnitures.length)
-                meshs = _meshs
-                break;
-        }
-        if (!furn || !meshs) throw new Error("unexpected allocation fail");
-        
+        const furn = this.getModel(furnEntry.id)
+        if (!furn) throw new Error("unexpected allocation fail");
 
-        await furn.MassLoader(meshs, furnEntry.position, furnEntry.rotation)
+        await furn.MassLoader(furnEntry.position, furnEntry.rotation, this.furnitures.length.toString())
         furn.Create()
         furn.Visible = true
         const treeCtrl = new FurnCtrl(this.furnitures.length, furn, furn, property, 
@@ -244,5 +236,68 @@ export class Carpenter implements IModelReload, IViewer {
         const furnset: FurnSet = { id: furnEntry.id, furn: furn, furnCtrl: treeCtrl, used: true }
         this.furnitures.push(furnset)
         return furnset
+    }
+    async FurnLoader() {
+        // TODO need refac
+        await this.allocModel(FurnId.DefaultBed, this.getModel(FurnId.DefaultBed))
+        await this.allocModel(FurnId.DefaultBookShelf, this.getModel(FurnId.DefaultBookShelf))
+        await this.allocModel(FurnId.DefaultCloset, this.getModel(FurnId.DefaultCloset))
+        await this.allocModel(FurnId.DefaultDesk, this.getModel(FurnId.DefaultDesk))
+        await this.allocModel(FurnId.DefaultKitchen, this.getModel(FurnId.DefaultKitchen))
+        await this.allocModel(FurnId.DefaultKitTable, this.getModel(FurnId.DefaultKitTable))
+        await this.allocModel(FurnId.DefaultOven, this.getModel(FurnId.DefaultOven))
+        await this.allocModel(FurnId.DefaultRefrigerator, this.getModel(FurnId.DefaultRefrigerator))
+        await this.allocModel(FurnId.DefaultSink, this.getModel(FurnId.DefaultSink))
+        await this.allocModel(FurnId.DefaultTable, this.getModel(FurnId.DefaultTable))
+        await this.allocModel(FurnId.DefaultToilet, this.getModel(FurnId.DefaultToilet))
+        await this.allocModel(FurnId.DefaultTv, this.getModel(FurnId.DefaultTv))
+    }
+    async allocModel(id: string, model: FurnModel) {
+        const p = SConf.DefaultPortalPosition
+        this.furnFab.set(id, model);
+        await model.MassLoader(p);
+    }
+    getModel(id: FurnId) {
+        let furn
+        switch (id) {
+            default:
+            case FurnId.DefaultBed:
+                furn = new FurnModel(this.loader.BedAsset, "bed")
+                break;
+            case FurnId.DefaultBath:
+                furn = new FurnModel(this.loader.BathAsset, "bath")
+                break;
+            case FurnId.DefaultCloset:
+                furn = new FurnModel(this.loader.ClosetAsset, "closet")
+                break;
+            case FurnId.DefaultDesk:
+                furn = new FurnModel(this.loader.DeskAsset, "desk")
+                break;
+            case FurnId.DefaultKitchen:
+                furn = new FurnModel(this.loader.KitchenAsset, "kitchen")
+                break;
+            case FurnId.DefaultKitTable:
+                furn = new FurnModel(this.loader.KitTableAsset, "kittable")
+                break;
+            case FurnId.DefaultOven:
+                furn = new FurnModel(this.loader.OvenAsset, "oven")
+                break;
+            case FurnId.DefaultRefrigerator:
+                furn = new FurnModel(this.loader.RefrigeratorAsset, "refrigerator")
+                break;
+            case FurnId.DefaultSink:
+                furn = new FurnModel(this.loader.SinkAsset, "sink")
+                break;
+            case FurnId.DefaultTable:
+                furn = new FurnModel(this.loader.TableAsset, "table")
+                break;
+            case FurnId.DefaultToilet:
+                furn = new FurnModel(this.loader.ToiletAsset, "toilet")
+                break;
+            case FurnId.DefaultTv:
+                furn = new FurnModel(this.loader.TableAsset, "tv")
+                break;
+        }
+        return furn
     }
 }

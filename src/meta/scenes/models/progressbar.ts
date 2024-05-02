@@ -12,14 +12,14 @@ export class ProgressBar extends GhostModel2 implements IObject, IPhysicsObject 
     constructor(rTop: number, rBottom: number, private depth: number) {
         const geometry = new THREE.CylinderGeometry(rTop, rBottom, depth, 5)
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0x00ff00,
+            color: 0x008DDA,
             transparent: true,
             opacity:0.5,
         })
         super(geometry, material)
         const gGeo = new THREE.CylinderGeometry(rTop, rBottom, depth, 5)
         const gMat = new THREE.MeshStandardMaterial({
-            color: 0x00ff00,
+            color: 0x008dda,
         })
         this.gauge = new THREE.Mesh(gGeo, gMat)
         this.gauge.scale.set(.9, .01, .9)

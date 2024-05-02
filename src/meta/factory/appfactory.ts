@@ -36,6 +36,8 @@ import { Carpenter } from "../scenes/furniture/carpenter";
 import { Deck } from "../inventory/items/deck";
 import { MonDeck } from "../scenes/mondeck";
 import { NonLegos } from "../scenes/bricks/nonlegos";
+import { FurnDb } from "../scenes/furniture/furndb";
+import { PlantDb } from "../scenes/plants/plantdb";
 
 
 export class AppFactory {
@@ -56,7 +58,9 @@ export class AppFactory {
 
     private invenFab: InvenFactory
     private drop : Drop
-    private monDb: MonsterDb
+    private monDb = new MonsterDb()
+    private furnDb = new FurnDb()
+    private plantDb = new PlantDb()
     monDeck: MonDeck
 
     private player: Player
@@ -98,6 +102,8 @@ export class AppFactory {
     get Buff() { return this.buff }
     get GameCenter() { return this.gameCenter }
     get LoadingManager() { return this.loader.LoadingManager }
+    get Furnitures() {return this.furnDb}
+    get Plants() {return this.plantDb}
 
     constructor() {
         this.worldSize = 300
@@ -106,7 +112,6 @@ export class AppFactory {
         this.deadtrees = []
 
         this.invenFab = new InvenFactory(this.loader, this.alarm)
-        this.monDb = new MonsterDb()
 
         this.store = new ModelStore(this.eventCtrl, this.invenFab)
         this.input = new Input(this.eventCtrl)
@@ -129,8 +134,8 @@ export class AppFactory {
         this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.brick, this.gphysics, this.drop, this.monDb)
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
-        this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm)
-        this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl)
+        this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.plantDb)
+        this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.furnDb)
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.store)
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)

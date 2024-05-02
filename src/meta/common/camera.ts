@@ -53,7 +53,6 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
         this.longPos = new THREE.Vector3(16, 24, 79)
         this.shortPos = new THREE.Vector3(0, 0, 0)
         this.bakRotation = new THREE.Euler().copy(this.rotation.set(-0.27, 0.0, 0.03))
-        console.log(this.rotation)
         
         this.viewMode = ViewMode.Long
         this.position.set(this.longPos.x, this.longPos.y, this.longPos.z)

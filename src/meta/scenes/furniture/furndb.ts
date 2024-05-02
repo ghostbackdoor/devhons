@@ -4,9 +4,22 @@ import { MonDrop } from "../monsters/monsterdb"
 
 export class FurnId {
     public static DefaultBed = "defaultbed"
+    public static DefaultBath = "defaultbath"
+    public static DefaultBookShelf = "defaultbookshelf"
+    public static DefaultCloset = "defaultcloset"
+    public static DefaultDesk = "defaultdesk"
+    public static DefaultKitchen = "defaultkitchen"
+    public static DefaultKitTable = "defaultkittable"
+    public static DefaultOven = "defaultoven"
+    public static DefaultRefrigerator = "defaultrefrigerator"
+    public static DefaultSink = "defaultsink"
+    public static DefaultTable = "defaulttable"
+    public static DefaultToilet = "defaulttoilet"
+    public static DefaultTv = "defaulttv"
 }
 export enum FurnType {
-    Bed,
+    Bed, Bath, BookShelf, Closet, Desk, Kitchen, Table, Oven, Refrigerator,
+    Sink, Toilet, Tv
 }
 
 export type FurnProperty = {
@@ -14,22 +27,121 @@ export type FurnProperty = {
     type: FurnType
     assetId: Char
     name: string
+    namekr: string
     buildingTime: number
     drop?: MonDrop[]
 }
 
 export class FurnDb {
-    plantDb = new Map<FurnId, FurnProperty>()
+    furnDb = new Map<FurnId, FurnProperty>()
+    get Items() { return this.furnDb }
     constructor() {
-        this.plantDb.set(FurnId.DefaultBed, {
+        this.furnDb.set(FurnId.DefaultBed, {
             id: FurnId.DefaultBed,
             type: FurnType.Bed,
             assetId: Char.Bed,
             name: "Bed",
+            namekr: "침대",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultBath, {
+            id: FurnId.DefaultBath,
+            type: FurnType.Bath,
+            assetId: Char.Bath,
+            name: "Bath",
+            namekr: "욕조",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultBookShelf, {
+            id: FurnId.DefaultBookShelf,
+            type: FurnType.BookShelf,
+            assetId: Char.Bookshelf,
+            name: "BookShelf",
+            namekr: "책장",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultCloset, {
+            id: FurnId.DefaultCloset,
+            type: FurnType.Closet,
+            assetId: Char.Closet,
+            name: "Closet",
+            namekr: "옷장",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultDesk, {
+            id: FurnId.DefaultDesk,
+            type: FurnType.Desk,
+            assetId: Char.Desk,
+            name: "Desk",
+            namekr: "컴퓨터책상",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultKitchen, {
+            id: FurnId.DefaultKitchen,
+            type: FurnType.Kitchen,
+            assetId: Char.Kitchen,
+            name: "Kitchen",
+            namekr: "부엌",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultKitTable, {
+            id: FurnId.DefaultKitTable,
+            type: FurnType.Table,
+            assetId: Char.KitTable,
+            name: "Kitchen Table",
+            namekr: "식탁",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultOven, {
+            id: FurnId.DefaultOven,
+            type: FurnType.Oven,
+            assetId: Char.Oven,
+            name: "Oven",
+            namekr: "오븐",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultRefrigerator, {
+            id: FurnId.DefaultRefrigerator,
+            type: FurnType.Refrigerator,
+            assetId: Char.Refrigerator,
+            name: "Refrigerator",
+            namekr: "냉장고",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultSink, {
+            id: FurnId.DefaultSink,
+            type: FurnType.Sink,
+            assetId: Char.Sink,
+            name: "Sink",
+            namekr: "세면대",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultTable, {
+            id: FurnId.DefaultTable,
+            type: FurnType.Table,
+            assetId: Char.Table,
+            name: "Table",
+            namekr: "책상",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultToilet, {
+            id: FurnId.DefaultToilet,
+            type: FurnType.Toilet,
+            assetId: Char.Toilet,
+            name: "Toilet",
+            namekr: "변기",
+            buildingTime: 1000 * 60, // a min
+        })
+        this.furnDb.set(FurnId.DefaultTv, {
+            id: FurnId.DefaultTv,
+            type: FurnType.Tv,
+            assetId: Char.TV,
+            name: "TV",
+            namekr: "티비",
             buildingTime: 1000 * 60, // a min
         })
     }
     get(id: FurnId) {
-        return this.plantDb.get(id)
+        return this.furnDb.get(id)
     }
 }

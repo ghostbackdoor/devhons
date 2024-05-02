@@ -52,7 +52,7 @@ export class NonLegos extends Bricks implements IModelReload {
 
             if (mode == AppMode.NonLego || mode == AppMode.LegoDelete) {
                 if (this.brickGuide == undefined) {
-                    this.brickGuide = this.GetBrickGuide(this.player.CannonPos)
+                    this.brickGuide = this.GetBrickGuide(this.player.CenterPos)
                 }
                 switch (e) {
                     case EventFlag.Start:
@@ -63,15 +63,16 @@ export class NonLegos extends Bricks implements IModelReload {
                         if (this.deleteMode) {
                             this.brickGuide.scale.set(1, 1, 1)
                             this.brickSize.set(1, 1, 1)
+                            console.log(this.brickGuide.position)
                         }
                         this.eventCtrl.OnChangeCtrlObjEvent(this.brickGuide)
                         this.CheckCollision()
                         break
                     case EventFlag.End:
                         if (this.deleteMode) {
-                            this.EditMode()
-                            this.physics.PBoxDispose()
-                            this.eventCtrl.OnSceneReloadEvent()
+                            //this.EditMode()
+                            //this.physics.PBoxDispose()
+                            //this.eventCtrl.OnSceneReloadEvent()
                         }
                         this.brickGuide.ControllerEnable = false
                         this.brickGuide.Visible = false

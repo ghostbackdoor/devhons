@@ -121,7 +121,7 @@ export class Materials implements IViewer {
             await stone.MassLoader(meshs, scale, pos)
 
             const size = this.loader.StoneAsset.GetSize(stone.Meshs)
-            const box = new MonsterBox(i, "stone", new THREE.BoxGeometry(), this.material)
+            const box = new MonsterBox(i, "stone", MonsterId.Stone, new THREE.BoxGeometry(), this.material)
             box.scale.copy(size)
             box.position.copy(pos)
             box.position.z += 2
@@ -151,7 +151,7 @@ export class Materials implements IViewer {
             this.trees.push(tree)
 
             const size = this.loader.TreeAsset.GetSize(tree.Meshs)
-            const box = new MonsterBox(i, "tree", new THREE.BoxGeometry(), this.material)
+            const box = new MonsterBox(i, "tree", MonsterId.Tree, new THREE.BoxGeometry(), this.material)
             box.scale.set(size.x / 2, size.y, size.z / 2)
             box.position.copy(pos)
             box.visible = false

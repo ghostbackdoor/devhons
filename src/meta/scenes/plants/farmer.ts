@@ -54,7 +54,6 @@ export class Farmer implements IModelReload, IViewer {
     controllable = false
     target?: IPhysicsObject
     targetId?: string
-    plantDb = new PlantDb()
     // 심을때 가이드하기 위한 메시
     plantsFab = new Map<string, IPhysicsObject>()
     plantset: PlantSet[] = []
@@ -71,10 +70,10 @@ export class Farmer implements IModelReload, IViewer {
         canvas: Canvas,
         private eventCtrl: EventController,
         private alarm: Alarm,
+        private plantDb: PlantDb,
     ){
         canvas.RegisterViewer(this)
         store.RegisterStore(this)
-        this.plantsFab.set(PlantId.AppleTree, new AppleTree(this.loader.AppleTreeAsset, this.loader.DeadTree2Asset))
 
         eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag, id: string) => {
             if(mode != AppMode.Farmer) return
@@ -146,7 +145,7 @@ export class Farmer implements IModelReload, IViewer {
                         z.plantCtrl.WarteringCancel()
                     }
                 } else if(opt.type == AttackType.Delete) {
-                    if (!z.plantCtrl.Delete()) this.DeletePlant(obj.Id)
+                    if (!z.plantCtrl.Delete(opt.damage)) this.DeletePlant(obj.Id)
                 }
             })
         })
@@ -187,6 +186,7 @@ export class Farmer implements IModelReload, IViewer {
     }
     DeletePlant(id: number) {
         const plantset = this.plantset[id];
+        if(!plantset.used) return
         plantset.used = false
         const idx = this.saveData.findIndex((item) => item.position.x == plantset.plant.CannonPos.x && item.position.z == plantset.plant.CannonPos.z)
         if (idx > -1) this.saveData.splice(idx, 1)
@@ -205,10 +205,10 @@ export class Farmer implements IModelReload, IViewer {
     async FarmLoader() {
         const p = SConf.DefaultPortalPosition
         // TODO need refac
+        this.plantsFab.set(PlantId.AppleTree, new AppleTree(this.loader.AppleTreeAsset, this.loader.DeadTree2Asset))
         const tree = this.plantsFab.get(PlantId.AppleTree) as AppleTree
-        const meshs = await this.loader.AppleTreeAsset.CloneModel()
         const ret = await Promise.all([
-            tree.MassLoader(meshs, 1, p)
+            tree.MassLoader(p)
         ])
         return ret
     }
@@ -263,19 +263,16 @@ export class Farmer implements IModelReload, IViewer {
     }
     async NewPlantEntryPool(plantEntry: PlantEntry, property: PlantProperty): Promise<PlantSet> {
         let tree;
-        let meshs;
         switch (plantEntry.id) {
             case PlantId.AppleTree:
                 tree = new AppleTree(this.loader.AppleTreeAsset, this.loader.DeadTree2Asset)
-                const [_meshs, _exist] = await this.loader.AppleTreeAsset.UniqModel("appletree" + this.plantset.length)
-                meshs = _meshs
                 break;
         }
-        if (!tree || !meshs) {
+        if (!tree) {
             throw new Error("unexpected allocation");
         }
 
-        await tree.MassLoader(meshs, 1, plantEntry.position)
+        await tree.MassLoader(plantEntry.position, this.plantset.length.toString())
         tree.Create()
         tree.Visible = true
         const treeCtrl = new TreeCtrl(this.plantset.length, tree, tree, property, plantEntry) 

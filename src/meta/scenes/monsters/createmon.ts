@@ -24,24 +24,22 @@ export class CreateMon {
         private eventBricks: EventBricks,
         private gphysic: GPhysics,
         private monDb: MonsterDb,
-        private monsters: MonsterSet[]
     ) {
-        this.monsterMap.set(MonsterId.Zombie, async (pos?: THREE.Vector3) => await this.CreateZombie(pos))
+        this.monsterMap.set(MonsterId.Zombie, async (id: number, pos?: THREE.Vector3) => await this.CreateZombie(id, pos))
     }
-    async Call(monId: MonsterId, pos?: THREE.Vector3): Promise<MonsterSet> {
+    async Call(monId: MonsterId, id: number, pos?: THREE.Vector3): Promise<MonsterSet> {
         const func = this.monsterMap.get(monId)
-        return (func) ? await func(pos) : undefined
+        return (func) ? await func(id, pos) : undefined
     }
-    async CreateZombie(pos?: THREE.Vector3): Promise<MonsterSet> {
+    async CreateZombie(id: number, pos?: THREE.Vector3): Promise<MonsterSet> {
         if(!pos) pos = new THREE.Vector3(10, 0, 15)
         const zombie = new Zombie(this.loader.ZombieAsset)
         await zombie.Loader(this.loader.GetAssets(Char.Zombie),
-                pos, "Zombie", this.monsters.length)
+                pos, "Zombie", id)
 
-        const zCtrl = new ZombieCtrl(this.monsters.length, this.player, zombie, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
+        const zCtrl = new ZombieCtrl(id, this.player, zombie, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
             this.eventCtrl, this.monDb.GetItem(MonsterId.Zombie))
         const monSet: MonsterSet =  { monModel: zombie, monCtrl: zCtrl, live: true, respawn: false}
-        this.monsters.push(monSet)
         return monSet
     }
 }

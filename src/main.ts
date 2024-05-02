@@ -130,12 +130,15 @@ export class Main extends Page {
         carousel?.cycle()
     }
 
+    public CanvasRenderer() {
+    }
     public async Run(): Promise<boolean> {
         await this.LoadHtml()
         this.disableMeta()
         this.bugfixCarousel()
         this.RequestTaglist(20)
         this.RequestUserlist(20)
+        this.CanvasRenderer()
 
         return true
     }

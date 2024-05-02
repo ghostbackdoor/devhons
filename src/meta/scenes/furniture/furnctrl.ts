@@ -6,7 +6,6 @@ import { GPhysics } from "../../common/physics/gphysics";
 
 
 export interface IFurnMotions {
-    SetProgress(ratio: number): void
     Building(): void
     Done(): void
     Create(): void
@@ -19,7 +18,11 @@ export class FurnCtrl {
     timer = 0 // ms, 0.001 sec
     lastBuildingTime = 0
     checktime = 0
+    health = 3
     phybox: FurnBox
+    dom: HTMLDivElement
+    msg: HTMLLabelElement
+    progress: HTMLProgressElement
     get State() { return this.state }
 
     constructor(
@@ -50,6 +53,10 @@ export class FurnCtrl {
         if(state == FurnState.Done) {
             this.treeMotion.Done()
         }
+        this.dom = document.getElementById("edit-progress-bar-container") as HTMLDivElement
+        this.progress = document.getElementById("edit-progress-bar") as HTMLProgressElement
+        this.msg = document.getElementById("job_label") as HTMLLabelElement
+
     }
     BuildingStart() {
         if(this.state == FurnState.Done) return
@@ -57,10 +64,13 @@ export class FurnCtrl {
         this.state = FurnState.Building
         const now = new Date().getTime() // ms, 0.001 sec
         this.lastBuildingTime = now - this.property.buildingTime
+        this.msg.innerText = "제작하고 있습니다."
+        this.dom.style.display = "block"
     }
     BuildingCancel() {
         if(this.state == FurnState.Building)
             this.state = FurnState.Suspend
+        this.dom.style.display = "none"
     }
 
     BuildingDone() {
@@ -75,7 +85,20 @@ export class FurnCtrl {
             position: this.funi.CannonPos,
             rotation: this.funi.Meshs.rotation
         })
+        this.dom.style.display = "none"
         console.log("done", this.save, JSON.stringify(this.save))
+    }
+    Delete(damage: number) {
+        console.log(this.health)
+        if (!damage) {
+            this.dom.style.display = "none"
+        } else {
+            this.msg.innerText = "가구를 제거합니다."
+            this.dom.style.display = "block"
+            this.health -= damage
+            this.progress.value = 1 - this.health / 3
+        }
+        return this.health
     }
 
     update(delta: number) {
@@ -94,7 +117,8 @@ export class FurnCtrl {
                 {
                     this.timer += delta * 10
                     const ratio = this.timer / 5
-                    this.treeMotion.SetProgress(ratio)
+                    this.progress.value = ratio
+                    //this.treeMotion.SetProgress(ratio)
                     if (ratio > 1) {
                         this.BuildingDone()
                     }

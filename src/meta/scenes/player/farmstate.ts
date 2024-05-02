@@ -174,7 +174,6 @@ export class WarteringState extends State implements IPlayerAction {
     }
     Uninit(): void {
         if (this.warteringCan && this.warteringCan.Mesh) this.warteringCan.Mesh.visible = false
-        1
         if (!this.target || !this.targetMsg) return
         this.targetMsg.damage = 0
         this.eventCtrl.OnAttackEvent(this.target, [this.targetMsg])
@@ -237,14 +236,14 @@ export class DeleteState extends State implements IPlayerAction {
         this.player.ChangeAction(ActionType.Hammering, this.attackSpeed) 
         this.playerCtrl.RunSt.PreviousState(this.playerCtrl.IdleSt)
     }
-    plant() {
+    delete() {
         this.player.Meshs.getWorldDirection(this.attackDir)
         this.raycast.set(this.player.CenterPos, this.attackDir.normalize())
         const intersects = this.raycast.intersectObjects(this.playerCtrl.targets)
         if (intersects.length > 0 && intersects[0].distance < this.attackDist) {
             for(let i = 0; i < intersects.length; i++) {
                 const obj = intersects[i]
-                if (obj.distance> this.attackDist) return 
+                if (obj.distance > this.attackDist) return 
                 const k = obj.object.name
                 const msg = {
                     type: AttackType.Delete,
@@ -256,13 +255,16 @@ export class DeleteState extends State implements IPlayerAction {
                 this.targetMsg = msg
             }
         } else {
+            this.Uninit()
             this.playerCtrl.IdleSt.Init()
             return this.playerCtrl.IdleSt
         }
         return this
     }
     Uninit(): void {
-        if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
+        if (!this.target || !this.targetMsg) return
+        this.targetMsg.damage = 0
+        this.eventCtrl.OnAttackEvent(this.target, [this.targetMsg])
     }
     Update(delta: number): IPlayerAction {
         const d = this.DefaultCheck()
@@ -276,10 +278,7 @@ export class DeleteState extends State implements IPlayerAction {
             return this
         }
         this.attackTime -= this.attackSpeed
-
-        this.keytimeout = setTimeout(() => {
-            this.plant()
-        }, this.attackSpeed * 1000 * 0.6)
+        this.delete()
 
         return this
     }
@@ -326,6 +325,9 @@ export class BuildingState extends State implements IPlayerAction {
     }
     Uninit(): void { 
         if (this.hammer && this.hammer.Mesh) this.hammer.Mesh.visible = false
+        if (!this.target || !this.targetMsg) return
+        this.targetMsg.damage = 0
+        this.eventCtrl.OnAttackEvent(this.target, [this.targetMsg])
     }
     building() {
         if(!this.trigger) return
@@ -334,8 +336,9 @@ export class BuildingState extends State implements IPlayerAction {
         this.raycast.set(this.player.CenterPos, this.attackDir.normalize())
         const intersects = this.raycast.intersectObjects(this.playerCtrl.targets)
         if (intersects.length > 0 && intersects[0].distance < this.attackDist) {
-            intersects.forEach((obj) => {
-                if (obj.distance> this.attackDist) return false
+            for (let i = 0; i < intersects.length; i++) {
+                const obj = intersects[i]
+                if (obj.distance > this.attackDist) break
                 const k = obj.object.name
                 const ctrl = (obj.object as FurnBox).ctrl
                 if (ctrl.State == FurnState.Done) {
@@ -350,8 +353,9 @@ export class BuildingState extends State implements IPlayerAction {
                 this.eventCtrl.OnAttackEvent(k, [msg])
                 this.target = k
                 this.targetMsg = msg
-            })
+            }
         } else {
+            this.Uninit()
             this.playerCtrl.IdleSt.Init()
             return this.playerCtrl.IdleSt
         }

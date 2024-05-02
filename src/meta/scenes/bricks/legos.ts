@@ -15,6 +15,7 @@ export enum BrickShapeType {
 
 export class Legos extends Bricks implements IModelReload {
     get Size(): THREE.Vector3 { return (this.brickGuide) ? this.brickGuide.Size : this.brickSize }
+    dom: HTMLDivElement
 
     constructor(
         scene: THREE.Scene,
@@ -26,6 +27,9 @@ export class Legos extends Bricks implements IModelReload {
         super(scene, eventCtrl, store, physics, player, AppMode.Lego, store.Legos)
         store.RegisterStore(this)
         this.brickType = BrickGuideType.Lego
+        this.dom = document.createElement("div")
+        this.drawHtml(this.dom)
+        
 
         eventCtrl.RegisterBrickInfo((opt: BrickOption) => {
             if (opt.clear) {
@@ -67,7 +71,7 @@ export class Legos extends Bricks implements IModelReload {
 
             if (mode == AppMode.Lego || mode == AppMode.LegoDelete) {
                 if (this.brickGuide == undefined) {
-                    this.brickGuide = this.GetBrickGuide(this.player.CannonPos)
+                    this.brickGuide = this.GetBrickGuide(this.player.CenterPos)
                 }
                 switch (e) {
                     case EventFlag.Start:
@@ -76,17 +80,20 @@ export class Legos extends Bricks implements IModelReload {
                         this.brickGuide.position.copy(this.player.CannonPos)
                         this.brickfield.visible = true
                         if (this.deleteMode) {
+                            this.dom.style.display = "block"
                             this.brickGuide.scale.set(1, 1, 1)
                             this.brickSize.set(1, 1, 1)
+                            console.log(this.brickGuide.position)
                         }
                         this.eventCtrl.OnChangeCtrlObjEvent(this.brickGuide)
                         this.CheckCollision()
                         break
                     case EventFlag.End:
                         if (this.deleteMode) {
-                            this.EditMode()
-                            this.physics.PBoxDispose()
-                            this.eventCtrl.OnSceneReloadEvent()
+                            this.dom.style.display = "none"
+                            //this.EditMode()
+                            //this.physics.PBoxDispose()
+                            //this.eventCtrl.OnSceneReloadEvent()
                         }
                         this.brickGuide.ControllerEnable = false
                         this.brickGuide.Visible = false
@@ -186,5 +193,30 @@ export class Legos extends Bricks implements IModelReload {
         */
         this.CreateBricks()
         //this.CreateInstacedMesh()
+    }
+    drawHtml(dom: HTMLDivElement) {
+        dom.className = "brickctrl border rounded p-2 m-1"
+        dom.innerHTML = `
+        <div class="row">
+            <div class="col text-white">
+                <div class="border rounded bg-secondary p-2 d-inline-block">space</div> or
+                <span class="material-symbols-outlined align-middle">
+                close
+                </span> = 삭제
+            </div>
+            <div class="col p-2 text-center handcursor">
+                <span class="material-symbols-outlined" id="lego_exit">
+                    disabled_by_default
+                </span>
+            </div>
+        </div>
+        `
+        dom.style.display = "none"
+        document.body.appendChild(dom)
+        const exit = document.getElementById("lego_exit")
+        if(exit)exit.onclick = () => {
+            this.eventCtrl.OnAppModeEvent(AppMode.EditPlay)
+            exit.style.display = "none"
+        }
     }
 }

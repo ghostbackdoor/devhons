@@ -109,7 +109,7 @@ export class NpcManager implements IModelReload {
     async NpcLoader() {
         const p = SConf.DefaultPortalPosition
         return await Promise.all([
-            this.helper.Loader(this.loader.MaleAsset, new THREE.Vector3(p.x - 6, 0, p.z + 10), "마을 촌장"),
+            this.helper.Loader(this.loader.MaleAsset, new THREE.Vector3(p.x - 6, 0, p.z + 10), "여관 주인"),
             this.helper2.Loader(this.loader.FemaleAsset, new THREE.Vector3(p.x - 4, 0, p.z + 10), "Eve"),
             this.owner.Loader(this.loader.GetAssets(this.ownerModel), new THREE.Vector3(10, 0, 15), "unknown")
         ])

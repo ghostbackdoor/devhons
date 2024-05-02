@@ -108,6 +108,8 @@ export class GameCenter implements IViewer, IModelReload {
         tag.appendChild(this.dom)
         this.dom.style.display = "block"
         this.dom.style.top = "20px"
+        this.currentSec = 0
+        this.currentMin = -1
     }
     currentSec = 0
     updateTimer(delta: number) {
@@ -115,8 +117,9 @@ export class GameCenter implements IViewer, IModelReload {
         if (this.currentSec == Math.floor(this.timer)) return false
 
         this.currentSec = Math.floor(this.timer)
-        const min = Math.floor(this.currentSec / 60)
-        const sec = this.currentSec % 60
+        const remainSec = 15 * 60 - this.currentSec
+        const min = Math.floor(remainSec / 60)
+        const sec = remainSec % 60
         this.dom.innerText = ((min < 10) ? "0" + min : min) + ":" + ((sec < 10) ? "0" + sec : sec)
         return true
     }

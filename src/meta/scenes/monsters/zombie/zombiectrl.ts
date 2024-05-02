@@ -10,6 +10,7 @@ import { EventController } from "../../../event/eventctrl";
 import { MonsterProperty } from "../monsterdb";
 import { EffectType } from "../../../effects/effector";
 import { NonLegos } from "../../bricks/nonlegos";
+import { MonsterId } from "../monsterid";
 
 
 
@@ -50,7 +51,7 @@ export class ZombieCtrl implements IGPhysic, IMonsterCtrl {
             color: 0xff0000,
             depthWrite: false,
         })
-        this.phybox = new MonsterBox(id, "Zombie", geometry, material)
+        this.phybox = new MonsterBox(id, "Zombie", MonsterId.Zombie, geometry, material)
         this.phybox.visible = false
         this.phybox.position.copy(this.zombie.CannonPos)
     }

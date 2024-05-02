@@ -40,6 +40,9 @@ export default class App {
     renderFlag: boolean = false
     loadingVisible = true
 
+    get Furnitures() {return this.factory.Furnitures}
+    get Plants() {return this.factory.Plants}
+
     constructor() {
         this.canvas = this.factory.Canvas
         this.currentScene = this.factory.Scene

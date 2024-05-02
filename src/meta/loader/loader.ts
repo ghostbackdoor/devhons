@@ -16,8 +16,8 @@ import { MinataurFab } from "./monster/minataurfab";
 import { CrabFab } from "./monster/crabfab";
 import { StoneFab } from "./stonefab";
 import { HammerFab, WarteringCanFab } from "./plant/farmtoolsfab";
-import { BedFab } from "./funiturefab";
-import { AppleTreeFab } from "./plant/plantfab";
+import { BedFab, ClosetFab, DeskFab } from "./furniture/funiturefab";
+import { AppleTreeFab, CoconutTreeFab } from "./plant/plantfab";
 import { BatPigFab } from "./monster/batpigfab";
 import { BirdMonFab } from "./monster/birdmonfab";
 import { BilbyFab } from "./monster/bilbyfab";
@@ -29,6 +29,12 @@ import { BuilderFab } from "./monster/builderfab";
 import { ToadMageFab } from "./monster/toadmagefab";
 import { KittenMonkFab } from "./monster/kittenmonk";
 import { SkeletonFab } from "./monster/skeleton";
+import { Tomato0Fab, Tomato1Fab, Tomato2Fab } from "./plant/tomatofab";
+import { Carrot0Fab, Carrot1Fab, Carrot2Fab } from "./plant/carrotfab";
+import { Potato0Fab, Potato1Fab, Potato2Fab } from "./plant/potatofab";
+import { BathFab, SinkFab, ToiletFab } from "./furniture/bathfab";
+import { BookShelfFab, TableFab, TvFab } from "./furniture/livingfab";
+import { KitTableFab, KitchenFab, OvenFab, RefrigeratorFab } from "./furniture/kichenfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -65,10 +71,32 @@ export class Loader {
     private gun = new GunFab(this)
     private stone = new StoneFab(this)
     private bed = new BedFab(this)
+    private bath = new BathFab(this)
+    private bookshelf = new BookShelfFab(this)
+    private closet = new ClosetFab(this)
+    private desk = new DeskFab(this)
+    private kitchen = new KitchenFab(this)
+    private kitTable = new KitTableFab(this)
+    private oven = new OvenFab(this)
+    private refrigerator = new RefrigeratorFab(this)
+    private sink = new SinkFab(this)
+    private table = new TableFab(this)
+    private toilet = new ToiletFab(this)
+    private tv = new TvFab(this)
 
 
     private appleTree = new AppleTreeFab(this)
+    private coconutTree = new CoconutTreeFab(this)
     private deadTree2 = new DeadTree2Fab(this)
+    private tomato0 = new Tomato0Fab(this)
+    private tomato1 = new Tomato1Fab(this)
+    private tomato2 = new Tomato2Fab(this)
+    private potato0 = new Potato0Fab(this)
+    private potato1 = new Potato1Fab(this)
+    private potato2 = new Potato2Fab(this)
+    private carrot0 = new Carrot0Fab(this)
+    private carrot1 = new Carrot1Fab(this)
+    private carrot2 = new Carrot2Fab(this)
 
     private wartercan = new WarteringCanFab(this)
     private hammer = new HammerFab(this)
@@ -94,10 +122,33 @@ export class Loader {
     get GunAsset(): IAsset { return this.gun }
     get BatAsset(): IAsset { return this.bat }
     get BedAsset(): IAsset { return this.bed }
+    get BathAsset(): IAsset { return this.bath }
+    get BookShelfAsset(): IAsset { return this.bookshelf }
+    get ClosetAsset(): IAsset { return this.closet }
+    get DeskAsset(): IAsset { return this.desk }
+    get KitchenAsset(): IAsset { return this.kitchen }
+    get KitTableAsset(): IAsset { return this.kitTable }
+    get OvenAsset(): IAsset { return this.oven }
+    get RefrigeratorAsset(): IAsset { return this.refrigerator }
+    get SinkAsset(): IAsset { return this.sink }
+    get TableAsset(): IAsset { return this.table }
+    get ToiletAsset(): IAsset { return this.toilet }
+    get TvAsset(): IAsset { return this.tv }
+
     get WarteringCanAsset(): IAsset { return this.wartercan }
     get HammerAsset(): IAsset { return this.hammer }
 
     get AppleTreeAsset(): IAsset { return this.appleTree }
+    get CoconutTreeAsset(): IAsset { return this.coconutTree }
+    get Tomato0Asset(): IAsset { return this.tomato0 }
+    get Tomato1Asset(): IAsset { return this.tomato1 }
+    get Tomato2Asset(): IAsset { return this.tomato2 }
+    get Potato0Asset(): IAsset { return this.potato0 }
+    get Potato1Asset(): IAsset { return this.potato1 }
+    get Potato2Asset(): IAsset { return this.potato2 }
+    get Carrot0Asset(): IAsset { return this.carrot0 }
+    get Carrot1Asset(): IAsset { return this.carrot1 }
+    get Carrot2Asset(): IAsset { return this.carrot2 }
 
 
     get Load(): GLTFLoader { return this.loader }
@@ -143,10 +194,32 @@ export class Loader {
         this.assets.set(Char.Hammer, this.hammer)
 
         this.assets.set(Char.AppleTree, this.appleTree)
+        this.assets.set(Char.CoconutTree, this.coconutTree)
         this.assets.set(Char.DeadTree2, this.deadTree2)
+        this.assets.set(Char.Tomato0, this.tomato0)
+        this.assets.set(Char.Tomato1, this.tomato1)
+        this.assets.set(Char.Tomato2, this.tomato2)
+        this.assets.set(Char.Potato0, this.potato0)
+        this.assets.set(Char.Potato1, this.potato1)
+        this.assets.set(Char.Potato2, this.potato2)
+        this.assets.set(Char.Carrot0, this.carrot0)
+        this.assets.set(Char.Carrot1, this.carrot1)
+        this.assets.set(Char.Carrot2, this.carrot2)
 
         this.assets.set(Char.Stone, this.stone)
         this.assets.set(Char.Bed, this.bed)
+        this.assets.set(Char.Bath, this.bath)
+        this.assets.set(Char.Bookshelf, this.bookshelf)
+        this.assets.set(Char.Closet, this.closet)
+        this.assets.set(Char.Desk, this.desk)
+        this.assets.set(Char.Kitchen, this.kitchen)
+        this.assets.set(Char.KitTable, this.kitTable)
+        this.assets.set(Char.Oven, this.oven)
+        this.assets.set(Char.Refrigerator, this.refrigerator)
+        this.assets.set(Char.Sink, this.sink)
+        this.assets.set(Char.Table, this.table)
+        this.assets.set(Char.Toilet, this.toilet)
+        this.assets.set(Char.TV, this.tv)
 
         const progressBar = document.querySelector('#progress-bar') as HTMLProgressElement
         this.LoadingManager.onProgress = (_url, loaded, total) => {

@@ -23,7 +23,10 @@ export class TreeCtrl {
     checktime = 0
     phybox: PlantBox
     mySaveData?: PlantEntry
-    health = 2
+    health = 3
+    dom: HTMLDivElement
+    msg: HTMLLabelElement
+    progress: HTMLProgressElement
     get State() { return this.save.state }
 
     constructor(
@@ -49,15 +52,21 @@ export class TreeCtrl {
         this.phybox.position.copy(this.tree.CannonPos)
         this.phybox.position.y += size.y / 2
         this.CheckWartering()
+        this.dom = document.getElementById("edit-progress-bar-container") as HTMLDivElement
+        this.progress = document.getElementById("edit-progress-bar") as HTMLProgressElement
+        this.msg = document.getElementById("job_label") as HTMLLabelElement
     }
     SeedStart() {
         if (this.save.state != PlantState.NeedSeed) return
         this.timer = 0
         this.save.state = PlantState.Seeding
+        this.msg.innerText = "나무를 심습니다."
+        this.dom.style.display = "block"
     }
     SeedCancel() {
         if(this.save.state == PlantState.Seeding)
             this.save.state = PlantState.NeedSeed
+        this.dom.style.display = "none"
     }
     WarteringStart() {
         if(this.save.state == PlantState.Death) return
@@ -81,10 +90,19 @@ export class TreeCtrl {
         const now = new Date().getTime() // ms, 0.001 sec
         this.save.lastWarteringTime = now - this.property.warteringTime
         this.treeMotion.Plant()
+        this.dom.style.display = "none"
     }
-    Delete():number {
-        this.health --
-        this.treeMotion.Delete(this.health / 5)
+    Delete(damage: number): number {
+        console.log(this.health)
+        if (!damage) {
+            this.dom.style.display = "none"
+        } else {
+            this.msg.innerText = "나무를 제거합니다."
+            this.dom.style.display = "block"
+            this.health -= damage
+            this.progress.value = 1 - this.health / 3
+            this.treeMotion.Delete(this.health / 3)
+        }
 
         return this.health
     }
@@ -131,7 +149,8 @@ export class TreeCtrl {
             case PlantState.Seeding:
                 this.timer += delta * 10
                 const ratio = this.timer / 2
-                this.treeMotion.SetProgress(ratio)
+                //this.treeMotion.SetProgress(ratio)
+                this.progress.value = ratio
                 if(ratio > 1) {
                     this.StartGrow()
                 }

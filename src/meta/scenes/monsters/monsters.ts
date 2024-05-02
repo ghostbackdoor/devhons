@@ -32,7 +32,7 @@ export interface IMonsterCtrl {
 }
 
 export class MonsterBox extends THREE.Mesh {
-    constructor(public Id: number, public ObjName: string,
+    constructor(public Id: number, public ObjName: string, public MonId: MonsterId,
         geo: THREE.BoxGeometry, mat: THREE.MeshBasicMaterial
     ) {
         super(geo, mat)
@@ -46,11 +46,11 @@ export interface IPlayerAction {
 }
 
 export class Monsters {
-    monsters: MonsterSet[] = []
+    monsters = new Map<MonsterId, MonsterSet[]>()
     keytimeout?:NodeJS.Timeout
     respawntimeout?:NodeJS.Timeout
     mode = AppMode.Close
-    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.eventBricks, this.gphysic, this.monDb, this.monsters)
+    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.eventBricks, this.gphysic, this.monDb)
 
     constructor(
         private loader: Loader,
@@ -83,7 +83,10 @@ export class Monsters {
                 let obj = opt.obj as MonsterBox
                 if (obj == null) return
 
-                const z = this.monsters[obj.Id]
+                const mon = this.monsters.get(obj.MonId)
+                if(!mon) throw new Error("unexpected value");
+                
+                const z = mon[obj.Id]
                 if (!z.live) return
 
                 this.ReceiveDemage(z, opt.damage, opt.effect)
@@ -96,14 +99,16 @@ export class Monsters {
             const damage = opts[0].damage
             const effect = opts[0].effect
             if(dist == undefined) return
-            for(let i = 0; i < this.monsters.length; i++) {
-                const z = this.monsters[i]
-                if (!z.live) continue
-                const betw = z.monModel.CannonPos.distanceTo(pos)
-                if (betw < dist) {
-                    this.ReceiveDemage(z, damage, effect)
+            this.monsters.forEach((mon) => {
+                for (let i = 0; i < mon.length; i++) {
+                    const z = mon[i]
+                    if (!z.live) continue
+                    const betw = z.monModel.CannonPos.distanceTo(pos)
+                    if (betw < dist) {
+                        this.ReceiveDemage(z, damage, effect)
+                    }
                 }
-            }
+            })
         })
     }
     ReceiveDemage(z: MonsterSet, damage: number, effect?: EffectType) {
@@ -113,55 +118,88 @@ export class Monsters {
             this.playerCtrl.remove(z.monCtrl.MonsterBox)
             this.respawntimeout = setTimeout(() => {
                 if(z.respawn) {
-                    this.Spawning(z, z.initPos)
+                    this.Spawning(z.monCtrl.MonsterBox.MonId, z, z.initPos)
                 }
             }, THREE.MathUtils.randInt(4000, 8000))
         }
     }
     async InitMonster() {
-        const zSet = await this.createMon.Call(MonsterId.Zombie)
+        let mon = this.monsters.get(MonsterId.Zombie)
+        if(!mon) {
+            mon = []
+            this.monsters.set(MonsterId.Zombie, mon)
+        }
+        const set = await this.createMon.Call(MonsterId.Zombie, mon.length)
+        mon.push(set)
 
         setTimeout(() => {
-            zSet.monModel.Visible = true
-            this.playerCtrl.add(zSet.monCtrl.MonsterBox)
-            this.game.add(zSet.monModel.Meshs, zSet.monCtrl.MonsterBox)
+            set.monModel.Visible = true
+            this.playerCtrl.add(set.monCtrl.MonsterBox)
+            this.game.add(set.monModel.Meshs, set.monCtrl.MonsterBox)
 
             this.keytimeout = setTimeout(() => {
-                this.RandomSpawning()
+                this.RandomSpawning(MonsterId.Zombie)
             }, 5000)
         }, 5000)
     }
-    RandomSpawning() {
-        if(this.monsters.length < 30) {
-            this.Spawning()
+    RandomSpawning(monId: MonsterId) {
+        const mon = this.monsters.get(monId)
+        if(!mon) throw new Error("unexpected value");
+        
+        if(mon.length < 30) {
+            this.Spawning(monId)
             this.keytimeout = setTimeout(() => {
-                this.RandomSpawning()
+                this.RandomSpawning(monId)
             }, 5000)
         }
     }
-    async CreateMonster(id: MonsterId, respawn: boolean, pos?: THREE.Vector3) {
-        const zSet = await this.createMon.Call(id, pos)
-        zSet.respawn = respawn
-        zSet.monModel.Visible = true
-        zSet.initPos = pos
+    async Resurrection(id: MonsterId, pos?: THREE.Vector3) {
+        let mon = this.monsters.get(id)
+        if(!mon) {
+            mon = []
+            this.monsters.set(id, mon)
+        }
+        const set = mon.find((e) => e.live == false)
+        if(set) return set
 
-        this.playerCtrl.add(zSet.monCtrl.MonsterBox)
-        this.game.add(zSet.monModel.Meshs, zSet.monCtrl.MonsterBox)
+        const newSet =  await this.createMon.Call(id, mon.length, pos)
+        mon.push(newSet)
+        return newSet
+    }
+    async CreateMonster(id: MonsterId, respawn: boolean, pos?: THREE.Vector3) {
+        const set = await this.Resurrection(id, pos)
+        set.respawn = respawn
+        set.monModel.Visible = true
+        set.initPos = pos
+        set.live = true
+        set.monCtrl.Respawning()
+
+        this.playerCtrl.add(set.monCtrl.MonsterBox)
+        this.game.add(set.monModel.Meshs, set.monCtrl.MonsterBox)
     }
     ReleaseMonster() {
-        this.monsters.forEach((z) => {
-            z.monModel.Visible = false
-            z.live = false
-            this.playerCtrl.remove(z.monCtrl.MonsterBox)
-            this.game.remove(z.monModel.Meshs, z.monCtrl.MonsterBox)
+        this.monsters.forEach((mon) => {
+            mon.forEach((z) => {
+                z.monModel.Visible = false
+                z.live = false
+                this.playerCtrl.remove(z.monCtrl.MonsterBox)
+                this.game.remove(z.monModel.Meshs, z.monCtrl.MonsterBox)
+            })
         })
-        this.monsters.length = 0
+        
         if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
         if (this.respawntimeout != undefined) clearTimeout(this.respawntimeout)
     }
-    async Spawning(monSet?: MonsterSet, pos?: THREE.Vector3) {
+
+    async Spawning(monId: MonsterId, monSet?: MonsterSet, pos?: THREE.Vector3) {
         //const zSet = await this.CreateZombie()
-        if (!monSet) monSet = await this.createMon.Call(MonsterId.Zombie)
+        const mon = this.monsters.get(monId)
+        if(!mon) throw new Error("unexpected value");
+
+        if (!monSet) {
+            monSet = await this.createMon.Call(monId, mon.length)
+            mon.push(monSet)
+        }
 
         if(!pos) {
             monSet.monModel.CannonPos.x = this.player.CannonPos.x + math.rand_int(-20, 20)
