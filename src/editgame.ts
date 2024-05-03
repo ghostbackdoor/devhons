@@ -65,6 +65,13 @@ export class EditGame {
     </div>
             `
         })
+        if (html == '') html = `
+    <div class="row">
+        <div class="col ms-1 me-0 pb-1 text-center">
+        Deck이 없습니다.
+        </div>
+    </div>
+        `
         const dom = document.getElementById("decklist") as HTMLDivElement
         dom.innerHTML = html
 
@@ -85,13 +92,21 @@ export class EditGame {
     loadDeckProfile(deck: DeckType | undefined) {
         if (deck == undefined) { throw new Error("unexpected undeined value"); }
         const html = `
-        <p><b>${deck.title}</b><p>
-        <p class="text-start">${deck.contents}</p>
-        <p class="text-start">
-            Level: ${deck.maxLv} <br>
-            소환 가능 시간: ${deck.minTime} ~ ${deck.maxTime} 분 <br>
-            소환 가능 유닛: ${deck.maxSpawn} <br>
-        </p>
+        <div class="container rounded border" style="background-image: url('static/img/card_pattern.png');">
+        <div class="row">
+            <div class="col p-2"><b>${deck.title}</b></div>
+        </div>
+        <div class="row">
+            <div class="col text-start rounded border bg-white p-1 m-2" style="all:initial">
+                <p class="text-start">${deck.contents}</p>
+                <p class="text-start m-0">
+                    Level: ${deck.maxLv} <br>
+                    소환 가능 시간: ${deck.minTime} ~ ${deck.maxTime} 분 <br>
+                    소환 가능 유닛: ${deck.maxSpawn}
+                </p>
+            </div>
+        </div>
+        </div>
         `
         const dom = document.getElementById("deckprofile") as HTMLDivElement
         dom.innerHTML = html
@@ -101,7 +116,7 @@ export class EditGame {
         const deckinfo = this.meta.GetDeckInfo()
         const deckEndty = deckinfo.find((e) => e.id == deck.id)
         const html = `
-        <div class="input-group mb-1">
+        <div class="input-group mt-1 mb-1">
         <button class="btn btn-light" type="button" id="locationbtn">소환위치</button>
         <select id="decklocation" class="form-select" aria-label="Default select example">
             <option value="0" ${(deckEndty?.rand) ? "selected" : ""}>Random</option>

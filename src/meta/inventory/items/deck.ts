@@ -26,9 +26,7 @@ export class Deck {
     static Zombie: DeckType = {
         id: "zombie_deck",
         title: "전염된 좀비들",
-        contents:`무덤에서 소환되는 좀비와 다르게 전염된 좀비는 인간이 사는 어느 곳이든 소환이 가능합니다.
-        전염성이 매우 강하기 때문에 그 수가 순식간에 늘어납니다. 
-        이 카드는 최대 30마리의 좀비를 소환할 수 있습니다.`,
+        contents:` 이 카드는 최대 30마리의 좀비를 소환할 수 있습니다.`,
         maxLv: 5,
         minTime: 0,
         maxTime: 10,
@@ -39,9 +37,7 @@ export class Deck {
     static Minotaur: DeckType = {
         id: "minotaur_deck",
         title: "미노타우르스의 자식들",
-        contents:`미노타우스는 고대 그리스 신화에 등장하는 괴물로, 크레타 섬에 사는 왕 미노스가 미로 속에 갇히게 한 공포의 존재입니다. 
-        이 괴물은 소의 몸에 인간의 상체를 갖춘 형상으로 묘사되며, 사람의 고기를 먹는 무서운 힘을 가졌습니다.
-        이 카드는 최대 10개의 자식을 소환할 수 있습니다.`,
+        contents:`이 카드는 최대 10마리의 미노타우르스의 자식을 소환할 수 있습니다.`,
         maxLv: 5,
         minTime: 0,
         maxTime: 15,

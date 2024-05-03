@@ -18,8 +18,8 @@ export class ClosetFab extends AssetModel implements IAsset {
                 child.castShadow = true
                 child.receiveShadow = true
             })
-            this.meshs.rotateY(Math.PI)
             const scale = .8
+            this.meshs.children[0].rotateY(Math.PI)
             this.meshs.children[0].scale.set(scale, scale, scale)
         })
     }
@@ -65,8 +65,8 @@ export class DeskFab extends AssetModel implements IAsset {
                 child.castShadow = true
                 child.receiveShadow = true
             })
-            this.meshs.rotateY(Math.PI)
             const scale = .8
+            this.meshs.children[0].rotateY(Math.PI)
             this.meshs.children[0].scale.set(scale, scale, scale)
         })
     }
@@ -113,6 +113,7 @@ export class BedFab extends AssetModel implements IAsset {
                 child.receiveShadow = true
             })
             const scale = .8
+            this.meshs.children[0].rotateY(Math.PI)
             this.meshs.children[0].scale.set(0.96, scale, scale)
             this.meshs.children[0].position.z += 0.34
         })

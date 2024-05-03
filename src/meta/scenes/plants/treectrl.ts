@@ -12,6 +12,8 @@ export interface ITreeMotions {
     Plant(): void
     Enough(): void
     NeedWarter(): void
+    NeedHavest(): void
+    Havest(): void
     Create(): void
 }
 
@@ -89,6 +91,7 @@ export class TreeCtrl {
         this.save.state = PlantState.NeedWartering
         const now = new Date().getTime() // ms, 0.001 sec
         this.save.lastWarteringTime = now - this.property.warteringTime
+        this.save.lastHarvestTime = now
         this.treeMotion.Plant()
         this.dom.style.display = "none"
     }
@@ -105,6 +108,10 @@ export class TreeCtrl {
         }
 
         return this.health
+    }
+    Havest() {
+        this.save.lastHarvestTime = new Date().getTime() // ms, 0.001 sec
+        this.treeMotion.Havest()
     }
 
     CheckWartering() {
@@ -124,6 +131,19 @@ export class TreeCtrl {
         } else {
             this.save.state = PlantState.NeedWartering
             this.treeMotion.NeedWarter()
+        }
+    }
+    CheckLevelUp() {
+        if(this.save.state == PlantState.NeedSeed) return
+        const curr = new Date().getTime()
+        const remainTime = curr - this.save.lastHarvestTime
+        const currentLv = Math.floor(remainTime / this.property.levelUpTime) + 1
+        if (this.lv != currentLv) {
+            this.lv = (currentLv > this.property.maxLevel) ? this.property.maxLevel : this.lv + 1
+            this.treeMotion.SetLevel(this.lv)
+            if(this.lv == this.property.maxLevel) {
+                this.treeMotion.NeedHavest()
+            }
         }
     }
 
@@ -160,5 +180,6 @@ export class TreeCtrl {
                 break;
         }
         this.CheckWartering()
+        this.CheckLevelUp()
     }
 }

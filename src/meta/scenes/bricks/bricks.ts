@@ -26,6 +26,9 @@ export class EventBrick implements IBuildingObject {
     key = ""
     constructor(private size: THREE.Vector3, private position: THREE.Vector3) {
     }
+    Dispose() {
+        if(this.brick) this.brick.Dispose()
+    }
 }
 
 export class Bricks {
@@ -124,7 +127,7 @@ export class Bricks {
         const [target, keys] = this.GetCollisionBox()
         if (target == undefined) return
         this.physics.DeleteBox(keys, target)
-        const b = target as Brick2
+        const b = (target instanceof Brick2) ? target as Brick2 : (target as EventBrick).brick
         if (b != undefined) {
             this.scene.remove(b)
             b.Dispose()

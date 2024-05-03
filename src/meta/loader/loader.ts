@@ -34,7 +34,8 @@ import { Carrot0Fab, Carrot1Fab, Carrot2Fab } from "./plant/carrotfab";
 import { Potato0Fab, Potato1Fab, Potato2Fab } from "./plant/potatofab";
 import { BathFab, SinkFab, ToiletFab } from "./furniture/bathfab";
 import { BookShelfFab, TableFab, TvFab } from "./furniture/livingfab";
-import { KitTableFab, KitchenFab, OvenFab, RefrigeratorFab } from "./furniture/kichenfab";
+import { KitTableFab, KitchenFab, OvenFab, RefrigeratorFab } from "./furniture/kitchenfab";
+import { AppleFab, CoconutFab } from "./plant/fruitfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -86,7 +87,9 @@ export class Loader {
 
 
     private appleTree = new AppleTreeFab(this)
+    private apple = new AppleFab(this)
     private coconutTree = new CoconutTreeFab(this)
+    private coconut = new CoconutFab(this)
     private deadTree2 = new DeadTree2Fab(this)
     private tomato0 = new Tomato0Fab(this)
     private tomato1 = new Tomato1Fab(this)
@@ -139,7 +142,9 @@ export class Loader {
     get HammerAsset(): IAsset { return this.hammer }
 
     get AppleTreeAsset(): IAsset { return this.appleTree }
+    get AppleAsset(): IAsset { return this.apple }
     get CoconutTreeAsset(): IAsset { return this.coconutTree }
+    get CoconutAsset(): IAsset { return this.coconut }
     get Tomato0Asset(): IAsset { return this.tomato0 }
     get Tomato1Asset(): IAsset { return this.tomato1 }
     get Tomato2Asset(): IAsset { return this.tomato2 }
@@ -194,7 +199,9 @@ export class Loader {
         this.assets.set(Char.Hammer, this.hammer)
 
         this.assets.set(Char.AppleTree, this.appleTree)
+        this.assets.set(Char.Apple, this.apple)
         this.assets.set(Char.CoconutTree, this.coconutTree)
+        this.assets.set(Char.Coconut, this.coconut)
         this.assets.set(Char.DeadTree2, this.deadTree2)
         this.assets.set(Char.Tomato0, this.tomato0)
         this.assets.set(Char.Tomato1, this.tomato1)

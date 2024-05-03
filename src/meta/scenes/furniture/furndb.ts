@@ -16,6 +16,12 @@ export class FurnId {
     public static DefaultTable = "defaulttable"
     public static DefaultToilet = "defaulttoilet"
     public static DefaultTv = "defaulttv"
+    public static List = [
+        this.DefaultBed, this.DefaultBath, this.DefaultBookShelf, this.DefaultCloset,
+        this.DefaultDesk, this.DefaultKitTable, this.DefaultKitchen, this.DefaultOven,
+        this.DefaultRefrigerator, this.DefaultSink, this.DefaultTable, this.DefaultToilet,
+        this.DefaultTv, 
+    ]
 }
 export enum FurnType {
     Bed, Bath, BookShelf, Closet, Desk, Kitchen, Table, Oven, Refrigerator,

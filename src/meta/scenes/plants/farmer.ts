@@ -16,6 +16,7 @@ import { Canvas } from "../../common/canvas";
 import { TreeCtrl } from "./treectrl";
 import { AttackOption, AttackType, PlayerCtrl } from "../player/playerctrl";
 import { Alarm, AlarmType } from "../../common/alarm";
+import { Tomato } from "./tomato";
 
 export enum PlantState {
     NeedSeed,
@@ -32,6 +33,7 @@ export type PlantEntry = {
     lv: number // tree age
     state: PlantState
     lastWarteringTime: number
+    lastHarvestTime: number
     position: THREE.Vector3
 }
 
@@ -108,12 +110,13 @@ export class Farmer implements IModelReload, IViewer {
                 case KeyType.Action0:
                     if (!this.target || !this.targetId || this.CheckPlantAPlant()) return
                     const e: PlantEntry = {
-                        position: this.target.CannonPos, 
+                        position: new THREE.Vector3().copy(this.target.CannonPos), 
                         id: this.targetId, 
                         state: PlantState.NeedSeed,
                         lastWarteringTime: 0,
                         lv: 1,
-                        createTime: 0
+                        createTime: 0,
+                        lastHarvestTime: 0,
                     }
                     this.saveData.push(e)
                     this.CreatePlant(e)
@@ -202,16 +205,6 @@ export class Farmer implements IModelReload, IViewer {
         this.playerCtrl.add(plantset.plantCtrl.phybox)
         this.game.add(plantset.plant.Meshs, plantset.plantCtrl.phybox)
     }
-    async FarmLoader() {
-        const p = SConf.DefaultPortalPosition
-        // TODO need refac
-        this.plantsFab.set(PlantId.AppleTree, new AppleTree(this.loader.AppleTreeAsset, this.loader.DeadTree2Asset))
-        const tree = this.plantsFab.get(PlantId.AppleTree) as AppleTree
-        const ret = await Promise.all([
-            tree.MassLoader(p)
-        ])
-        return ret
-    }
     moveEvent(v: THREE.Vector3) {
         if(!this.target) return
         const vx = (v.x > 0) ? 1 : (v.x < 0) ? - 1 : 0
@@ -262,15 +255,7 @@ export class Farmer implements IModelReload, IViewer {
         })
     }
     async NewPlantEntryPool(plantEntry: PlantEntry, property: PlantProperty): Promise<PlantSet> {
-        let tree;
-        switch (plantEntry.id) {
-            case PlantId.AppleTree:
-                tree = new AppleTree(this.loader.AppleTreeAsset, this.loader.DeadTree2Asset)
-                break;
-        }
-        if (!tree) {
-            throw new Error("unexpected allocation");
-        }
+        const tree = await this.allocModel(plantEntry.id, plantEntry)
 
         await tree.MassLoader(plantEntry.position, this.plantset.length.toString())
         tree.Create()
@@ -279,5 +264,40 @@ export class Farmer implements IModelReload, IViewer {
         const plantset: PlantSet = { plantId: plantEntry.id, plant: tree, plantCtrl: treeCtrl, used: true }
         this.plantset.push(plantset)
         return plantset
+    }
+    async FarmLoader() {
+        // TODO need refac
+        PlantId.List.map(async (id) => {
+            await this.allocModel(id)
+        })
+    }
+    async allocModel(id: PlantId, plantEntry?: PlantEntry){
+        const p = SConf.DefaultPortalPosition
+        let plant
+        switch(id) {
+            default:
+            case PlantId.AppleTree:
+                plant = new AppleTree(this.loader.AppleTreeAsset, this.loader.AppleAsset, this.loader.DeadTree2Asset, "appletree")
+                break
+            case PlantId.CoconutTree:
+                plant = new AppleTree(this.loader.CoconutTreeAsset, this.loader.CoconutAsset, this.loader.DeadTree2Asset, "coconuttree")
+                break
+            case PlantId.Tomato:
+                plant = new Tomato([this.loader.Tomato0Asset, this.loader.Tomato1Asset, this.loader.Tomato2Asset], "tomato")
+                break
+            case PlantId.Potato:
+                plant = new Tomato([this.loader.Potato0Asset, this.loader.Potato1Asset, this.loader.Potato2Asset], "potato")
+                break
+            case PlantId.Carrot:
+                plant = new Tomato([this.loader.Carrot0Asset, this.loader.Carrot1Asset, this.loader.Carrot2Asset], "carrot")
+                break
+        }
+        if(plantEntry) {
+            await plant.MassLoader(plantEntry.position, this.plantset.length.toString())
+            return plant
+        }
+        this.plantsFab.set(id as string, plant)
+        await plant.MassLoader(p)
+        return plant
     }
 }

@@ -34,7 +34,7 @@ export class EditFurniture {
                 <img src="assets/icons/Misc/Crate.png">
             </div>
         </div>
-        <div class="col p-1"> ${v.namekr}를 만듭니다.<br>가죽: 20, 나무: 5</div>
+        <div class="col p-1"> ${v.namekr}를 만듭니다.<br>가죽: 0, 나무: 0(beta)</div>
     </div>
             `
         });
@@ -57,5 +57,8 @@ export class EditFurniture {
         const ctrl = document.getElementById("furniturectrl") as HTMLDivElement
         this.visible = false
         ctrl.style.display = "none"
+    }
+    htmlRelease() {
+        this.firstloading = false
     }
 }

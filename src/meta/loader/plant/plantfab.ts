@@ -16,7 +16,7 @@ export class AppleTreeFab extends AssetModel implements IAsset {
             const scale = 1
             this.meshs.scale.set(scale, scale, scale)
             this.meshs.position.set(0, 0, 0)
-            this.meshs.rotation.set(0, 0, 0)
+            this.meshs.rotateY(-Math.PI / 2)
         })
     }
     GetBodyMeshId() { return "mixamorigRightHand" }

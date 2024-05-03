@@ -333,5 +333,7 @@ export class EditHome extends Page {
     public Release(): void { 
         this.ui.UiOn()
         this.ReleaseHtml()
+        this.furn.htmlRelease()
+        this.plant.htmlRelease()
     }
 }

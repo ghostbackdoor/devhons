@@ -81,6 +81,7 @@ export class Carpenter implements IModelReload, IViewer {
                     this.target.Visible = true
                     this.target.CannonPos.copy(this.player.CannonPos)
                     this.eventCtrl.OnChangeCtrlObjEvent(this.target)
+                    this.CheckCollision()
                     console.log(id)
                     break
                 case EventFlag.End:
@@ -99,8 +100,8 @@ export class Carpenter implements IModelReload, IViewer {
                     if (!this.target || !this.targetId) return
                     const e: FurnEntry = {
                         id: this.targetId,
-                        position: this.target.CannonPos,
-                        rotation: this.target.Meshs.rotation,
+                        position: new THREE.Vector3().copy(this.target.CannonPos), 
+                        rotation: new THREE.Euler().copy(this.target.Meshs.rotation),
                         state: FurnState.NeedBuilding,
                         createTime: 0
                     }
@@ -140,6 +141,19 @@ export class Carpenter implements IModelReload, IViewer {
     update(delta: number): void {
         for (let i = 0; i < this.furnitures.length; i++) {
             this.furnitures[i].furnCtrl.update(delta)
+        }
+    }
+    CheckCollision() {
+        if(!this.target) return
+        if (this.gphysic.Check(this.target)) {
+            do {
+                this.target.CannonPos.y += 0.5
+            } while (this.gphysic.Check(this.target))
+        } else {
+            do {
+                this.target.CannonPos.y -= 0.5
+            } while (!this.gphysic.Check(this.target) && this.target.CannonPos.y >= 0)
+            this.target.CannonPos.y += 0.5
         }
     }
 
@@ -239,18 +253,9 @@ export class Carpenter implements IModelReload, IViewer {
     }
     async FurnLoader() {
         // TODO need refac
-        await this.allocModel(FurnId.DefaultBed, this.getModel(FurnId.DefaultBed))
-        await this.allocModel(FurnId.DefaultBookShelf, this.getModel(FurnId.DefaultBookShelf))
-        await this.allocModel(FurnId.DefaultCloset, this.getModel(FurnId.DefaultCloset))
-        await this.allocModel(FurnId.DefaultDesk, this.getModel(FurnId.DefaultDesk))
-        await this.allocModel(FurnId.DefaultKitchen, this.getModel(FurnId.DefaultKitchen))
-        await this.allocModel(FurnId.DefaultKitTable, this.getModel(FurnId.DefaultKitTable))
-        await this.allocModel(FurnId.DefaultOven, this.getModel(FurnId.DefaultOven))
-        await this.allocModel(FurnId.DefaultRefrigerator, this.getModel(FurnId.DefaultRefrigerator))
-        await this.allocModel(FurnId.DefaultSink, this.getModel(FurnId.DefaultSink))
-        await this.allocModel(FurnId.DefaultTable, this.getModel(FurnId.DefaultTable))
-        await this.allocModel(FurnId.DefaultToilet, this.getModel(FurnId.DefaultToilet))
-        await this.allocModel(FurnId.DefaultTv, this.getModel(FurnId.DefaultTv))
+        FurnId.List.map(async (id) => {
+            await this.allocModel(id, this.getModel(id))
+        })
     }
     async allocModel(id: string, model: FurnModel) {
         const p = SConf.DefaultPortalPosition
@@ -266,6 +271,9 @@ export class Carpenter implements IModelReload, IViewer {
                 break;
             case FurnId.DefaultBath:
                 furn = new FurnModel(this.loader.BathAsset, "bath")
+                break;
+            case FurnId.DefaultBookShelf:
+                furn = new FurnModel(this.loader.BookShelfAsset, "bookshelf")
                 break;
             case FurnId.DefaultCloset:
                 furn = new FurnModel(this.loader.ClosetAsset, "closet")

@@ -3,6 +3,14 @@ import { MonDrop } from "../monsters/monsterdb"
 
 export class PlantId {
     public static AppleTree = "appletree"
+    public static CoconutTree = "coconutree"
+    public static Tomato = "tomato"
+    public static Potato = "potato"
+    public static Carrot = "carrot"
+    public static List = [
+        this.AppleTree, this.CoconutTree, this.Tomato, this.Potato,
+        this.Carrot
+    ]
 }
 
 export enum PlantType {
@@ -33,7 +41,47 @@ export class PlantDb {
             assetId: Char.AppleTree,
             name: "Apple Tree",
             namekr: "사과나무",
-            maxLevel: 5,
+            maxLevel: 2,
+            levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
+            warteringTime: 1000 * 60 * 60, // an hour
+        })
+        this.plantDb.set(PlantId.CoconutTree, {
+            plantId: PlantId.CoconutTree,
+            type: PlantType.Tree,
+            assetId: Char.CoconutTree,
+            name: "Coconut Tree",
+            namekr: "코코넛나무",
+            maxLevel: 2,
+            levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
+            warteringTime: 1000 * 60 * 60, // an hour
+        })
+        this.plantDb.set(PlantId.Tomato, {
+            plantId: PlantId.Tomato,
+            type: PlantType.Vegetable,
+            assetId: Char.Tomato0,
+            name: "Tomato",
+            namekr: "토마토",
+            maxLevel: 3,
+            levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
+            warteringTime: 1000 * 60 * 60, // an hour
+        })
+        this.plantDb.set(PlantId.Potato, {
+            plantId: PlantId.Potato,
+            type: PlantType.Vegetable,
+            assetId: Char.Potato0,
+            name: "Potato",
+            namekr: "감자",
+            maxLevel: 3,
+            levelUpTime: 1000 * 60 * 60 * 24, // a day
+            warteringTime: 1000 * 60 * 60, // an hour
+        })
+        this.plantDb.set(PlantId.Carrot, {
+            plantId: PlantId.Carrot,
+            type: PlantType.Vegetable,
+            assetId: Char.Carrot0,
+            name: "Carrot",
+            namekr: "당근",
+            maxLevel: 3,
             levelUpTime: 1000 * 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
         })

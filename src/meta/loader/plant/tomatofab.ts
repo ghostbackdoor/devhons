@@ -13,7 +13,7 @@ export class Tomato0Fab extends AssetModel implements IAsset {
             this.gltf = gltf
             this.meshs = gltf.scene
             this.meshs.castShadow = true
-            const scale = 1
+            const scale = 2
             this.meshs.scale.set(scale, scale, scale)
             this.meshs.position.set(0, 0, 0)
             this.meshs.rotation.set(0, 0, 0)
@@ -39,8 +39,9 @@ export class Tomato0Fab extends AssetModel implements IAsset {
         if (this.size != undefined) return this.size
         const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
         this.size = bbox.getSize(new THREE.Vector3)
-        this.size.x = Math.ceil(this.size.x)
-        this.size.z = Math.ceil(this.size.z)
+        this.size.x = Math.ceil(this.size.x) * 2
+        this.size.y = 3
+        this.size.z = Math.ceil(this.size.z) * 2
         console.log(this.meshs)
         return this.size 
     }
@@ -55,7 +56,7 @@ export class Tomato1Fab extends AssetModel implements IAsset {
             this.gltf = gltf
             this.meshs = gltf.scene
             this.meshs.castShadow = true
-            const scale = 1
+            const scale = 2
             this.meshs.scale.set(scale, scale, scale)
             this.meshs.position.set(0, 0, 0)
             this.meshs.rotation.set(0, 0, 0)
@@ -82,6 +83,7 @@ export class Tomato1Fab extends AssetModel implements IAsset {
         const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
+        this.size.y = 3
         this.size.z = Math.ceil(this.size.z)
         console.log(this.meshs)
         return this.size 
@@ -97,7 +99,7 @@ export class Tomato2Fab extends AssetModel implements IAsset {
             this.gltf = gltf
             this.meshs = gltf.scene
             this.meshs.castShadow = true
-            const scale = 1
+            const scale = 2
             this.meshs.scale.set(scale, scale, scale)
             this.meshs.position.set(0, 0, 0)
             this.meshs.rotation.set(0, 0, 0)
@@ -124,6 +126,7 @@ export class Tomato2Fab extends AssetModel implements IAsset {
         const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
+        this.size.y = 3
         this.size.z = Math.ceil(this.size.z)
         console.log(this.meshs)
         return this.size 

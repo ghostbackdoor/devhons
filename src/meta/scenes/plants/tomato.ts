@@ -6,16 +6,17 @@ import { ProgressBar } from "../models/progressbar";
 import { FloatingName } from "../../common/floatingtxt";
 import { ITreeMotions } from "./treectrl";
 
-export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotions {
+export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
     get BoxPos() { return this.asset.GetBoxPos(this.meshs) }
     gauge = new ProgressBar(0.1, 0.1, 2)
     lv = 1
-    deadTree?: THREE.Group
-    fruit?: THREE.Group
 
-    constructor(asset: IAsset, private fruitAsset: IAsset, private deadtree: IAsset, private meshName: string) {
-        super(asset)
-        this.text = new FloatingName("나무를 심어주세요")
+    constructor(
+        private assets: IAsset[], 
+        private meshName: string
+    ) {
+        super(assets[0])
+        this.text = new FloatingName(this.meshName + "를 심어주세요")
         this.text.position.y = 7
     }
 
@@ -23,6 +24,11 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
     }
     SetLevel(lv: number): void {
         this.lv = lv
+        const target = lv - 1
+        for(let i = 0 ; i < this.assets.length; i++) {
+            if(i == target) this.meshs.children[i].visible = true
+            else this.meshs.children[i].visible = false
+        }
     }
     SetProgress(ratio: number): void {
         this.gauge.SetProgress(ratio)
@@ -39,11 +45,9 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
             }
         })
     }
-    NeedHavest(): void {
-       if(this.fruit) this.fruit.visible = true 
-    }
+    NeedHavest(): void { }
     Havest(): void {
-       if(this.fruit) this.fruit.visible = false 
+        this.SetLevel(1)
     }
     NeedWarter(): void {
         if (this.text != undefined) {
@@ -59,19 +63,19 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         })
     }
     async Death(): Promise<void> {
-        if (this.text != undefined) {
-            this.text.visible = true
-            this.text.SetText("나무가 죽었습니다.")
-        }
-        if (this.fruit) this.fruit.visible = false
-        this.meshs.children[0].visible = false
-        this.deadTree = await this.CreateDeadTree()
-        this.meshs.add(this.deadTree)
+        const target = this.lv - 1
+        this.meshs.children[target].traverse((child) => {
+            if('material' in child) {
+                const material = child.material as THREE.MeshStandardMaterial;
+                material.color = new THREE.Color("#008DDA")
+            }
+        })
     }
     Delete(): void { }
 
     SetOpacity(opacity: number) {
-        this.meshs.children[0].traverse(child => {
+        const target = this.lv - 1
+        this.meshs.children[target].traverse(child => {
             if('material' in child) {
                 const material = child.material as THREE.MeshStandardMaterial
                 material.transparent = true;
@@ -81,19 +85,11 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         })
     }
     Plant(): void {
-        this.meshs.children[0].traverse(child => {
-            if('material' in child) {
-                const material = child.material as THREE.MeshStandardMaterial
-                material.transparent = false;
-                material.depthWrite = true;
-                material.opacity = 1;
-            }
-        })
-        if (this.fruit) {
-            this.fruit.traverse(child => {
+        for (let i = 0; i < this.assets.length; i++) {
+            this.meshs.children[i].traverse(child => {
                 if ('material' in child) {
                     const material = child.material as THREE.MeshStandardMaterial
-                    material.transparent = false;
+                    material.transparent = true;
                     material.depthWrite = true;
                     material.opacity = 1;
                 }
@@ -131,18 +127,21 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
     async MassLoader(position: THREE.Vector3, id?: string) {
         this.meshs = new THREE.Group()
         if(id) {
-            const [_meshs, _exist] = await this.asset.UniqModel(this.meshName + id)
-            this.meshs.add(_meshs)
+            for (let i = 0; i < this.assets.length; i++) {
+                const a = this.assets[i]
+                const [meshs, _exist] = await a.UniqModel(this.meshName + i + "_" + id)
+                if (i) meshs.visible = false
+                this.meshs.add(meshs)
+            }
         } else {
-            this.meshs.add(await this.asset.CloneModel())
+            for (let i = 0; i < this.assets.length; i++) {
+                const a = this.assets[i]
+                const meshs = await a.CloneModel()
+                if (i) meshs.visible = false
+                this.meshs.add(meshs)
+            }
         }
-        this.fruit = await this.fruitAsset.CloneModel()
-        this.fruit.name = "fruit"
-        this.fruit.visible = false
-        this.fruit.position.set(0, 4, 2)
-
-        this.meshs.add(this.fruit)
-        this.meshs.position.set(position.x, position.y, position.z)
+        this.meshs.position.copy(position)
         this.meshs.castShadow = true
         this.meshs.receiveShadow = true
         this.meshs.traverse(child => {
@@ -155,9 +154,5 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
             }
         })
         this.meshs.visible = false
-    }
-    async CreateDeadTree() {
-        const mesh = await this.deadtree.CloneModel()
-        return mesh
     }
 }

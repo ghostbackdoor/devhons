@@ -67,4 +67,7 @@ export class EditPlant {
         plantCtrl.style.display = "none"
         this.visible = false
     }
+    htmlRelease() {
+        this.firstloading = false
+    }
 }
