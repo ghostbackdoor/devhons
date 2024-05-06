@@ -42,7 +42,6 @@ export class Potato0Fab extends AssetModel implements IAsset {
         this.size.x = Math.ceil(this.size.x) * 2
         this.size.y = 3
         this.size.z = Math.ceil(this.size.z) * 2
-        console.log(this.meshs)
         return this.size 
     }
 }
@@ -85,7 +84,6 @@ export class Potato1Fab extends AssetModel implements IAsset {
         this.size.x = Math.ceil(this.size.x)
         this.size.y = 3
         this.size.z = Math.ceil(this.size.z)
-        console.log(this.meshs)
         return this.size 
     }
 }
@@ -128,7 +126,6 @@ export class Potato2Fab extends AssetModel implements IAsset {
         this.size.x = Math.ceil(this.size.x)
         this.size.y = 3
         this.size.z = Math.ceil(this.size.z)
-        console.log(this.meshs)
         return this.size 
     }
 }

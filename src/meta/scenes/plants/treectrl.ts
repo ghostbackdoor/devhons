@@ -8,7 +8,8 @@ export interface ITreeMotions {
     SetLevel(lv: number): void
     SetOpacity(opacity: number): void
     Death(): Promise<void>
-    Delete(opt: number): void
+    Damage(opt: number): void
+    Delete():void
     Plant(): void
     Enough(): void
     NeedWarter(): void
@@ -26,10 +27,15 @@ export class TreeCtrl {
     phybox: PlantBox
     mySaveData?: PlantEntry
     health = 3
+    havest = 3
+    needHavest = false
     dom: HTMLDivElement
     msg: HTMLLabelElement
     progress: HTMLProgressElement
     get State() { return this.save.state }
+    get PlantType() { return this.property.type }
+    get NeedHavest() { return this.needHavest }
+    get Drop() { return this.property.drop }
 
     constructor(
         id: number, 
@@ -40,7 +46,6 @@ export class TreeCtrl {
     ) {
         this.position = tree.CannonPos
         const size = tree.Size
-        console.log(size)
         const geometry = new THREE.BoxGeometry(size.x / 2, size.y, size.z / 2)
         const material = new THREE.MeshBasicMaterial({ 
             //color: 0xD9AB61,
@@ -51,12 +56,33 @@ export class TreeCtrl {
         })
         this.phybox = new PlantBox(id, "farmtree", geometry, material, this)
         this.phybox.visible = false
-        this.phybox.position.copy(this.tree.CannonPos)
-        this.phybox.position.y += size.y / 2
+        this.phybox.position.copy(this.tree.BoxPos)
         this.CheckWartering()
         this.dom = document.getElementById("edit-progress-bar-container") as HTMLDivElement
         this.progress = document.getElementById("edit-progress-bar") as HTMLProgressElement
         this.msg = document.getElementById("job_label") as HTMLLabelElement
+    }
+    ReAlloc(pos: THREE.Vector3) {
+        this.tree.CannonPos.copy(pos)
+        this.phybox.position.copy(this.tree.BoxPos)
+    }
+    Release() {
+        this.lv = 1
+        this.timer = 0
+        this.checktime = 0
+        this.health = 3
+        this.havest = 3
+        this.needHavest = false
+        this.save.state = PlantState.NeedSeed
+        this.treeMotion.Delete()
+    }
+    AfterHavest() {
+        this.lv = 1
+        this.timer = 0
+        this.checktime = 0
+        this.health = 3
+        this.havest = 3
+        this.needHavest = false
     }
     SeedStart() {
         if (this.save.state != PlantState.NeedSeed) return
@@ -96,7 +122,6 @@ export class TreeCtrl {
         this.dom.style.display = "none"
     }
     Delete(damage: number): number {
-        console.log(this.health)
         if (!damage) {
             this.dom.style.display = "none"
         } else {
@@ -104,12 +129,32 @@ export class TreeCtrl {
             this.dom.style.display = "block"
             this.health -= damage
             this.progress.value = 1 - this.health / 3
-            this.treeMotion.Delete(this.health / 3)
+            this.treeMotion.Damage(this.health / 3)
+        }
+        if (this.health <= 0) {
+            this.Release()
+            return 0
         }
 
         return this.health
     }
+    HavestStart(damage: number) {
+        if (!damage) {
+            this.dom.style.display = "none"
+        } else {
+            this.msg.innerText = "수확합니다."
+            this.dom.style.display = "block"
+            this.havest -= damage
+            this.progress.value = 1 - this.havest / 3
+        }
+        if (this.havest <= 0) {
+            this.Havest()
+            return 0
+        }
+        return this.havest
+    }
     Havest() {
+        this.AfterHavest()
         this.save.lastHarvestTime = new Date().getTime() // ms, 0.001 sec
         this.treeMotion.Havest()
     }
@@ -143,8 +188,10 @@ export class TreeCtrl {
             this.treeMotion.SetLevel(this.lv)
             if(this.lv == this.property.maxLevel) {
                 this.treeMotion.NeedHavest()
+                this.needHavest = true
             }
         }
+        this.save.lv = this.lv
     }
 
     update(delta: number) {

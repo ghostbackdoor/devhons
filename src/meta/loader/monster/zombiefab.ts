@@ -63,7 +63,6 @@ export class ZombieFab extends AssetModel implements IAsset {
         this.size.x = Math.ceil(this.size.x)
         this.size.y *= 1.1
         this.size.z = Math.ceil(this.size.z)
-        console.log(this.meshs, this.size)
         return this.size 
     }
 }

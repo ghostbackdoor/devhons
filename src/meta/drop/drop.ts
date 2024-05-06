@@ -76,6 +76,18 @@ export class Drop implements IViewer {
     DropItem(pos: THREE.Vector3, drop: MonDrop[] | undefined) {
         this.dropPoint(pos, drop)
     }
+    DirectItem(drop: MonDrop[] | undefined) {
+        if (drop != undefined) {
+            const ticket = Math.random()
+            drop.forEach((item) => {
+                if (item.ratio > ticket) {
+                    const info = this.inventory.GetItemInfo(item.itemId)
+                    this.alarm.NotifyInfo(`${info.name}을 얻었습니다.`, AlarmType.Normal)
+                    this.inventory.NewItem(item.itemId)
+                }
+            })
+        }
+    }
 
     dropPoint(pos: THREE.Vector3, drop: MonDrop[] | undefined) {
         if (this.pointsGeometry == undefined) return

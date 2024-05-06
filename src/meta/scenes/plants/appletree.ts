@@ -9,6 +9,7 @@ import { ITreeMotions } from "./treectrl";
 export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotions {
     get BoxPos() { return this.asset.GetBoxPos(this.meshs) }
     gauge = new ProgressBar(0.1, 0.1, 2)
+    gaugeEnable = false
     lv = 1
     deadTree?: THREE.Group
     fruit?: THREE.Group
@@ -25,6 +26,10 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         this.lv = lv
     }
     SetProgress(ratio: number): void {
+        if (!this.gaugeEnable) {
+            this.CreateGauge()
+            this.gauge.visible = true
+        }
         this.gauge.SetProgress(ratio)
     }
     Enough(): void {
@@ -40,7 +45,17 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         })
     }
     NeedHavest(): void {
-       if(this.fruit) this.fruit.visible = true 
+       if(this.fruit) {
+           this.fruit.traverse(child => {
+               if ('material' in child) {
+                   const material = child.material as THREE.MeshStandardMaterial
+                   material.transparent = false;
+                   material.depthWrite = true;
+                   material.opacity = 1;
+               }
+           })
+        this.fruit.visible = true 
+       }
     }
     Havest(): void {
        if(this.fruit) this.fruit.visible = false 
@@ -68,7 +83,17 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
         this.deadTree = await this.CreateDeadTree()
         this.meshs.add(this.deadTree)
     }
-    Delete(): void { }
+    Damage(): void { }
+    Delete(): void {
+         this.meshs.children[0].traverse(child => {
+            if('material' in child) {
+                const material = child.material as THREE.MeshStandardMaterial
+                material.transparent = true;
+                material.depthWrite = true;
+                material.opacity = .3;
+            }
+        })
+    }
 
     SetOpacity(opacity: number) {
         this.meshs.children[0].traverse(child => {
@@ -104,7 +129,11 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
             this.text.SetText("물을 주세요")
         }
 
-        this.meshs.add(this.gauge)
+        this.CreateGauge()
+        this.gauge.SetProgress(0.01)
+    }
+    CreateGauge() {
+        this.gaugeEnable = true
         this.gauge.position.x += 1
         this.gauge.position.y = this.gauge.CenterPos.y
         this.gauge.position.z += 2
@@ -114,7 +143,7 @@ export class AppleTree extends GhostModel implements IPhysicsObject, ITreeMotion
                 material.color = new THREE.Color("#008DDA")
             }
         })
-        this.gauge.SetProgress(0.01)
+        this.meshs.add(this.gauge)
     }
 
     SetText(text: string) {

@@ -9,6 +9,7 @@ import { ITreeMotions } from "./treectrl";
 export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
     get BoxPos() { return this.asset.GetBoxPos(this.meshs) }
     gauge = new ProgressBar(0.1, 0.1, 2)
+    gaugeEnable = false
     lv = 1
 
     constructor(
@@ -16,7 +17,8 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
         private meshName: string
     ) {
         super(assets[0])
-        this.text = new FloatingName(this.meshName + "를 심어주세요")
+        this.text = new FloatingName("")
+        this.text.SetText(this.meshName + "를 심어주세요")
         this.text.position.y = 7
     }
 
@@ -31,6 +33,10 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
         }
     }
     SetProgress(ratio: number): void {
+        if(!this.gaugeEnable) {
+            this.CreateGauge()
+            this.gauge.visible = true
+        }
         this.gauge.SetProgress(ratio)
     }
     Enough(): void {
@@ -67,11 +73,23 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
         this.meshs.children[target].traverse((child) => {
             if('material' in child) {
                 const material = child.material as THREE.MeshStandardMaterial;
-                material.color = new THREE.Color("#008DDA")
+                material.color = new THREE.Color("#000000")
             }
         })
     }
-    Delete(): void { }
+    Damage(): void { }
+    Delete(): void {
+        for (let i = 0; i < this.assets.length; i++) {
+            this.meshs.children[i].traverse(child => {
+                if ('material' in child) {
+                    const material = child.material as THREE.MeshStandardMaterial
+                    material.transparent = true;
+                    material.depthWrite = false;
+                    material.opacity = .3;
+                }
+            })
+        }
+    }
 
     SetOpacity(opacity: number) {
         const target = this.lv - 1
@@ -100,7 +118,12 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
             this.text.SetText("물을 주세요")
         }
 
-        this.meshs.add(this.gauge)
+        if (!this.gaugeEnable) this.CreateGauge()
+        
+        this.gauge.SetProgress(0.01)
+    }
+    CreateGauge() {
+        this.gaugeEnable = true
         this.gauge.position.x += 1
         this.gauge.position.y = this.gauge.CenterPos.y
         this.gauge.position.z += 2
@@ -110,7 +133,7 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
                 material.color = new THREE.Color("#008DDA")
             }
         })
-        this.gauge.SetProgress(0.01)
+        this.meshs.add(this.gauge)
     }
 
     SetText(text: string) {

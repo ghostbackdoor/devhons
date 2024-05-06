@@ -261,6 +261,7 @@ export class EditHome extends Page {
                     console.log(inven)
                     this.inven.LoadInven(this.meta.store.LoadInventory(inven))
                     this.inven.loadSlot()
+                    if(this.inven.inven) this.meta.store.ChangeInventory(this.inven.inven.data)
                 })
             this.meta.ModeChange(AppMode.EditPlay)
             if (email == null) {

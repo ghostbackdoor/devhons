@@ -11,6 +11,7 @@ export class ItemId {
     public static Leather = "Leather"//Symbol("Leather")
     public static Logs = "Logs"//Symbol("Logs")
     public static Rocks = "Rocks"//Symbol("Rocks")
+
     public static ZombieDeck = "ZombieDeck"
     public static MinataurDeck = "MinataurDeck"
     public static BatPigDeck = "BatPigDeck"
@@ -26,6 +27,12 @@ export class ItemId {
     public static ToadMageDeck = "GolemDeck"
     public static VikingDeck = "VikingDeck"
     public static WereWolfDeck = "WerewolfDeck"
+
+    public static Apple = "Apple"
+    public static Coconut = "Coconut"
+    public static Tomato = "Tomato"
+    public static Potato = "Potato"
+    public static Carrot = "Carrot"
 }
 
 
@@ -132,6 +139,51 @@ export class ItemDb {
             binding: false,
             price: 1,
             deck: Deck.Zombie
+        })
+        this.itemDb.set(ItemId.Apple, {
+            id: ItemId.Apple,
+            type: ItemType.Farm,
+            name: "Apple",
+            icon: "Food/Apple.png",
+            stackable: true,
+            binding: false,
+            price: 1,
+        })
+        this.itemDb.set(ItemId.Coconut, {
+            id: ItemId.Coconut,
+            type: ItemType.Farm,
+            name: "Coconut",
+            icon: "Food/GreenApple.png",
+            stackable: true,
+            binding: false,
+            price: 1,
+        })
+        this.itemDb.set(ItemId.Tomato, {
+            id: ItemId.Tomato,
+            type: ItemType.Farm,
+            name: "Tomato",
+            icon: "Food/Wine2.png",
+            stackable: true,
+            binding: false,
+            price: 1,
+        })
+        this.itemDb.set(ItemId.Potato, {
+            id: ItemId.Potato,
+            type: ItemType.Farm,
+            name: "Potato",
+            icon: "Food/GreenApple.png",
+            stackable: true,
+            binding: false,
+            price: 1,
+        })
+        this.itemDb.set(ItemId.Carrot, {
+            id: ItemId.Carrot,
+            type: ItemType.Farm,
+            name: "Carrot",
+            icon: "Food/GreenApple.png",
+            stackable: true,
+            binding: false,
+            price: 1,
         })
     }
     GetItem(key: string): ItemProperty  {

@@ -22,6 +22,7 @@ export type MonsterSet = {
     monCtrl: IMonsterCtrl
     live: boolean
     respawn: boolean
+    deadtime: number
     initPos?: THREE.Vector3
 }
 export interface IMonsterCtrl {
@@ -114,68 +115,53 @@ export class Monsters {
     ReceiveDemage(z: MonsterSet, damage: number, effect?: EffectType) {
         if (z && !z.monCtrl.ReceiveDemage(damage, effect)) {
             z.live = false
+            z.deadtime = new Date().getTime()
             this.drop.DropItem(z.monModel.CenterPos, z.monCtrl.Drop)
             this.playerCtrl.remove(z.monCtrl.MonsterBox)
             this.respawntimeout = setTimeout(() => {
                 if(z.respawn) {
-                    this.Spawning(z.monCtrl.MonsterBox.MonId, z, z.initPos)
+                    this.Spawning(z.monCtrl.MonsterBox.MonId, z.respawn, z, z.initPos)
                 }
-            }, THREE.MathUtils.randInt(4000, 8000))
+            }, THREE.MathUtils.randInt(8000, 15000))
         }
     }
-    async InitMonster() {
-        let mon = this.monsters.get(MonsterId.Zombie)
-        if(!mon) {
+    async RandomDeckMonsters() {
+        console.log("Start Random Deck---------------")
+
+        this.RandomSpawning(MonsterId.Zombie, true)
+    }
+    RandomSpawning(monId: MonsterId, respawn: boolean) {
+        let mon = this.monsters.get(monId)
+        if (!mon) {
             mon = []
-            this.monsters.set(MonsterId.Zombie, mon)
+            this.monsters.set(monId, mon)
         }
-        const set = await this.createMon.Call(MonsterId.Zombie, mon.length)
-        mon.push(set)
-
-        setTimeout(() => {
-            set.monModel.Visible = true
-            this.playerCtrl.add(set.monCtrl.MonsterBox)
-            this.game.add(set.monModel.Meshs, set.monCtrl.MonsterBox)
-
-            this.keytimeout = setTimeout(() => {
-                this.RandomSpawning(MonsterId.Zombie)
-            }, 5000)
-        }, 5000)
-    }
-    RandomSpawning(monId: MonsterId) {
-        const mon = this.monsters.get(monId)
-        if(!mon) throw new Error("unexpected value");
         
         if(mon.length < 30) {
-            this.Spawning(monId)
+            this.Spawning(monId, respawn)
             this.keytimeout = setTimeout(() => {
-                this.RandomSpawning(monId)
+                this.RandomSpawning(monId, respawn)
             }, 5000)
         }
     }
-    async Resurrection(id: MonsterId, pos?: THREE.Vector3) {
+    async Resurrection(id: MonsterId) {
         let mon = this.monsters.get(id)
         if(!mon) {
             mon = []
             this.monsters.set(id, mon)
         }
-        const set = mon.find((e) => e.live == false)
-        if(set) return set
-
-        const newSet =  await this.createMon.Call(id, mon.length, pos)
-        mon.push(newSet)
-        return newSet
+        const now = new Date().getTime()
+        const set = mon.find((e) => e.live == false && now - e.deadtime > 5000)
+        return set
     }
     async CreateMonster(id: MonsterId, respawn: boolean, pos?: THREE.Vector3) {
-        const set = await this.Resurrection(id, pos)
-        set.respawn = respawn
-        set.monModel.Visible = true
-        set.initPos = pos
-        set.live = true
-        set.monCtrl.Respawning()
-
-        this.playerCtrl.add(set.monCtrl.MonsterBox)
-        this.game.add(set.monModel.Meshs, set.monCtrl.MonsterBox)
+        let set
+        if (!respawn) {
+            // respawn 이 트루면 죽을 때 타이머로 부활이 설정되어 있다.
+            set = await this.Resurrection(id)
+        }
+        console.log("Create", set, this.monsters.get(id))
+        this.Spawning(id, respawn, set, pos)
     }
     ReleaseMonster() {
         this.monsters.forEach((mon) => {
@@ -185,36 +171,44 @@ export class Monsters {
                 this.playerCtrl.remove(z.monCtrl.MonsterBox)
                 this.game.remove(z.monModel.Meshs, z.monCtrl.MonsterBox)
             })
+            console.log("Release", mon)
         })
         
         if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
         if (this.respawntimeout != undefined) clearTimeout(this.respawntimeout)
     }
 
-    async Spawning(monId: MonsterId, monSet?: MonsterSet, pos?: THREE.Vector3) {
+    async Spawning(monId: MonsterId, respawn:boolean, monSet?: MonsterSet, pos?: THREE.Vector3) {
         //const zSet = await this.CreateZombie()
-        const mon = this.monsters.get(monId)
-        if(!mon) throw new Error("unexpected value");
+        if (this.mode != AppMode.Play) return
+        let mon = this.monsters.get(monId)
+        if (!mon) {
+            mon = []
+            this.monsters.set(monId, mon)
+        }
 
         if (!monSet) {
             monSet = await this.createMon.Call(monId, mon.length)
-            mon.push(monSet)
         }
+        mon.push(monSet)
 
         if(!pos) {
             monSet.monModel.CannonPos.x = this.player.CannonPos.x + math.rand_int(-20, 20)
             monSet.monModel.CannonPos.z = this.player.CannonPos.z + math.rand_int(-20, 20)
         } else {
             monSet.monModel.CannonPos.copy(pos)
+            monSet.initPos = pos
         }
 
         while (this.gphysic.Check(monSet.monModel)) {
             monSet.monModel.CannonPos.y += 0.5
         }
+        monSet.respawn = respawn
         monSet.live = true
         monSet.monCtrl.Respawning()
 
         monSet.monModel.Visible = true
+        console.log("Spawning", monSet, mon)
 
         this.playerCtrl.add(monSet.monCtrl.MonsterBox)
         this.game.add(monSet.monModel.Meshs, monSet.monCtrl.MonsterBox)

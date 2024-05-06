@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { EventController, EventFlag } from '../../event/eventctrl'
 import { Joystick } from "./joystic";
-import { KeyAction1, KeyAction2, KeyDown, KeyLeft, KeyRight, KeySpace, KeyUp } from "../../event/keycommand";
+import { KeyAction1, KeyAction2, KeyAction3, KeyDown, KeyLeft, KeyRight, KeySpace, KeyUp } from "../../event/keycommand";
 import { AppMode } from "../../app";
 
 export class Input {
@@ -18,6 +18,7 @@ export class Input {
     jump = document.getElementById("joypad_button1") as HTMLDivElement
     action1 = document.getElementById("joypad_button2") as HTMLDivElement
     action2 = document.getElementById("joypad_button3") as HTMLDivElement
+    action3 = document.getElementById("joypad_button4") as HTMLDivElement
     currentEvent?: Touch
     clock = new THREE.Clock()
     startTime = this.clock.getElapsedTime().toFixed(2)
@@ -99,6 +100,9 @@ export class Input {
 
         this.action2.ontouchstart = () => { this.eventCtrl.OnKeyDownEvent(new KeyAction2) }
         this.action2.ontouchend = () => { this.eventCtrl.OnKeyUpEvent(new KeyAction2) }
+
+        this.action3.ontouchstart = () => { this.eventCtrl.OnKeyDownEvent(new KeyAction3) }
+        this.action3.ontouchend = () => { this.eventCtrl.OnKeyUpEvent(new KeyAction3) }
     }
     LegacyButtonShow() {
         const joypad = document.getElementById("joypad") as HTMLDivElement
@@ -126,6 +130,8 @@ export class Input {
                 switch(btn.id) {
                     case "joypad_button1": this.eventCtrl.OnKeyDownEvent(new KeySpace); break;
                     case "joypad_button2": this.eventCtrl.OnKeyDownEvent(new KeyAction1); break;
+                    case "joypad_button3": this.eventCtrl.OnKeyDownEvent(new KeyAction2); break;
+                    case "joypad_button4": this.eventCtrl.OnKeyDownEvent(new KeyAction3); break;
                     case "zone_joystick": this.joystick.start(e.clientX, e.clientY);break;
                 }
             }
@@ -146,6 +152,8 @@ export class Input {
                 switch(btn.id) {
                     case "joypad_button1": this.eventCtrl.OnKeyUpEvent(new KeySpace); break;
                     case "joypad_button2": this.eventCtrl.OnKeyUpEvent(new KeyAction1); break;
+                    case "joypad_button3": this.eventCtrl.OnKeyUpEvent(new KeyAction2); break;
+                    case "joypad_button4": this.eventCtrl.OnKeyUpEvent(new KeyAction3); break;
                     case "zone_joystick": this.joystick.end();break;
                 }
             }

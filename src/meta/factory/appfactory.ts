@@ -134,7 +134,7 @@ export class AppFactory {
         this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.brick, this.gphysics, this.drop, this.monDb)
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
-        this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.plantDb)
+        this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.drop, this.plantDb)
         this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.furnDb)
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.store)
 
@@ -171,7 +171,7 @@ export class AppFactory {
         const radius = this.worldSize / 2
         for (let i = 0; i < 30; i++) {
             const phi = Math.random() * Math.PI * 2
-            const r = THREE.MathUtils.randFloat(radius * 0.2, radius * 1.5)
+            const r = THREE.MathUtils.randFloat(radius * 0.4, radius * 1.5)
             pos.set(
                 r * Math.cos(phi),
                 math.rand_int(0, 1.5),

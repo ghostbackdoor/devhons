@@ -28,6 +28,7 @@ export class AttackState extends State implements IPlayerAction {
     }
     Init(): void {
         console.log("Attack!!")
+        this.attackProcess = false
         this.attackSpeed = this.spec.attackSpeed
         this.attackDamageMax = this.spec.AttackDamageMax
         this.attackDamageMin = this.spec.AttackDamageMin

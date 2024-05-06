@@ -41,7 +41,6 @@ export class AppleTreeFab extends AssetModel implements IAsset {
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
         this.size.z = Math.ceil(this.size.z)
-        console.log(this.meshs)
         return this.size 
     }
 }
@@ -83,7 +82,6 @@ export class CoconutTreeFab extends AssetModel implements IAsset {
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
         this.size.z = Math.ceil(this.size.z)
-        console.log(this.meshs)
         return this.size 
     }
 }

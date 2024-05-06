@@ -24,6 +24,7 @@ export enum AttackType {
 
     PlantAPlant,
     Wartering,
+    Havest,
 
     Building,
 
@@ -71,8 +72,8 @@ export class PlayerCtrl implements IGPhysic {
     JumpSt = new JumpState(this, this.player, this.gphysic)
     IdleSt = new IdleState(this, this.player, this.gphysic)
     DyingSt = new DeadState(this, this.player, this.gphysic)
-    PickFruitSt = new PickFruitState(this, this.player, this.gphysic)
-    PickFruitTreeSt = new PickFruitTreeState(this, this.player, this.gphysic)
+    PickFruitSt = new PickFruitState(this, this.player, this.gphysic, this.eventCtrl)
+    PickFruitTreeSt = new PickFruitTreeState(this, this.player, this.gphysic, this.eventCtrl)
     PlantASt = new PlantAPlantState(this, this.player, this.gphysic, this.eventCtrl)
     DeckSt = new DeckState(this, this.player, this.gphysic, this.eventCtrl)
     WarteringSt = new WarteringState(this, this.player, this.gphysic, this.invenFab, this.eventCtrl)

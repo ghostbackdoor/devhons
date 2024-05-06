@@ -53,6 +53,7 @@ export class GameCenter implements IViewer, IModelReload {
     saveData = this.store.Deck
     deckInfo: DeckInfo[] = []
     keytimeout?:NodeJS.Timeout
+    startTimeout?:NodeJS.Timeout
     deckEmpty = false
 
     constructor(
@@ -77,7 +78,7 @@ export class GameCenter implements IViewer, IModelReload {
                     this.invenFab.inven.Clear()
                     this.StartDeckParse()
                     //delayed start
-                    setTimeout(() => {
+                    this.startTimeout = setTimeout(() => {
                         this.createTimer()
                         this.timer = 0
                         this.playing = true
@@ -93,6 +94,7 @@ export class GameCenter implements IViewer, IModelReload {
                         this.opt?.OnSaveInven(invenFab.invenHouse.data)
                     }
                     if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
+                    if (this.startTimeout != undefined) clearTimeout(this.startTimeout)
                     break
             }
         })
@@ -127,6 +129,7 @@ export class GameCenter implements IViewer, IModelReload {
         this.opt = opt
     }
     StartDeckParse() {
+        console.log("start deck", this.saveData)
         this.saveData.forEach((e) => {
             if(!e.enable) return
             const deck = this.deckInfo.find((info) => info.id == e.id)
@@ -156,7 +159,7 @@ export class GameCenter implements IViewer, IModelReload {
         if(this.deckEmpty) return
         if(this.deckInfo.length == 0) {
             //todo: random deck execute
-            this.monster.InitMonster()
+            this.monster.RandomDeckMonsters()
             this.deckEmpty = true
             return
         }

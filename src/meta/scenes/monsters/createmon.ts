@@ -39,7 +39,9 @@ export class CreateMon {
 
         const zCtrl = new ZombieCtrl(id, this.player, zombie, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
             this.eventCtrl, this.monDb.GetItem(MonsterId.Zombie))
-        const monSet: MonsterSet =  { monModel: zombie, monCtrl: zCtrl, live: true, respawn: false}
+        const monSet: MonsterSet =  { 
+            monModel: zombie, monCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
+        }
         return monSet
     }
 }

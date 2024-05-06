@@ -54,6 +54,15 @@
         <div class="container p-2 me-1">
             <div class="row">
                 <div class="col pb-2 text-right" style="display: flex;justify-content: flex-end;">
+                    <div id="joypad_button4" class="joypad_button select-disable pt-2">
+                        <span style="font-size:xxx-large;opacity: 0.7;" class="material-symbols-outlined">
+                            change_history
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col pb-2 text-right" style="display: flex;justify-content: flex-end;">
                     <div id="joypad_button3" class="joypad_button select-disable pt-2">
                         <span style="font-size:xxx-large;opacity: 0.7;" class="material-symbols-outlined">
                             square
@@ -102,4 +111,8 @@
         <div id="alarm-msg-text"> 기다리는 중 입니다. </div>
     </div>
 
+    <div id="edit-progress-bar-container">
+        <label for="edit-progress-bar" id="job_label"></label>
+        <progress id="edit-progress-bar" value="0" max="1"></progress>
+    </div>
 </html>

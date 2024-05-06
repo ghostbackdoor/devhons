@@ -132,7 +132,7 @@ export class Carpenter implements IModelReload, IViewer {
                         z.furnCtrl.BuildingCancel()
                     }
                 } else if (opt.type == AttackType.Delete) {
-                    if (!z.furnCtrl.Delete(opt.damage)) this.DeleteFurn(obj.Id)
+                    if (z.furnCtrl.Delete(opt.damage) <= 0) this.DeleteFurn(obj.Id)
                 }
             })
         })
@@ -219,15 +219,15 @@ export class Carpenter implements IModelReload, IViewer {
     allocPos = 0
     AllocateFurnPool(property: FurnProperty, furnEntry: FurnEntry) {
         for (let i = 0; i < this.furnitures.length; i++, this.allocPos++) {
-            const e = this.furnitures[i]
+            this.allocPos %= this.furnitures.length
+            const e = this.furnitures[this.allocPos]
             if(e.id == property.id && e.used == false) {
                 e.used = true
                 e.furn.CannonPos.copy(furnEntry.position)
                 e.furn.Meshs.rotation.copy(furnEntry.rotation)
-                e.furnCtrl.phybox.position.copy(furnEntry.position)
+                e.furnCtrl.phybox.position.copy(e.furn.BoxPos)
                 return e
             }
-            this.allocPos %= this.furnitures.length
         }
     }
     ReleaseAllFurnPool() {

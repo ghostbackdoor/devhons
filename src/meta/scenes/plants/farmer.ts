@@ -17,6 +17,7 @@ import { TreeCtrl } from "./treectrl";
 import { AttackOption, AttackType, PlayerCtrl } from "../player/playerctrl";
 import { Alarm, AlarmType } from "../../common/alarm";
 import { Tomato } from "./tomato";
+import { Drop } from "../../drop/drop";
 
 export enum PlantState {
     NeedSeed,
@@ -72,6 +73,7 @@ export class Farmer implements IModelReload, IViewer {
         canvas: Canvas,
         private eventCtrl: EventController,
         private alarm: Alarm,
+        private drop: Drop,
         private plantDb: PlantDb,
     ){
         canvas.RegisterViewer(this)
@@ -93,7 +95,6 @@ export class Farmer implements IModelReload, IViewer {
 
                     this.eventCtrl.OnChangeCtrlObjEvent(this.target)
                     this.CheckCollision()
-                    console.log(id)
                     break
                 case EventFlag.End:
                     this.controllable = false
@@ -147,8 +148,10 @@ export class Farmer implements IModelReload, IViewer {
                     } else {
                         z.plantCtrl.WarteringCancel()
                     }
+                } else if(opt.type == AttackType.Havest) {
+                    if (z.plantCtrl.HavestStart(opt.damage) <= 0) this.HavestPlant(obj.Id)
                 } else if(opt.type == AttackType.Delete) {
-                    if (!z.plantCtrl.Delete(opt.damage)) this.DeletePlant(obj.Id)
+                    if (z.plantCtrl.Delete(opt.damage) <= 0) this.DeletePlant(obj.Id)
                 }
             })
         })
@@ -174,7 +177,7 @@ export class Farmer implements IModelReload, IViewer {
     CheckPlantAPlant() {
         const obj = this.target
         if(!obj) return true
-        let ret = this.plantset.some((e) => {
+        let ret = this.plantset.filter(e => e.used == true).some((e) => {
             return e.plant.Box.intersectsBox(obj.Box)
         })
         if(ret) {
@@ -186,6 +189,10 @@ export class Farmer implements IModelReload, IViewer {
             return true
         } 
         return false
+    }
+    HavestPlant(id: number) {
+        const plantset = this.plantset[id];
+        this.drop.DirectItem(plantset.plantCtrl.Drop)
     }
     DeletePlant(id: number) {
         const plantset = this.plantset[id];
@@ -237,14 +244,13 @@ export class Farmer implements IModelReload, IViewer {
     allocPos = 0
     AllocatePlantPool(property: PlantProperty, pos: THREE.Vector3) {
         for (let i = 0; i < this.plantset.length; i++, this.allocPos++) {
-            const e = this.plantset[i]
-            if(e.plantId == property.plantId && e.used == false) {
+            this.allocPos %= this.plantset.length
+            const e = this.plantset[this.allocPos]
+            if (e.plantId == property.plantId && e.used == false) {
                 e.used = true
-                e.plant.CannonPos.copy(pos)
-                e.plantCtrl.phybox.position.copy(pos)
+                e.plantCtrl.ReAlloc(pos)
                 return e
             }
-            this.allocPos %= this.plantset.length
         }
     }
     ReleaseAllPlantPool() {

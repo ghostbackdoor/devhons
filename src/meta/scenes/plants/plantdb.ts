@@ -1,3 +1,4 @@
+import { ItemId } from "../../inventory/items/itemdb"
 import { Char } from "../../loader/assetmodel"
 import { MonDrop } from "../monsters/monsterdb"
 
@@ -44,6 +45,9 @@ export class PlantDb {
             maxLevel: 2,
             levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
+            drop: [
+                { itemId: ItemId.Apple, ratio: 1 }
+            ],
         })
         this.plantDb.set(PlantId.CoconutTree, {
             plantId: PlantId.CoconutTree,
@@ -54,6 +58,9 @@ export class PlantDb {
             maxLevel: 2,
             levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
+            drop: [
+                { itemId: ItemId.Coconut, ratio: 1 }
+            ],
         })
         this.plantDb.set(PlantId.Tomato, {
             plantId: PlantId.Tomato,
@@ -64,6 +71,9 @@ export class PlantDb {
             maxLevel: 3,
             levelUpTime: 1000 * 10, //* 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
+            drop: [
+                { itemId: ItemId.Tomato, ratio: 1 }
+            ],
         })
         this.plantDb.set(PlantId.Potato, {
             plantId: PlantId.Potato,
@@ -74,6 +84,9 @@ export class PlantDb {
             maxLevel: 3,
             levelUpTime: 1000 * 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
+            drop: [
+                { itemId: ItemId.Potato, ratio: 1 }
+            ],
         })
         this.plantDb.set(PlantId.Carrot, {
             plantId: PlantId.Carrot,
@@ -84,6 +97,9 @@ export class PlantDb {
             maxLevel: 3,
             levelUpTime: 1000 * 60 * 60 * 24, // a day
             warteringTime: 1000 * 60 * 60, // an hour
+            drop: [
+                { itemId: ItemId.Carrot, ratio: 1 }
+            ],
         })
     }
     get(id: string) {
