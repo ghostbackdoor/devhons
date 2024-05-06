@@ -136,7 +136,7 @@ export class BedFab extends AssetModel implements IAsset {
         if (this.size) return this.size
         const bbox = new THREE.Box3().setFromObject(mesh)
         this.size = bbox.getSize(new THREE.Vector3)
-        this.size.x = Math.ceil(this.size.x) - 1.5
+        this.size.x = 4//Math.ceil(this.size.x) - 1.5
         this.size.y = Math.ceil(this.size.y)
         this.size.z = Math.ceil(this.size.z)
         console.log(this.meshs, this.size)

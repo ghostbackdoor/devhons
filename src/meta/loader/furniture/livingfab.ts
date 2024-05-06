@@ -115,6 +115,7 @@ export class BookShelfFab extends AssetModel implements IAsset {
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
             this.meshs.children[0].scale.set(scale, scale, scale)
+            this.meshs.children[0].position.z = -.5
         })
     }
     
