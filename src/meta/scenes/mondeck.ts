@@ -11,11 +11,11 @@ import { Deck, DeckId, DeckType } from "../inventory/items/deck";
 import { Effector } from "../effects/effector";
 import { IKeyCommand, KeyType } from "../event/keycommand";
 import { Zombie } from "./monsters/zombie/zombie";
-import { Char } from "../loader/assetmodel";
 import { IPhysicsObject } from "./models/iobject";
 import { CircleEffect } from "./models/circle";
 import { IModelReload, ModelStore } from "../common/modelstore";
 import { MonsterId } from "./monsters/monsterid";
+import { MonsterDb } from "./monsters/monsterdb";
 
 export type DeckMsg = {
     id: DeckId,
@@ -73,6 +73,7 @@ export class MonDeck implements IModelReload, IViewer {
         private player: Player,
         private playerCtrl: PlayerCtrl,
         canvas: Canvas,
+        private monDb: MonsterDb,
         private store: ModelStore,
     ) {
         canvas.RegisterViewer(this)
@@ -224,17 +225,13 @@ export class MonDeck implements IModelReload, IViewer {
         })
     }
     async NewDeckEntryPool(deck: DeckType, pos: THREE.Vector3): Promise<DeckSet> {
-        let mon: IPhysicsObject
-        switch (deck.monId) {
-            case MonsterId.Zombie:
-            default:
-                const zombie = new Zombie(this.loader.ZombieAsset)
-                await zombie.Loader(this.loader.GetAssets(Char.Zombie),
-                    pos, "ZombieDeck", this.deckSet.length)
-                mon = zombie
-                mon.Visible = true
-                break;
-        }
+        const property = this.monDb.GetItem(deck.monId)
+        const asset = this.loader.GetAssets(property.model)
+        const mon = new Zombie(asset, property.id)
+        const name = (deck.monId as string) + "Deck"
+        await mon.Loader(pos, name, this.deckSet.length)
+        mon.Visible = true
+
         const geometry = new THREE.BoxGeometry(mon.Size.x * 4, mon.Size.y, mon.Size.z * 3)
         const box = new DeckBox(this.deckSet.length, "deck", geometry, this.material)
         const eff = this.torus.clone()

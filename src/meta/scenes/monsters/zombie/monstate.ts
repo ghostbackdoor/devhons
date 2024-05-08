@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GPhysics } from "../../../common/physics/gphysics"
 import { ActionType } from "../../player/player"
 import { Zombie } from "./zombie"
-import { ZombieCtrl } from "./zombiectrl";
+import { MonsterCtrl } from "./monctrl";
 import { IPlayerAction } from "../monsters";
 import { EventController } from "../../../event/eventctrl";
 import { AttackType } from "../../player/playerctrl";
@@ -11,7 +11,7 @@ import { MonsterProperty } from "../monsterdb";
 class State {
     attackDist = 3
     constructor(
-        protected zCtrl: ZombieCtrl,
+        protected zCtrl: MonsterCtrl,
         protected zombie: Zombie,
         protected gphysic: GPhysics
     ) { }
@@ -42,7 +42,7 @@ export class JumpZState implements IPlayerAction {
     MX = new THREE.Matrix4()
     QT = new THREE.Quaternion()
 
-    constructor(private ctrl: ZombieCtrl, private zombie: Zombie, private gphysic: GPhysics) { }
+    constructor(private ctrl: MonsterCtrl, private zombie: Zombie, private gphysic: GPhysics) { }
     Init(): void {
         console.log("Jump Init!!")
         this.velocity_y = 16
@@ -93,7 +93,7 @@ export class AttackZState extends State implements IPlayerAction {
     attackDamageMax = this.property.damageMax
     attackDamageMin = this.property.damageMin
 
-    constructor(zCtrl: ZombieCtrl, zombie: Zombie, gphysic: GPhysics,
+    constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics,
         private eventCtrl: EventController, private property: MonsterProperty
     ) {
         super(zCtrl, zombie, gphysic)
@@ -136,7 +136,7 @@ export class AttackZState extends State implements IPlayerAction {
 }
 
 export class IdleZState extends State implements IPlayerAction {
-    constructor(zCtrl: ZombieCtrl, zombie: Zombie, gphysic: GPhysics) {
+    constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics) {
         super(zCtrl, zombie, gphysic)
         this.Init()
     }
@@ -154,7 +154,7 @@ export class IdleZState extends State implements IPlayerAction {
     }
 }
 export class DyingZState extends State implements IPlayerAction {
-    constructor(zCtrl: ZombieCtrl, zombie: Zombie, gphysic: GPhysics, private eventCtrl: EventController) {
+    constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics, private eventCtrl: EventController) {
         super(zCtrl, zombie, gphysic)
     }
     Init(): void {
@@ -174,7 +174,7 @@ export class DyingZState extends State implements IPlayerAction {
 }
 export class RunZState extends State implements IPlayerAction {
     speed = this.property.speed
-    constructor(zCtrl: ZombieCtrl, zombie: Zombie, gphysic: GPhysics, private property: MonsterProperty) {
+    constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics, private property: MonsterProperty) {
         super(zCtrl, zombie, gphysic)
     }
     Init(): void {

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPhysics, IGPhysic } from "../../../common/physics/gphysics"
 import { Zombie } from "./zombie"
-import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./zombiestate"
+import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./monstate"
 import { IPhysicsObject } from "../../models/iobject";
 import { Legos } from "../../bricks/legos";
 import { EventBricks } from "../../bricks/eventbricks";
@@ -10,11 +10,10 @@ import { EventController } from "../../../event/eventctrl";
 import { MonsterProperty } from "../monsterdb";
 import { EffectType } from "../../../effects/effector";
 import { NonLegos } from "../../bricks/nonlegos";
-import { MonsterId } from "../monsterid";
 
 
 
-export class ZombieCtrl implements IGPhysic, IMonsterCtrl {
+export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
     IdleSt = new IdleZState(this, this.zombie, this.gphysic)
     AttackSt = new AttackZState(this, this.zombie, this.gphysic, this.eventCtrl, this.property)
     RunSt = new RunZState(this, this.zombie, this.gphysic, this.property)
@@ -43,16 +42,15 @@ export class ZombieCtrl implements IGPhysic, IMonsterCtrl {
     ) {
         gphysic.Register(this)
         const size = zombie.Size
-        const geometry = new THREE.BoxGeometry(size.x * 4, size.y, size.z * 3)
+        const geometry = new THREE.BoxGeometry(size.x * 2, size.y, size.z)
         const material = new THREE.MeshBasicMaterial({ 
-            //color: 0xD9AB61,
-            //transparent: true,
-            //opacity: .5,
+            transparent: true,
+            opacity: .5,
             color: 0xff0000,
             depthWrite: false,
         })
-        this.phybox = new MonsterBox(id, "Zombie", MonsterId.Zombie, geometry, material)
-        this.phybox.visible = false
+        this.phybox = new MonsterBox(id, "mon", property.id, geometry, material)
+        //this.phybox.visible = false
         this.phybox.position.copy(this.zombie.CannonPos)
     }
     Respawning() {

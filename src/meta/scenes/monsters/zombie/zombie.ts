@@ -5,6 +5,7 @@ import { Ani, IAsset } from "../../../loader/assetmodel";
 import { IPhysicsObject } from "../../models/iobject";
 import { ActionType } from "../../player/player";
 import { EffectType, Effector } from "../../../effects/effector";
+import { MonsterId } from "../monsterid";
 
 export class Zombie extends GhostModel implements IPhysicsObject {
     mixer?: THREE.AnimationMixer
@@ -28,10 +29,11 @@ export class Zombie extends GhostModel implements IPhysicsObject {
     get ControllerEnable(): boolean { return this.controllerEnable }
 
     constructor(
-        asset: IAsset
+        asset: IAsset,
+        private monId: MonsterId
     ) {
         super(asset)
-        this.text = new FloatingName("Zombie")
+        this.text = new FloatingName(this.monId.toString())
         this.effector.Enable(EffectType.Damage, 0, 1, 0)
         this.effector.Enable(EffectType.Status)
     }
@@ -42,10 +44,8 @@ export class Zombie extends GhostModel implements IPhysicsObject {
         this.text.position.y = 3.5
     }
 
-    async Loader(asset: IAsset, position: THREE.Vector3, text: string, id: number) {
-        this.asset = asset
-
-        const [meshs, _exist] = await asset.UniqModel(text + id)
+    async Loader(position: THREE.Vector3, text: string, id: number) {
+        const [meshs, _exist] = await this.asset.UniqModel(text + id)
         
         this.meshs = meshs
 

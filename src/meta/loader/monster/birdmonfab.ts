@@ -20,7 +20,7 @@ export class BirdMonFab extends AssetModel implements IAsset {
             })
             const scale = 1
             this.meshs.scale.set(scale, scale, scale)
-            this.meshs.rotateY(Math.PI)
+            this.meshs.children[0].rotateY(Math.PI)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(gltf.animations)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "idle"))

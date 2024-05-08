@@ -7,14 +7,12 @@ import { Legos } from "../bricks/legos"
 import { EventBricks } from "../bricks/eventbricks"
 import { GPhysics } from "../../common/physics/gphysics"
 import { Zombie } from "./zombie/zombie"
-import { ZombieCtrl } from "./zombie/zombiectrl"
+import { MonsterCtrl } from "./zombie/monctrl"
 import { MonsterDb } from "./monsterdb"
-import { Char } from "../../loader/assetmodel";
 import { MonsterId } from "./monsterid";
 import { NonLegos } from "../bricks/nonlegos";
 
 export class CreateMon {
-    monsterMap = new Map<MonsterId, Function>()
     constructor(
         private loader: Loader,
         private eventCtrl: EventController,
@@ -25,22 +23,18 @@ export class CreateMon {
         private gphysic: GPhysics,
         private monDb: MonsterDb,
     ) {
-        this.monsterMap.set(MonsterId.Zombie, async (id: number, pos?: THREE.Vector3) => await this.CreateZombie(id, pos))
     }
     async Call(monId: MonsterId, id: number, pos?: THREE.Vector3): Promise<MonsterSet> {
-        const func = this.monsterMap.get(monId)
-        return (func) ? await func(id, pos) : undefined
-    }
-    async CreateZombie(id: number, pos?: THREE.Vector3): Promise<MonsterSet> {
         if(!pos) pos = new THREE.Vector3(10, 0, 15)
-        const zombie = new Zombie(this.loader.ZombieAsset)
-        await zombie.Loader(this.loader.GetAssets(Char.Zombie),
-                pos, "Zombie", id)
+        const property = this.monDb.GetItem(monId)
+        const asset = this.loader.GetAssets(property.model)
+        const monster = new Zombie(asset, monId)
+        await monster.Loader(pos, monId as string, id)
 
-        const zCtrl = new ZombieCtrl(id, this.player, zombie, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
-            this.eventCtrl, this.monDb.GetItem(MonsterId.Zombie))
+        const zCtrl = new MonsterCtrl(id, this.player, monster, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
+            this.eventCtrl, property)
         const monSet: MonsterSet =  { 
-            monModel: zombie, monCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
+            monModel: monster, monCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
         }
         return monSet
     }

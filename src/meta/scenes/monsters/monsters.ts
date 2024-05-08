@@ -16,6 +16,7 @@ import { IPhysicsObject } from "../models/iobject";
 import { CreateMon } from "./createmon";
 import { MonsterId } from "./monsterid";
 import { NonLegos } from "../bricks/nonlegos";
+import { DeckType } from "../../inventory/items/deck";
 
 export type MonsterSet = {
     monModel: IPhysicsObject,
@@ -78,7 +79,7 @@ export class Monsters {
                     break
             }
         })
-        eventCtrl.RegisterAttackEvent("Zombie", (opts: AttackOption[]) => {
+        eventCtrl.RegisterAttackEvent("mon", (opts: AttackOption[]) => {
             if(this.mode != AppMode.Play) return
             opts.forEach((opt) => {
                 let obj = opt.obj as MonsterBox
@@ -125,22 +126,22 @@ export class Monsters {
             }, THREE.MathUtils.randInt(8000, 15000))
         }
     }
-    async RandomDeckMonsters() {
+    async RandomDeckMonsters(deck: DeckType) {
         console.log("Start Random Deck---------------")
 
-        this.RandomSpawning(MonsterId.Zombie, true)
+        this.RandomSpawning(deck)
     }
-    RandomSpawning(monId: MonsterId, respawn: boolean) {
-        let mon = this.monsters.get(monId)
+    RandomSpawning(deck: DeckType) {
+        let mon = this.monsters.get(deck.monId)
         if (!mon) {
             mon = []
-            this.monsters.set(monId, mon)
+            this.monsters.set(deck.monId, mon)
         }
         
-        if(mon.length < 30) {
-            this.Spawning(monId, respawn)
+        if(mon.length < deck.maxSpawn) {
+            this.Spawning(deck.monId, true)
             this.keytimeout = setTimeout(() => {
-                this.RandomSpawning(monId, respawn)
+                this.RandomSpawning(deck)
             }, 5000)
         }
     }

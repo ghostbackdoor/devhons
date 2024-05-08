@@ -97,7 +97,7 @@ export class EditGame {
             <div class="col p-2"><b>${deck.title}</b></div>
         </div>
         <div class="row">
-            <div class="col text-start rounded border bg-white p-1 m-2" style="all:initial">
+            <div class="col text-start rounded border bg-white p-1 m-2 w-100" style="all:initial">
                 <p class="text-start">${deck.contents}</p>
                 <p class="text-start m-0">
                     Level: ${deck.maxLv} <br>

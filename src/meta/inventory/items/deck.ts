@@ -7,7 +7,29 @@ import { MonsterId } from "../../scenes/monsters/monsterid"
 - 일꾼으로 활용가능하다.
 - Player에게 debuff를 한다. 
 */
-export type DeckId = string
+export class DeckId {
+    public static Zombie ="ZombieDeck"
+    public static Minotaur = "MinataurDeck"
+    public static Batpig = "BatpigDeck"
+    public static Bilby = "BilbyDeck"
+    public static Birdmon = "BirdmonDeck"
+    public static Crab = "CrabDeck"
+    public static Builder = "BuilderDeck"
+    public static Golem = "GolemDeck"
+    public static BigGolem = "BiggolemDeck"
+    public static KittenMonk = "KittenmonkDeck"
+    public static Skeleton = "SkeletonDeck"
+    public static Snake = "SnakeDeck"
+    public static ToadMage = "ToadmageDeck"
+    public static Viking = "VikingDeck"
+    public static WereWolf = "WerewolfDeck"
+
+    public static List = [
+        this.Zombie, this.Minotaur, this.Batpig, this.Bilby, this.Birdmon,
+        this.Crab, this.Builder, this.Golem, this.BigGolem, this.KittenMonk,
+        this.Skeleton, this.Snake, this.ToadMage, this.Viking, this.WereWolf
+    ]
+}
 
 export type DeckType = {
     id: DeckId
@@ -18,13 +40,13 @@ export type DeckType = {
     maxTime: number // 소환 가능한 최대 시간
     maxSpawn: number // 소환 가능한 몬스터 수
     uniq: boolean
-    monId: symbol
+    monId: MonsterId
 }
 
 export class Deck {
     static DeckDb = new Map<DeckId, DeckType>()
     static Zombie: DeckType = {
-        id: "zombie_deck",
+        id: DeckId.Zombie,
         title: "전염된 좀비들",
         contents:` 이 카드는 최대 30마리의 좀비를 소환할 수 있습니다.`,
         maxLv: 5,
@@ -35,7 +57,7 @@ export class Deck {
         monId: MonsterId.Zombie,
     }
     static Minotaur: DeckType = {
-        id: "minotaur_deck",
+        id: DeckId.Minotaur,
         title: "미노타우르스의 자식들",
         contents:`이 카드는 최대 10마리의 미노타우르스의 자식을 소환할 수 있습니다.`,
         maxLv: 5,
@@ -46,7 +68,7 @@ export class Deck {
         monId: MonsterId.Minotaur,
     }
     static BatPig: DeckType = {
-        id: "batpig_deck",
+        id: DeckId.Batpig,
         title: "이상한 박쥐",
         contents:`높은 곳도 추적할 수 있습니다.
         이 카드는 최대 30마리를 소환할 수 있습니다.`,
@@ -57,8 +79,9 @@ export class Deck {
         uniq: false,
         monId: MonsterId.Batpig,
     }
+    
     static BirdMon: DeckType = {
-        id: "birdmon_deck",
+        id: DeckId.Birdmon,
         title: "탈출한 타조",
         contents:`탈출에 5분의 시간이 필요합니다. 5분 이후 사용가능합니다.
         이 카드는 최대 3마리를 소환할 수 있습니다.`,
@@ -70,7 +93,7 @@ export class Deck {
         monId: MonsterId.Birdmon,
     }
     static Crap: DeckType = {
-        id: "crap_deck",
+        id: DeckId.Crab,
         title: "영혼의 게",
         contents:`맛있는 요리에 필요한 재료를 얻을 수 있습니다.
         이 카드는 최대 10마리를 소환할 수 있습니다.`,
@@ -82,7 +105,7 @@ export class Deck {
         monId: MonsterId.Crab,
     }
     static Builder: DeckType = {
-        id: "builder_deck",
+        id: DeckId.Builder,
         title: "노동자",
         contents:`
         이 카드는 한번만 사용할 수 있습니다.`,
@@ -94,7 +117,7 @@ export class Deck {
         monId: MonsterId.Builder,
     }
     static Golem: DeckType = {
-        id: "golem_deck",
+        id: DeckId.Golem,
         title: "골렘",
         contents:`뛰어난 방어력으로 주변 데미지를 흡수합니다.
         `,
@@ -106,7 +129,7 @@ export class Deck {
         monId: MonsterId.Golem,
     }
     static BigGolem: DeckType = {
-        id: "biggolem_deck",
+        id: DeckId.BigGolem,
         title: "골렘의왕",
         contents:`소환된 모든 카드에 뛰어난 방어력을 선사합니다.
         `,
@@ -118,7 +141,7 @@ export class Deck {
         monId: MonsterId.BigGolem,
     }
     static KittenMonk: DeckType = {
-        id: "kittenmonk_deck",
+        id: DeckId.KittenMonk,
         title: "고양이전사",
         contents:`너무 귀여워 이동속도를 느리게 만듭니다.
         `,
@@ -130,7 +153,7 @@ export class Deck {
         monId: MonsterId.KittenMonk,
     }
     static Skeleton: DeckType = {
-        id: "skeleton_deck",
+        id: DeckId.Skeleton,
         title: "말단 해골전사",
         contents:`죽지 않고 끊임없이 부활합니다.
         `,
@@ -142,7 +165,7 @@ export class Deck {
         monId: MonsterId.Skeleton,
     }
     static Snake: DeckType = {
-        id: "snake_deck",
+        id: DeckId.Snake,
         title: "뱀의 왕",
         contents:`플레이어의 체력을 지속적으로 감소 시킵니다.
         `,
@@ -154,7 +177,7 @@ export class Deck {
         monId: MonsterId.Snake,
     }
     static ToadMage: DeckType = {
-        id: "toadmage_deck",
+        id: DeckId.ToadMage,
         title: "개구리전사",
         contents:`
         `,
@@ -166,7 +189,7 @@ export class Deck {
         monId: MonsterId.ToadMage,
     }
     static Viking: DeckType = {
-        id: "viking_deck",
+        id: DeckId.Viking,
         title: "바이킹전사",
         contents:`
         `,
@@ -178,7 +201,7 @@ export class Deck {
         monId: MonsterId.Viking,
     }
     static WereWolf: DeckType = {
-        id: "werewolf_deck",
+        id: DeckId.WereWolf,
         title: "늑대인간",
         contents:`빠르고 강력합니다.
         `,

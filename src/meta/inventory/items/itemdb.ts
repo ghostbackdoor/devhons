@@ -140,6 +140,126 @@ export class ItemDb {
             price: 1,
             deck: Deck.Zombie
         })
+        this.itemDb.set(ItemId.MinataurDeck, {
+            id: ItemId.MinataurDeck,
+            type: ItemType.Deck,
+            name: "Minataur Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Minotaur
+        })
+        this.itemDb.set(ItemId.BatPigDeck, {
+            id: ItemId.BatPigDeck,
+            type: ItemType.Deck,
+            name: "BatPig Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.BatPig
+        })
+        this.itemDb.set(ItemId.CrabDeck, {
+            id: ItemId.CrabDeck,
+            type: ItemType.Deck,
+            name: "Crab Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Crap
+        })
+        this.itemDb.set(ItemId.BuilderDeck, {
+            id: ItemId.BuilderDeck,
+            type: ItemType.Deck,
+            name: "Builder Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Builder
+        })
+        this.itemDb.set(ItemId.GolemDeck, {
+            id: ItemId.GolemDeck,
+            type: ItemType.Deck,
+            name: "Golem Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Golem
+        })
+        this.itemDb.set(ItemId.BigGolemDeck, {
+            id: ItemId.BigGolemDeck,
+            type: ItemType.Deck,
+            name: "BigGolem Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.BigGolem
+        })
+        this.itemDb.set(ItemId.KittenMonkDeck, {
+            id: ItemId.KittenMonkDeck,
+            type: ItemType.Deck,
+            name: "KittenMonk Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.KittenMonk
+        })
+        this.itemDb.set(ItemId.SkeletonDeck, {
+            id: ItemId.SkeletonDeck,
+            type: ItemType.Deck,
+            name: "Skeleton Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Skeleton
+        })
+        this.itemDb.set(ItemId.SnakeDeck, {
+            id: ItemId.SnakeDeck,
+            type: ItemType.Deck,
+            name: "Snake Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Snake
+        })
+        this.itemDb.set(ItemId.ToadMageDeck, {
+            id: ItemId.ToadMageDeck,
+            type: ItemType.Deck,
+            name: "ToadMage Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.ToadMage
+        })
+        this.itemDb.set(ItemId.VikingDeck, {
+            id: ItemId.VikingDeck,
+            type: ItemType.Deck,
+            name: "Viking Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.Viking
+        })
+        this.itemDb.set(ItemId.WereWolfDeck, {
+            id: ItemId.WereWolfDeck,
+            type: ItemType.Deck,
+            name: "WereWolf Deck",
+            icon: "Misc/Book.png",
+            stackable: false,
+            binding: false,
+            price: 1,
+            deck: Deck.WereWolf
+        })
         this.itemDb.set(ItemId.Apple, {
             id: ItemId.Apple,
             type: ItemType.Farm,

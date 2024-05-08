@@ -69,6 +69,10 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
         })
     }
     async Death(): Promise<void> {
+        if (this.text != undefined) {
+            this.text.visible = true
+            this.text.SetText("식물이 죽었습니다.")
+        }
         const target = this.lv - 1
         this.meshs.children[target].traverse((child) => {
             if('material' in child) {
@@ -145,6 +149,7 @@ export class Tomato extends GhostModel implements IPhysicsObject, ITreeMotions {
             this.text.position.y = 7
             this.meshs.add(this.text)
         }
+        this.SetLevel(this.lv)
     }
 
     async MassLoader(position: THREE.Vector3, id?: string) {

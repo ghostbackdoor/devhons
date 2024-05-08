@@ -137,7 +137,7 @@ export class GameCenter implements IViewer, IModelReload {
                 deck.position.push(e.position)
             } else {
                 const deck = Deck.DeckDb.get(e.id)
-                if(!deck) throw new Error("unexpected data");
+                if(!deck) return ;//throw new Error("unexpected data");
                 
                 this.deckInfo.push({
                     id: e.id,
@@ -159,7 +159,9 @@ export class GameCenter implements IViewer, IModelReload {
         if(this.deckEmpty) return
         if(this.deckInfo.length == 0) {
             //todo: random deck execute
-            this.monster.RandomDeckMonsters()
+            const r = THREE.MathUtils.randInt(0, DeckId.List.length - 1)
+            const rDeck = Deck.DeckDb.get(DeckId.List[r])
+            this.monster.RandomDeckMonsters(rDeck ?? Deck.Zombie)
             this.deckEmpty = true
             return
         }
