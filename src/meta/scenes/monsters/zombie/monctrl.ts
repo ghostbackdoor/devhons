@@ -44,10 +44,8 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
         const size = zombie.Size
         const geometry = new THREE.BoxGeometry(size.x * 2, size.y, size.z)
         const material = new THREE.MeshBasicMaterial({ 
-            transparent: true,
-            opacity: .5,
             color: 0xff0000,
-            depthWrite: false,
+            wireframe: true
         })
         this.phybox = new MonsterBox(id, "mon", property.id, geometry, material)
         //this.phybox.visible = false
@@ -55,6 +53,7 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
     }
     Respawning() {
         this.health = 10
+        this.zombie.SetOpacity(1)
         this.currentState = this.IdleSt
         this.currentState.Init()
     }

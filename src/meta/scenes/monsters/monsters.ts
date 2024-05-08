@@ -117,7 +117,10 @@ export class Monsters {
         if (z && !z.monCtrl.ReceiveDemage(damage, effect)) {
             z.live = false
             z.deadtime = new Date().getTime()
-            this.drop.DropItem(z.monModel.CenterPos, z.monCtrl.Drop)
+            this.drop.DropItem(
+                new THREE.Vector3(z.monModel.CannonPos.x, this.player.CenterPos.y, z.monModel.CannonPos.z), 
+                z.monCtrl.Drop
+            )
             this.playerCtrl.remove(z.monCtrl.MonsterBox)
             this.respawntimeout = setTimeout(() => {
                 if(z.respawn) {

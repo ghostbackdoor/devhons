@@ -44,6 +44,19 @@ export class Zombie extends GhostModel implements IPhysicsObject {
         this.text.position.y = 3.5
     }
 
+    SetOpacity(opacity: number) {
+        this.meshs.children[0].traverse(child => {
+            if('material' in child) {
+                const material = child.material as THREE.MeshStandardMaterial
+                material.transparent = true;
+                material.depthWrite = true;
+                material.opacity = opacity;
+            }
+            if (opacity == 0) child.castShadow = false
+            else child.castShadow = true
+        })
+    }
+
     async Loader(position: THREE.Vector3, text: string, id: number) {
         const [meshs, _exist] = await this.asset.UniqModel(text + id)
         
@@ -93,6 +106,9 @@ export class Zombie extends GhostModel implements IPhysicsObject {
 
         this.currentAni = currentAction
         this.currentClip = animate
+    }
+    StopAnimation() {
+        this.currentAni?.stop()
     }
     ChangeAction(action: ActionType) {
         let clip: THREE.AnimationClip | undefined

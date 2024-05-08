@@ -154,11 +154,16 @@ export class IdleZState extends State implements IPlayerAction {
     }
 }
 export class DyingZState extends State implements IPlayerAction {
+    fadeMode = false
+    fade = 1
     constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics, private eventCtrl: EventController) {
         super(zCtrl, zombie, gphysic)
     }
     Init(): void {
-        this.zombie.ChangeAction(ActionType.Dying)
+        this.fadeMode = (this.zombie.dyingClip == undefined)
+        this.fade = 1
+        if (this.fadeMode) this.zombie.StopAnimation()
+        else this.zombie.ChangeAction(ActionType.Dying)
 
         this.eventCtrl.OnAttackEvent("player", [{
             type: AttackType.Exp,
@@ -168,7 +173,12 @@ export class DyingZState extends State implements IPlayerAction {
     Uninit(): void {
         
     }
-    Update(): IPlayerAction {
+    Update(delta: number): IPlayerAction {
+        if(this.fadeMode) {
+            this.fade -= delta
+            if (this.fade < 0) this.fade = 0
+            this.zombie.SetOpacity(this.fade)
+        }
         return this
     }
 }
