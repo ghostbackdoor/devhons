@@ -45,7 +45,7 @@ export class Zombie extends GhostModel implements IPhysicsObject {
     }
 
     SetOpacity(opacity: number) {
-        this.meshs.children[0].traverse(child => {
+        this.meshs.traverse(child => {
             if('material' in child) {
                 const material = child.material as THREE.MeshStandardMaterial
                 material.transparent = true;

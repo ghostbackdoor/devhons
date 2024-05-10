@@ -30,7 +30,8 @@ export class WarteringCanFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -73,7 +74,8 @@ export class HammerFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {

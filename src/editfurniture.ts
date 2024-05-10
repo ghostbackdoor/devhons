@@ -34,7 +34,7 @@ export class EditFurniture {
                 <img src="assets/icons/Misc/Crate.png">
             </div>
         </div>
-        <div class="col p-1"> ${v.namekr}를 만듭니다.<br>가죽: 0, 나무: 0(beta)</div>
+        <div class="col p-1 pe-3"> ${v.namekr}를 만듭니다.<br>가죽: 0, 나무: 0(beta)</div>
     </div>
             `
         });

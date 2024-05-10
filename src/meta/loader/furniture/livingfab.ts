@@ -33,7 +33,8 @@ export class TvFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -70,7 +71,6 @@ export class TableFab extends AssetModel implements IAsset {
             this.meshs.children[0].scale.set(scale, scale, scale)
         })
     }
-    
     GetBox(mesh: THREE.Group) {
         if (this.meshs == undefined) this.meshs = mesh
         if (this.box == undefined) {
@@ -80,7 +80,8 @@ export class TableFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -128,7 +129,8 @@ export class BookShelfFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -137,8 +139,9 @@ export class BookShelfFab extends AssetModel implements IAsset {
         const bbox = new THREE.Box3().setFromObject(mesh)
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
-        this.size.y = Math.ceil(this.size.y)
-        this.size.z = Math.ceil(this.size.z)
+        this.size.y = Math.ceil(this.size.y) - .5
+        this.size.z = Math.ceil(this.size.z) - 1
+
         console.log(this.meshs, this.size)
         return this.size 
     }

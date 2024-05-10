@@ -38,14 +38,13 @@ export class FurnCtrl {
         const size = funi.Size
         const geometry = new THREE.BoxGeometry(size.x , size.y, size.z)
         const material = new THREE.MeshBasicMaterial({ 
-            //color: 0xD9AB61,
-            //transparent: true,
-            //opacity: .5,
             color: 0xff0000,
-            depthWrite: false,
+            wireframe: true
         })
         this.phybox = new FurnBox(id, "furniture", geometry, material, this)
-        this.phybox.visible = false
+        if (window.location.hostname == "hons.ghostwebservice.com") {
+            this.phybox.visible = false
+        }
         const scale = 1.2
         this.phybox.scale.set(scale, 1, scale)
         this.phybox.position.copy(this.funi.BoxPos)

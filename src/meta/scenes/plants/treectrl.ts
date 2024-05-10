@@ -48,14 +48,13 @@ export class TreeCtrl {
         const size = tree.Size
         const geometry = new THREE.BoxGeometry(size.x / 2, size.y, size.z / 2)
         const material = new THREE.MeshBasicMaterial({ 
-            //color: 0xD9AB61,
-            //transparent: true,
-            //opacity: .5,
-            //color: 0xff0000,
-            //depthWrite: false,
+            color: 0xff0000,
+            wireframe: true
         })
         this.phybox = new PlantBox(id, "farmtree", geometry, material, this)
-        this.phybox.visible = false
+        if (window.location.hostname == "hons.ghostwebservice.com") {
+            this.phybox.visible = false
+        }
         this.phybox.position.copy(this.tree.BoxPos)
         this.CheckWartering()
         this.dom = document.getElementById("edit-progress-bar-container") as HTMLDivElement

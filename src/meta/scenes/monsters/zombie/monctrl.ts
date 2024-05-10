@@ -48,7 +48,9 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
             wireframe: true
         })
         this.phybox = new MonsterBox(id, "mon", property.id, geometry, material)
-        //this.phybox.visible = false
+        if (window.location.hostname == "hons.ghostwebservice.com") {
+            this.phybox.visible = false
+        }
         this.phybox.position.copy(this.zombie.CannonPos)
     }
     Respawning() {

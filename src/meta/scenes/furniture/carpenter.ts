@@ -173,7 +173,7 @@ export class Carpenter implements IModelReload, IViewer {
         if (!property) return
         
         let furnset = this.AllocateFurnPool(property, furnEntry)
-        if (!furnset) furnset = await this.NewPlantEntryPool(furnEntry, property)
+        if (!furnset) furnset = await this.NewFurnEntryPool(furnEntry, property)
 
         this.playerCtrl.add(furnset.furnCtrl.phybox)
         this.game.add(furnset.furn.Meshs, furnset.furnCtrl.phybox)
@@ -237,7 +237,7 @@ export class Carpenter implements IModelReload, IViewer {
             this.game.remove(set.furn.Meshs, set.furnCtrl.phybox)
         })
     }
-    async NewPlantEntryPool(furnEntry: FurnEntry, property: FurnProperty): Promise<FurnSet> {
+    async NewFurnEntryPool(furnEntry: FurnEntry, property: FurnProperty): Promise<FurnSet> {
         const furn = this.getModel(furnEntry.id)
         if (!furn) throw new Error("unexpected allocation fail");
 

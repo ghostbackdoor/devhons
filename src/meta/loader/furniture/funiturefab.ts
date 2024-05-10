@@ -20,7 +20,7 @@ export class ClosetFab extends AssetModel implements IAsset {
             })
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
-            this.meshs.children[0].scale.set(scale, scale, scale)
+            this.meshs.children[0].scale.set(scale - .1, scale - .1, scale)
         })
     }
     
@@ -33,7 +33,8 @@ export class ClosetFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -41,9 +42,9 @@ export class ClosetFab extends AssetModel implements IAsset {
         if (this.size) return this.size
         const bbox = new THREE.Box3().setFromObject(mesh)
         this.size = bbox.getSize(new THREE.Vector3)
-        this.size.x = Math.ceil(this.size.x) - 1.5
-        this.size.y = Math.ceil(this.size.y)
-        this.size.z = Math.ceil(this.size.z)
+        this.size.x = Math.ceil(this.size.x)
+        this.size.y = Math.ceil(this.size.y) - .5
+        this.size.z = Math.ceil(this.size.z) - 1
         console.log(this.meshs, this.size)
         return this.size 
     }
@@ -80,7 +81,8 @@ export class DeskFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
@@ -115,7 +117,7 @@ export class BedFab extends AssetModel implements IAsset {
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
             this.meshs.children[0].scale.set(0.96, scale, scale)
-            this.meshs.children[0].position.z += 0.34
+            //this.meshs.children[0].position.z += 0.34
         })
     }
     
@@ -128,7 +130,8 @@ export class BedFab extends AssetModel implements IAsset {
         }
 
         const p = this.GetBoxPos(mesh)
-        this.box.position.set(p.x, p.y, p.z)
+        this.box.position.copy(p)
+        this.box.rotation.copy(mesh.rotation)
         return new THREE.Box3().setFromObject(this.box)
     }
     GetSize(mesh: THREE.Group): THREE.Vector3 {
