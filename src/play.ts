@@ -98,8 +98,7 @@ export class Play extends Page {
         const myModel = this.blockStore.GetModel(this.session.UserId)
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
-        this.meta.init()
-            .then((inited) => {
+        this.meta.RegisterInitEvent((inited: Boolean) => {
                 this.blockStore.FetchInventory(this.m_masterAddr, this.session.UserId)
                     .then((inven: InvenData | undefined) => {
                         console.log(inven)
@@ -133,11 +132,8 @@ export class Play extends Page {
                             this.startPlay()
                         })
                 }
-            })
-            .then(() => {
                 this.meta.render()
             })
-
 
         this.meta.RegisterChangePlayerStatusEvent((status: PlayerStatus) => {
             const hpBar = document.getElementById("hp-bar") as HTMLProgressElement

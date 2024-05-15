@@ -137,6 +137,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
 
 
         const map = new THREE.CanvasTexture(context2d.canvas);
+        this.renderOrder = 99 || 999
         this.material =
             new THREE.SpriteMaterial({ 
                 map: map, 
@@ -144,6 +145,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
                 fog: false, 
                 transparent: true,
                 depthTest: false, 
+                depthWrite: false,
             });
         //this.sprite_.position.y += modelData.nameOffset;
         //msg.model.add(this.sprite_);

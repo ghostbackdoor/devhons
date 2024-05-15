@@ -39,7 +39,7 @@ export class ToadMageFab extends AssetModel implements IAsset {
                 this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "idle"))
                 this.clips.set(Ani.Run, gltf.animations.find((clip) => clip.name == "run"))
                 this.clips.set(Ani.Punch, gltf.animations.find((clip) => clip.name == "attack"))
-                this.clips.set(Ani.Dying, gltf.animations.find((clip) => clip.name == "cast"))
+                this.clips.set(Ani.MagicH1, gltf.animations.find((clip) => clip.name == "cast"))
                 resolve(this.meshs)
             })
         })

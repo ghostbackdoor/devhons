@@ -107,8 +107,7 @@ export class Hons extends Page {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
         this.profileVisible = false
-        this.meta.init()
-            .then(() => {
+        this.meta.RegisterInitEvent(() => {
                 //this.meta.ModeChange(AppMode.Long, false)
                 this.ui.UiOn()
                 this.meta.render()
@@ -120,12 +119,12 @@ export class Hons extends Page {
             })
 
         const play = document.getElementById("playBtn") as HTMLButtonElement
-        play.onclick = () => { 
+        play.onclick = () => {
             //this.ui.UiOff(AppMode.Play) 
             window.ClickLoadPage("play", false)
         }
 
-        
+
 
         const space = document.getElementById("avatar-space") as HTMLAnchorElement
         space.style.height = window.innerHeight - 230 + "px"

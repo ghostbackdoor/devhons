@@ -203,12 +203,22 @@ export class UiInven {
 
         const getback = document.getElementById("returnSns") as HTMLSpanElement
         if (getback) getback.onclick = () => {
+            const tag = document.getElementById("confirmexit") as HTMLDivElement
+            tag.style.display = "block"
+            //this.UiOn()
+        }
+        const exitBtn = document.getElementById("exitBtn") as HTMLButtonElement
+        exitBtn.onclick = () => {
             if (document.fullscreenElement) {
                 document.exitFullscreen()
                 fullscreen.innerText = "fullscreen"
             }
             history.back()
-            //this.UiOn()
+        }
+        const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement
+        cancelBtn.onclick = () => {
+            const tag = document.getElementById("confirmexit") as HTMLDivElement
+            tag.style.display = "none"
         }
     }
 }

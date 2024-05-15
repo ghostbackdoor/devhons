@@ -39,6 +39,7 @@ export default class App {
     initFlag: boolean = false
     renderFlag: boolean = false
     loadingVisible = true
+    initCallbackFunc?: Function
 
     get Furnitures() {return this.factory.Furnitures}
     get Plants() {return this.factory.Plants}
@@ -111,7 +112,17 @@ export default class App {
         }
 
         progressBarContainer.style.display = 'none'
+
+        if (this.initCallbackFunc) this.initCallbackFunc()
         return true
+    }
+
+    RegisterInitEvent(call: Function) {
+        if(this.initFlag) {
+            call(this.initFlag)
+            return
+        }
+        this.initCallbackFunc = call
     }
 
     despose() {

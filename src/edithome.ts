@@ -242,6 +242,11 @@ export class EditHome extends Page {
 
         const exit = document.getElementById("exit") as HTMLDivElement
         exit.onclick = () => {
+            const tag = document.getElementById("confirmexit") as HTMLDivElement
+            tag.style.display = "block"
+        }
+        const exitBtn = document.getElementById("exitBtn") as HTMLButtonElement
+        exitBtn.onclick = () => {
             if (document.fullscreenElement) {
                 document.exitFullscreen()
             }
@@ -249,13 +254,18 @@ export class EditHome extends Page {
             this.UpdateMenu()
             window.history.back()
         }
+        const cancelBtn = document.getElementById("cancelBtn") as HTMLButtonElement
+        cancelBtn.onclick = () => {
+            const tag = document.getElementById("confirmexit") as HTMLDivElement
+            tag.style.display = "none"
+        }
     }
 
     public CanvasRenderer(email: string | null) {
         const myModel = this.blockStore.GetModel(this.session.UserId)
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
-        this.meta.init().then((inited) => {
+        this.meta.RegisterInitEvent((inited: Boolean) => {
             this.blockStore.FetchInventory(this.m_masterAddr, this.session.UserId)
                 .then((inven: InvenData | undefined) => {
                     console.log(inven)
@@ -290,11 +300,9 @@ export class EditHome extends Page {
                         this.meta.ModeChange(AppMode.EditPlay)
                     })
             }
-        }).then(() => {
             this.ui.UiOff(AppMode.EditPlay)
             this.meta.render()
         })
-
     }
     getParam(): string | null {
         const urlParams = new URLSearchParams(window.location.search);

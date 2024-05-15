@@ -2,7 +2,6 @@ import { ProfileEntry } from "./models/param";
 import { GlobalLoadListTx } from "./models/tx";
 import { Page } from "./page";
 import { BlockStore } from "./store";
-import * as bootstrap from "bootstrap"
 
 
 export class Main extends Page {
@@ -50,13 +49,13 @@ export class Main extends Page {
                 imgUrl = "static/img/ghost_background_black.png"
             }
             const htmlString = `
-                <div class="container pt-2">
+                <div class="container p-2">
                 <div class="row p-1 border rounded handcursor" onclick="ClickLoadPage('hondetail', false, '&email=${hon.email}')">
                     <div class="col-auto">
                             <span class="m-1"><img class="profile-sm" src="${imgUrl}"></span>
                     </div>
                     <div class="col">
-                        <b>${hon.id}</b> @${hon.email}
+                        <b>${hon.id}</b> @${hon.email} <img src="static/img/confirm.png">
                     </div>
                 </div>
                 </div>
@@ -70,7 +69,7 @@ export class Main extends Page {
         }
     }
     drawHtmlUserInfo() {
-        let htmlString: string = `<span style="font-size: 20px;"><b>New Members</b></span>`
+        let htmlString: string = `<span style="font-size: 20px;"><b>추천 Hon 메타버스</b></span>`
         this.userlist.forEach((html) => {
             htmlString += html
         })
@@ -93,7 +92,7 @@ export class Main extends Page {
         this.targetloadCnt = emails.length
         this.currenloadCnt = 0
             const promise = emails.map(async (email) => {
-                const key = atob(email)
+                const key = email//atob(email)
                 await this.blockStore.FetchProfile(masterAddr, key)
                     .then((result) => this.makeHtmlUserInfo(result))
             })
@@ -101,18 +100,15 @@ export class Main extends Page {
         Promise.all(promise).then(() => this.drawHtmlUserInfo())
     }
 
-    public RequestUserlist(n: number) {
-        const masterAddr = window.MasterAddr;
-        const table = "member"
-        const addr = `
-        ${masterAddr}/glambda?txid=${encodeURIComponent(GlobalLoadListTx)}&table=${table}&start=0&count=${n}`;
+    public RequestUserlist() {
+        //const masterAddr = window.MasterAddr;
+        //const table = "member"
+        //const addr = `
+        //${masterAddr}/glambda?txid=${encodeURIComponent(GlobalLoadListTx)}&table=${table}&start=0&count=${n}`;
 
         const userTag = document.getElementById("userlist") as HTMLDivElement;
-        userTag.innerHTML = `<span style="font-size: 20px;"><b>New Members</b></span>`
-        fetch(addr)
-            .then((response) => response.json())
-            .then((result) => this.tagResult(result))
-            .then((result) => this.RequestUserInfo(result))
+        userTag.innerHTML = `<span style="font-size: 20px;"><b>추천 Hon 메타버스</b></span>`
+        this.RequestUserInfo(["ghost"])
     }
     disableMeta() {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
@@ -122,23 +118,37 @@ export class Main extends Page {
         const joypad_buttons = document.getElementById("joypad_buttons") as HTMLDivElement
         joypad_buttons.style.display = "none"
     }
-    bugfixCarousel() {
-        const carouselTag = document.getElementById("carouselExampleAutoplaying") as HTMLDivElement
-        const carousel = new bootstrap.Carousel(carouselTag, {
-            interval: 1000,
-        })
-        carousel?.cycle()
-    }
+    async loadTutorial() {
+        await fetch("views/tutorial/sns.html")
+            .then(response => { return response.text(); })
+            .then((res) => {
+                const tag = document.getElementById("tutorial") as HTMLDivElement;
+                tag.insertAdjacentHTML("beforeend", res)
+            })
+        await fetch("views/tutorial/ai.html")
+            .then(response => { return response.text(); })
+            .then((res) => {
+                const tag = document.getElementById("tutorial") as HTMLDivElement;
+                tag.insertAdjacentHTML("beforeend", res)
+            })
+        await fetch("views/tutorial/play.html")
+            .then(response => { return response.text(); })
+            .then((res) => {
+                const tag = document.getElementById("tutorial") as HTMLDivElement;
+                tag.insertAdjacentHTML("beforeend", res)
+            })
 
+    }
     public CanvasRenderer() {
     }
+    
     public async Run(): Promise<boolean> {
         await this.LoadHtml()
         this.disableMeta()
-        this.bugfixCarousel()
         this.RequestTaglist(20)
-        this.RequestUserlist(20)
+        this.RequestUserlist()
         this.CanvasRenderer()
+        this.loadTutorial()
 
         return true
     }

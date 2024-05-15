@@ -66,12 +66,14 @@ export class PlayerSpec {
         this.defence = 1 * this.status.level * 10
     }
     HealthLevelUp() {
+        /*
         const h = this.status.maxHealth 
         this.status.maxHealth += this.status.level * 100 
         this.status.health += this.status.maxHealth - h
 
         this.status.maxMana += this.status.level * 100
         this.status.mana = this.status.maxMana
+        */
         this.status.maxExp += this.status.level * 50
         this.status.exp = 0
     }

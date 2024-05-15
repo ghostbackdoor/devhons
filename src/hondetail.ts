@@ -203,7 +203,7 @@ export class HonDetail extends Page {
             window.ClickLoadPage("play", false, `&email=${email}`)
         }
 
-        this.meta.init().then(() => {
+        this.meta.RegisterInitEvent(() => {
             this.alarm.style.display = "block"
             this.alarmText.innerHTML = "이동중입니다."
             this.ui.UiOn()
@@ -217,14 +217,14 @@ export class HonDetail extends Page {
                 .then(() => {
                     this.meta.ModeChange(AppMode.Close)
                 })
+                .then(() => {
+                    this.meta.render()
+                })
                 .catch(async () => {
                     this.alarm.style.display = "none"
                     await this.meta.LoadModelEmpty(email, myModel?.models)
                     this.meta.ModeChange(AppMode.Close)
                 })
-        })
-        .then(() => {
-            this.meta.render()
         })
 
         const space = document.getElementById("avatar-space") as HTMLAnchorElement

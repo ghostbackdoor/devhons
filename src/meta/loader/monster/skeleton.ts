@@ -6,7 +6,7 @@ import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 export class SkeletonFab extends AssetModel implements IAsset {
     Gltf?:GLTF
 
-    get Id() {return Char.CrabMon}
+    get Id() {return Char.Skeleton}
 
     constructor(loader: Loader) { 
         super(loader, ModelType.Gltf, "assets/monster/skeleton.glb", async (gltf: GLTF) => {
@@ -21,7 +21,7 @@ export class SkeletonFab extends AssetModel implements IAsset {
             const scale = 0.008
             this.meshs.scale.set(scale, scale, scale)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
-            console.log(gltf.animations)
+            console.log(this.meshs)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "metarig|0_Idle"))
             this.clips.set(Ani.Run, gltf.animations.find((clip) => clip.name == "metarig|1_Walk"))
             this.clips.set(Ani.Punch, gltf.animations.find((clip) => clip.name == "metarig|3_Attack"))
@@ -46,10 +46,9 @@ export class SkeletonFab extends AssetModel implements IAsset {
         if (this.meshs == undefined) this.meshs = mesh
         if (this.size) return this.size
 
-        const bbox = new THREE.Box3().setFromObject(this.meshs)
-        this.size = bbox.getSize(new THREE.Vector3)
-        this.size.x = Math.ceil(this.size.x) / 3
-        this.size.z = Math.ceil(this.size.z) / 4.5
+        //const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
+        //this.size = bbox.getSize(new THREE.Vector3)
+        this.size = new THREE.Vector3(2, 4, 2)
         return this.size 
     }
 }

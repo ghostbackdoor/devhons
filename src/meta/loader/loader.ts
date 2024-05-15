@@ -20,7 +20,7 @@ import { BedFab, ClosetFab, DeskFab } from "./furniture/funiturefab";
 import { AppleTreeFab, CoconutTreeFab } from "./plant/plantfab";
 import { BatPigFab } from "./monster/batpigfab";
 import { BirdMonFab } from "./monster/birdmonfab";
-import { BilbyFab } from "./monster/bilbyfab";
+import { BilbyFab } from "./pet/bilbyfab";
 import { WereWolfFab } from "./monster/werewolffab";
 import { BigGolemFab, GolemFab } from "./monster/golemfab";
 import { SnakeFab } from "./monster/snakefab";
@@ -36,6 +36,8 @@ import { BathFab, SinkFab, ToiletFab } from "./furniture/bathfab";
 import { BookShelfFab, TableFab, TvFab } from "./furniture/livingfab";
 import { KitTableFab, KitchenFab, OvenFab, RefrigeratorFab } from "./furniture/kitchenfab";
 import { AppleFab, CoconutFab } from "./plant/fruitfab";
+import { DogFab } from "./pet/dogfab";
+import { PetSnakeFab } from "./pet/animalpackfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -57,7 +59,6 @@ export class Loader {
     private crab = new CrabFab(this)
     private batpig = new BatPigFab(this)
     private birdmon = new BirdMonFab(this)
-    private bilby = new BilbyFab(this)
     private werewolf = new WereWolfFab(this)
     private golem = new GolemFab(this)
     private biggolem = new BigGolemFab(this)
@@ -68,6 +69,12 @@ export class Loader {
     private kittenmonk = new KittenMonkFab(this)
     private skeleton = new SkeletonFab(this)
 
+    // Pet //
+    private bilby = new BilbyFab(this)
+    private dog = new DogFab(this)
+    private petSnake = new PetSnakeFab(this)
+
+    // stup //
     private bat = new BatFab(this)
     private gun = new GunFab(this)
     private stone = new StoneFab(this)
@@ -119,8 +126,11 @@ export class Loader {
     get CrabAsset(): IAsset { return this.crab }
     get BatPigAsset(): IAsset { return this.batpig }
     get BirdMonAsset(): IAsset { return this.birdmon }
-    get BilbyAsset(): IAsset { return this.bilby }
     get WereWolfAsset(): IAsset { return this.werewolf }
+
+    get BilbyAsset(): IAsset { return this.bilby }
+    get DogAsset(): IAsset { return this.dog }
+    get PetSnakeAsset(): IAsset { return this.petSnake }
 
     get GunAsset(): IAsset { return this.gun }
     get BatAsset(): IAsset { return this.bat }
@@ -182,7 +192,6 @@ export class Loader {
         this.assets.set(Char.CrabMon, this.crab)
         this.assets.set(Char.BatPig, this.batpig)
         this.assets.set(Char.BirdMon, this.birdmon)
-        this.assets.set(Char.Bilby, this.bilby)
         this.assets.set(Char.WereWolf, this.werewolf)
         this.assets.set(Char.Golem, this.golem)
         this.assets.set(Char.BigGolem, this.biggolem)
@@ -192,6 +201,10 @@ export class Loader {
         this.assets.set(Char.ToadMage, this.toadmage)
         this.assets.set(Char.KittenMonk, this.kittenmonk)
         this.assets.set(Char.Skeleton, this.skeleton)
+
+        this.assets.set(Char.Bilby, this.bilby)
+        this.assets.set(Char.Dog, this.dog)
+        this.assets.set(Char.PetSnake, this.petSnake)
 
         this.assets.set(Char.Bat, this.bat)
         this.assets.set(Char.Gun, this.gun)
@@ -228,10 +241,12 @@ export class Loader {
         this.assets.set(Char.Toilet, this.toilet)
         this.assets.set(Char.TV, this.tv)
 
+        /*
         const progressBar = document.querySelector('#progress-bar') as HTMLProgressElement
         this.LoadingManager.onProgress = (_url, loaded, total) => {
             progressBar.value = (loaded / total) * 100
         }
+        */
         /*
         const progressBarContainer = document.querySelector('#progress-bar-container') as HTMLDivElement
         this.LoadingManager.onStart = () => {

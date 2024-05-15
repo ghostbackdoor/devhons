@@ -104,10 +104,17 @@ export class FurnCtrl {
         this.checktime += delta
         if( Math.floor(this.checktime) < 1)  return
         this.checktime = 0
-        do {
-            this.funi.CannonPos.y -= 0.2
-        } while (!this.gphysic.Check(this.funi) && this.funi.CannonPos.y >= 0)
-        this.funi.CannonPos.y += 0.2
+        if (this.gphysic.Check(this.funi)) {
+            do {
+                this.funi.CannonPos.y += 0.2
+            } while (!this.gphysic.Check(this.funi))
+        } else {
+            do {
+                this.funi.CannonPos.y -= 0.2
+            } while (!this.gphysic.Check(this.funi) && this.funi.CannonPos.y >= 0)
+            this.funi.CannonPos.y += 0.2
+        }
+        this.phybox.position.copy(this.funi.BoxPos)
 
         switch(this.state) {
             case FurnState.NeedBuilding:

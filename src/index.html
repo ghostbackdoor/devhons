@@ -26,11 +26,17 @@
     <title>Hons.Metaverse</title>
 </head>
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100" style="overflow-x:hidden">
     <canvas id="avatar-bg" class="avatar-bg"></canvas>
-    <div id="progress-bar-container">
+    <div id="progress-bar-container" class="rounded p-2">
+        <label for="progress-bar">로딩중입니다.</label><br>
+        <div class="spinner-border text-danger" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <!--
         <label for="progress-bar">Loading...</label>
         <progress id="progress-bar" value="0" max="100"></progress>
+        -->
     </div>
     <div id="joypad">
         <div class="container p-2 ms-1">

@@ -74,6 +74,7 @@ export class GameCenter implements IViewer, IModelReload {
             if(mode != AppMode.Play) return
             switch (e) {
                 case EventFlag.Start:
+                    this.safe = true
                     this.deckEmpty = false
                     this.invenFab.inven.Clear()
                     this.StartDeckParse()
@@ -206,12 +207,16 @@ export class GameCenter implements IViewer, IModelReload {
             this.torus.visible = true
             this.torus.rotateZ(Math.PI * delta * .5)
             if (!this.safe) {
+                const exitTag = document.getElementById("exitPlayCheck") as HTMLDivElement
+                if(exitTag) exitTag.innerHTML = "플레이 모드를 종료합니다."
                 this.alarm.NotifyInfo("인벤토리를 저장할 수 있습니다.", AlarmType.Normal)
             }
             this.safe = true
         } else {
             this.torus.visible = false
             if (this.safe) {
+                const exitTag = document.getElementById("exitPlayCheck") as HTMLDivElement
+                if(exitTag) exitTag.innerHTML = "플레이 모드를 종료합니다.<br>포탈과 멀어 인벤토리를 저장할 수 없습니다."
                 this.alarm.NotifyInfo("포탈과 멀어 인벤토리를 저장할 수 없습니다.", AlarmType.Normal)
             }
             this.safe = false

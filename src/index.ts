@@ -183,6 +183,7 @@ class Index {
                         .then((response) => response.json())
                         .then(this.parseResponse)
                         .then(this.loadNodesHtml)
+                        .then(() => { this.meta.init() })
                         .then(() => this.includeContentHTML())
                         .catch((err) => {
                             console.log(err)

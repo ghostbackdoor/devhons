@@ -84,7 +84,7 @@ export class MonsterDb {
             type: MonsterType.Beast,
             model: Char.BirdMon,
             health: 10,
-            speed: 1,
+            speed: 3,
             damageMin:1,
             damageMax: 5,
             attackSpeed: 2,

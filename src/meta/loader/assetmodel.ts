@@ -48,7 +48,6 @@ export enum Char{
     Zombie,
     Minataur,
     BatPig,
-    Bilby,
     BilbyMon,
     BirdMon,
     CrabMon,
@@ -66,6 +65,10 @@ export enum Char{
     ToadMage,
     KittenMonk,
     Skeleton,
+
+    Bilby,
+    Dog,
+    PetSnake,
 
     Bat,
     Gun,
