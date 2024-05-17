@@ -108,9 +108,8 @@ export class ModelStore {
             await mgr.Reload()
         })
     }
-    StoreInventory(): string {
-        const json = JSON.stringify(this.invenFab.invenHouse.data)
-        return json
+    StoreInventory(): InvenData {
+        return this.invenFab.invenHouse.data
     }
     LoadInventory(inven: InvenData | undefined) {
         if (inven != undefined) {

@@ -1,5 +1,5 @@
 import { EditHome } from "./edithome"
-import App, { AppMode } from "./meta/app"
+import App, { AppMode } from "../meta/app"
 
 
 

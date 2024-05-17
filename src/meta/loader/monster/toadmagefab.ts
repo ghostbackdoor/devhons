@@ -33,7 +33,7 @@ export class ToadMageFab extends AssetModel implements IAsset {
                     child.receiveShadow = true
                 })
                 const scale = 2
-                this.meshs.scale.set(scale, scale, scale)
+                this.meshs.children[0].scale.set(scale, scale, scale)
                 this.mixer = new THREE.AnimationMixer(gltf.scene)
                 console.log(gltf.animations)
                 this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "idle"))

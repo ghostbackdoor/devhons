@@ -1,8 +1,8 @@
-import App from "./meta/app";
-import { Inventory } from "./meta/inventory/inventory";
-import { DeckId, DeckType } from "./meta/inventory/items/deck";
-import { IItem, ItemType } from "./meta/inventory/items/item";
-import { DeckMsg } from "./meta/scenes/mondeck";
+import App from "../meta/app";
+import { Inventory } from "../meta/inventory/inventory";
+import { DeckId, DeckType } from "../meta/inventory/items/deck";
+import { IItem, ItemType } from "../meta/inventory/items/item";
+import { DeckMsg } from "../meta/scenes/mondeck";
 
 export type DeckSetup = {
     deck: DeckType

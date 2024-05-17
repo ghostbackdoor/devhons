@@ -19,7 +19,7 @@ export class BatPigFab extends AssetModel implements IAsset {
                 child.receiveShadow = true
             })
             const scale = 0.01
-            this.meshs.scale.set(scale, scale, scale)
+            this.meshs.children[0].scale.set(scale, scale, scale)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(gltf.animations)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "Armature|Idle"))
@@ -27,7 +27,7 @@ export class BatPigFab extends AssetModel implements IAsset {
             this.clips.set(Ani.Punch, gltf.animations.find((clip) => clip.name == "Armature|Desh"))
             this.clips.set(Ani.MonBiting, gltf.animations.find((clip) => clip.name == "Armature|Shoot"))
             this.clips.set(Ani.MonScream, gltf.animations.find((clip) => clip.name == "Pig Enemy|Desh"))
-            this.meshs.children[0].position.y = 150
+            this.meshs.children[0].position.y = 1
         })
     }
     

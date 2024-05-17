@@ -55,6 +55,8 @@ export class Zombie extends GhostModel implements IPhysicsObject {
             if (opacity == 0) child.castShadow = false
             else child.castShadow = true
         })
+        if(opacity > 0) this.Visible = true
+        else this.Visible = false
     }
 
     async Loader(position: THREE.Vector3, text: string, id: number) {

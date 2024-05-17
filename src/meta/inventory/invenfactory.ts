@@ -10,6 +10,7 @@ export class InvenFactory {
     inven = new Inventory(this.itemDb, this.alarm)
     invenHouse = new Inventory(this.itemDb, this.alarm)
 
+    get ItemDb() { return this.itemDb }
     constructor(private loader: Loader, private alarm: Alarm) { }
 
     LoadItems(load: Inventory) {

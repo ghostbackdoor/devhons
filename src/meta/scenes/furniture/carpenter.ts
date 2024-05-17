@@ -15,6 +15,8 @@ import { AttackOption, AttackType, PlayerCtrl } from "../player/playerctrl";
 import { FurnCtrl } from "./furnctrl";
 import { FurnDb, FurnId, FurnProperty } from "./furndb";
 import { FurnModel } from "./bed";
+import { Inventory, InventorySlot } from "../../inventory/inventory";
+import { Alarm, AlarmType } from "../../common/alarm";
 
 export enum FurnState {
     NeedBuilding,
@@ -63,6 +65,8 @@ export class Carpenter implements IModelReload, IViewer {
         canvas: Canvas,
         private eventCtrl: EventController,
         private furnDb: FurnDb,
+        private alarm: Alarm,
+        private inven: Inventory,
     ){
         canvas.RegisterViewer(this)
         store.RegisterStore(this)
@@ -79,7 +83,7 @@ export class Carpenter implements IModelReload, IViewer {
                     this.controllable = true
                     this.game.add(this.target.Meshs)
                     this.target.Visible = true
-                    this.target.CannonPos.copy(this.player.CannonPos)
+                    this.CopyPosition(this.target.CannonPos, this.player.CannonPos)
                     this.eventCtrl.OnChangeCtrlObjEvent(this.target)
                     this.CheckCollision()
                     console.log(id)
@@ -97,7 +101,9 @@ export class Carpenter implements IModelReload, IViewer {
             if(!this.controllable) return
             switch(keyCommand.Type) {
                 case KeyType.Action0:
-                    if (!this.target || !this.targetId) return
+                    if (!this.target || 
+                        !this.targetId || 
+                        !this.CheckMaterial(this.targetId)) return
                     const e: FurnEntry = {
                         id: this.targetId,
                         position: new THREE.Vector3().copy(this.target.CannonPos), 
@@ -137,6 +143,11 @@ export class Carpenter implements IModelReload, IViewer {
             })
         })
     }
+    CopyPosition(dst: THREE.Vector3, src: THREE.Vector3) {
+        dst.x = Math.ceil(src.x)
+        dst.y = src.y
+        dst.z = Math.ceil(src.z)
+    }
     resize(): void { }
     update(delta: number): void {
         for (let i = 0; i < this.furnitures.length; i++) {
@@ -167,6 +178,34 @@ export class Carpenter implements IModelReload, IViewer {
             this.CreateFurn(e)
         })
 
+    }
+    CheckMaterial(id: FurnId) {
+        const property = this.furnDb.get(id)
+        const items = property?.madeby
+        if (!items) return true
+        const slots: InventorySlot[] = []
+        const ret = items.some((e) => {
+            // search inventory and store
+            const slot = this.inven.GetItem(e.itemId)
+            if (slot && slot.count >= e.count) slots.push(slot)
+            else {
+                const info = this.inven.GetItemInfo(e.itemId)
+                const name = info.namekr ?? info.name
+                this.alarm.NotifyInfo(name + "이 부족합니다.", AlarmType.Normal)
+                return true
+            }
+        })
+        if(ret == false) {
+            // apply using item
+            items.forEach((e) => {
+                const slot = slots.find(s => s.item.Id == e.itemId)
+                if (slot) slot.count -= e.count
+                else throw new Error("unexpected undefined value");
+                
+            })
+            return true
+        }
+        return false
     }
     async CreateFurn(furnEntry: FurnEntry) {
         const property = this.furnDb.get(furnEntry.id)

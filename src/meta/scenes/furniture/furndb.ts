@@ -1,5 +1,5 @@
+import { ItemId } from "../../inventory/items/itemdb"
 import { Char } from "../../loader/assetmodel"
-import { MonDrop } from "../monsters/monsterdb"
 
 
 export class FurnId {
@@ -28,6 +28,10 @@ export enum FurnType {
     Sink, Toilet, Tv
 }
 
+export type MadeBy = {
+    itemId: string,
+    count: number
+}
 export type FurnProperty = {
     id: FurnId
     type: FurnType
@@ -35,7 +39,7 @@ export type FurnProperty = {
     name: string
     namekr: string
     buildingTime: number
-    drop?: MonDrop[]
+    madeby?: MadeBy[]
 }
 
 export class FurnDb {
@@ -49,6 +53,11 @@ export class FurnDb {
             name: "Bed",
             namekr: "침대",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 2 },
+                { itemId: ItemId.Logs, count: 5 },
+                { itemId: ItemId.Leather, count: 5 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultBath, {
             id: FurnId.DefaultBath,
@@ -65,6 +74,9 @@ export class FurnDb {
             name: "BookShelf",
             namekr: "책장",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Logs, count: 1 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultCloset, {
             id: FurnId.DefaultCloset,
@@ -121,6 +133,9 @@ export class FurnDb {
             name: "Sink",
             namekr: "세면대",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 1 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultTable, {
             id: FurnId.DefaultTable,

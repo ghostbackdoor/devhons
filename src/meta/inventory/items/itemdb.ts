@@ -46,6 +46,7 @@ export type ItemProperty = {
 
     level?: Level
     name: string
+    namekr?: string
     icon: string
     stackable: boolean
     binding: boolean
@@ -107,6 +108,7 @@ export class ItemDb {
             id: ItemId.Leather,
             type: ItemType.Material,
             name: "Leather",
+            namekr: "가죽",
             icon: "Material/Leather.png",
             stackable: true,
             binding: false,
@@ -116,6 +118,7 @@ export class ItemDb {
             id: ItemId.Logs,
             type: ItemType.Material,
             name: "WoodLog",
+            namekr: "통나무",
             icon: "Material/WoodLog.png",
             stackable: true,
             binding: false,
@@ -125,6 +128,7 @@ export class ItemDb {
             id: ItemId.Rocks,
             type: ItemType.Material,
             name: "Rocks",
+            namekr: "돌조각",
             icon: "OreGem/SilverNugget.png",
             stackable: true,
             binding: false,

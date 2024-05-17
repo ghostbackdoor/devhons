@@ -18,8 +18,8 @@ export class GolemFab extends AssetModel implements IAsset {
                 child.castShadow = true
                 child.receiveShadow = true
             })
-            const scale = 2
-            this.meshs.scale.set(scale, scale, scale)
+            const scale = 0.4
+            this.meshs.children[0].scale.set(scale, scale, scale)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(this.meshs)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "root|Idle"))
@@ -72,7 +72,8 @@ export class BigGolemFab extends AssetModel implements IAsset {
                 child.receiveShadow = true
             })
             console.log(this.meshs)
-            this.meshs.scale.set(this.scale, this.scale, this.scale)
+            this.meshs.children[0].scale.set(this.scale, this.scale, this.scale)
+            this.meshs.children[0].position.y = 3.7
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(gltf.animations)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "metarig|0_Idle"))
@@ -81,7 +82,6 @@ export class BigGolemFab extends AssetModel implements IAsset {
             this.clips.set(Ani.Dying, gltf.animations.find((clip) => clip.name == "metarig|5_Die"))
 
             this.GetSize(this.meshs)
-            this.meshs.children[0].position.y = 190
         })
     }
     

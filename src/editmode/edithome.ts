@@ -1,14 +1,14 @@
 import * as THREE from "three";
-import App, { AppMode } from "./meta/app";
-import { Char } from "./meta/loader/assetmodel";
-import { MetaTxId } from "./models/tx";
-import { Session } from "./session";
-import { BlockStore } from "./store";
+import App, { AppMode } from "../meta/app";
+import { Char } from "../meta/loader/assetmodel";
+import { MetaTxId } from "../models/tx";
+import { Session } from "../session";
+import { BlockStore } from "../store";
 import ColorPicker from "@thednp/color-picker";
-import { Page } from "./page";
-import { Ui } from "./models/ui";
-import { UiInven } from "./play_inven";
-import { InvenData } from "./meta/inventory/inventory";
+import { Page } from "../page";
+import { Ui } from "../models/ui";
+import { UiInven } from "../playmode/play_inven";
+import { InvenData } from "../meta/inventory/inventory";
 import { EditPlant } from "./editplant";
 import { EditFurniture } from "./editfurniture";
 import { EditGame } from "./editgame";
@@ -134,7 +134,7 @@ export class EditHome extends Page {
         const time = (new Date()).getTime()
         formData.append("time", time.toString())
         formData.append("table", "meta")
-        fetch(addr, {
+        return fetch(addr, {
             method: "POST",
             cache: "no-cache",
             headers: {},
@@ -150,18 +150,21 @@ export class EditHome extends Page {
                     models: models,
                     time: time,
                 }, user.Email)
-                this.alarm.style.display = "none"
             })
     }
 
     public MenuEvent() {
         const sav = document.getElementById("save") as HTMLDivElement
-        sav.onclick = () => {
+        sav.onclick = async () => {
             this.alarm.style.display = "block"
             this.alarmText.innerHTML = "저장 중입니다."
 
             const models = this.meta.ModelStore()
-            this.RequestNewMeta(models)
+            const invenData = this.meta.store.StoreInventory()
+            await this.inven.SaveInventory(invenData, this.m_masterAddr)
+            await this.RequestNewMeta(models)
+            this.alarm.style.display = "none"
+
         }
         const play = document.getElementById("editplaymode") as HTMLDivElement
         if(play) play.onclick = () => {

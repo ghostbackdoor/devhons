@@ -13,9 +13,9 @@ import { Profile } from "./profile";
 import { Router } from "./libs/router";
 import { Main } from "./main";
 import App from "./meta/app";
-import { EditHome } from "./edithome";
-import { Play } from "./play";
-import { UiInven } from "./play_inven";
+import { EditHome } from "./editmode/edithome";
+import { Play } from "./playmode/play";
+import { UiInven } from "./playmode/play_inven";
 
 
 interface IPage {
@@ -39,7 +39,7 @@ class Index {
     blockStore = new BlockStore();
     session = new Session(this.blockStore);
     meta = new App()
-    inven = new UiInven(this.meta)
+    inven = new UiInven(this.meta, this.session, this.blockStore)
     ipc = new Socket
     router = new Router(this.ipc)
     newHon = new NewHon(this.session, this.ipc, "views/newhon.html")

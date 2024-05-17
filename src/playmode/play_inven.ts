@@ -1,15 +1,23 @@
-import App from "./meta/app";
-import { Inventory, InventorySlot } from "./meta/inventory/inventory";
-import { IItem, Item } from "./meta/inventory/items/item";
-import { Bind } from "./meta/loader/assetmodel";
+import App from "../meta/app";
+import { InvenData, Inventory, InventorySlot } from "../meta/inventory/inventory";
+import { IItem, Item } from "../meta/inventory/items/item";
+import { Bind } from "../meta/loader/assetmodel";
+import { GlobalSaveTxId } from "../models/tx";
+import { Session } from "../session";
+import { BlockStore } from "../store";
 
 
 export class UiInven {
     inven?: Inventory
     slots: InventorySlot[] = []
     colCont = 5
+    alarm = document.getElementById("alarm-msg") as HTMLDivElement
 
-    constructor(private meta: App) { }
+    constructor(
+        private meta: App, 
+        private session: Session,
+        private blockStore: BlockStore
+    ) {}
 
     Clear() {
         this.slots.length = 0
@@ -220,5 +228,31 @@ export class UiInven {
             const tag = document.getElementById("confirmexit") as HTMLDivElement
             tag.style.display = "none"
         }
+    }
+    public SaveInventory(data: InvenData, masterAddr: string) {
+        const json = JSON.stringify(data)
+        const user = this.session.GetHonUser();
+        const addr = masterAddr + "/glambda?txid=" + encodeURIComponent(GlobalSaveTxId);
+
+        const formData = new FormData()
+        formData.append("key", encodeURIComponent(user.Email))
+        formData.append("email", encodeURIComponent(user.Email))
+        formData.append("id", user.Nickname)
+        formData.append("password", user.Password)
+        formData.append("data", json)
+        const time = (new Date()).getTime()
+        formData.append("date", time.toString())
+        formData.append("table", "inventory")
+        return fetch(addr, {
+            method: "POST",
+            cache: "no-cache",
+            headers: {},
+            body: formData
+        })
+            .then((response) => response.json())
+            .then((ret) => {
+                console.log(ret)
+                this.blockStore.UpdateInventory(data, user.Email)
+            })
     }
 }

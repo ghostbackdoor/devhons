@@ -19,14 +19,14 @@ export class SkeletonFab extends AssetModel implements IAsset {
                 child.receiveShadow = true
             })
             const scale = 0.008
-            this.meshs.scale.set(scale, scale, scale)
+            this.meshs.children[0].scale.set(scale, scale, scale)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(this.meshs)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "metarig|0_Idle"))
             this.clips.set(Ani.Run, gltf.animations.find((clip) => clip.name == "metarig|1_Walk"))
             this.clips.set(Ani.Punch, gltf.animations.find((clip) => clip.name == "metarig|3_Attack"))
             this.clips.set(Ani.Dying, gltf.animations.find((clip) => clip.name == "metarig|4_GetHit"))
-            this.meshs.children[0].position.y = 360
+            this.meshs.children[0].position.y = 2.8
         })
     }
     

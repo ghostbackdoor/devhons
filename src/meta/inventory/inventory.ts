@@ -1,7 +1,7 @@
 import { Alarm, AlarmType } from "../common/alarm";
 import { Bind } from "../loader/assetmodel";
 import { IItem, Item } from "./items/item";
-import { ItemDb } from "./items/itemdb";
+import { ItemDb, ItemId } from "./items/itemdb";
 
 export type InventorySlot = {
     item: IItem,
@@ -30,6 +30,9 @@ export class Inventory {
            return
         }
         this.data.inventroySlot.push({ item: item, count: 1 })
+    }
+    GetItem(id: ItemId) {
+        return this.data.inventroySlot.find(e => e.item.Id == id)
     }
     async NewItem(key: string) {
         if(this.data.inventroySlot.length == maxSlot) {
@@ -75,15 +78,29 @@ export class Inventory {
         return this.itemDb.GetItem(key)
     }
     Copy(inven: InvenData) {
-        this.data = inven
-        let index = this.data.inventroySlot.length - 1
+        const data: InvenData = { bodySlot: [], inventroySlot: [] }
+
+        let index = inven.inventroySlot.length - 1
         while (index >= 0) {
-            const slot = this.data.inventroySlot[index]
+            const slot = inven.inventroySlot[index]
             const id = (slot.item as Item).property.id
-            if (id) slot.item = new Item(this.itemDb.GetItem(id))
-            else this.data.inventroySlot.splice(index, 1)
+            if (id) {
+                const existItem = data.inventroySlot.find((e) => e.item.Id == id)
+                if(existItem) {
+                    existItem.count += slot.count
+                    inven.inventroySlot.splice(index, 1)
+                } else {
+                    data.inventroySlot.push({
+                        item: new Item(this.itemDb.GetItem(id)),
+                        count: slot.count
+                    })
+                }
+            } else inven.inventroySlot.splice(index, 1)
             index --
         }
+        inven.inventroySlot.length = 0
+        inven.inventroySlot.push(...data.inventroySlot)
+        this.data = inven
     }
     Clear() {
         this.data.bodySlot.length = 0

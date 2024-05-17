@@ -44,7 +44,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
             new THREE.SpriteMaterial({ map: map, color: 0xffffff, fog: false }));
         this.scale.set(1, 1, 1)
         this.position.y = 3.3
-        this.position.z = 2
+        this.position.z = 0.5
 
         this.params_ = params;
         this.visible_ = true;
@@ -84,7 +84,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
     Start(text: string, color: string) {
         this.visible = true
         this.SetText(text, color)
-        this.position.set(THREE.MathUtils.randFloatSpread(1), 3.3, 2)
+        this.position.set(THREE.MathUtils.randFloatSpread(1), 3.3, 0.5)
         this.material.opacity = 1 
         this.v = 0.0001
     }

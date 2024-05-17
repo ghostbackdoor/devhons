@@ -41,8 +41,9 @@ export default class App {
     loadingVisible = true
     initCallbackFunc?: Function
 
-    get Furnitures() {return this.factory.Furnitures}
-    get Plants() {return this.factory.Plants}
+    get Furnitures() { return this.factory.Furnitures }
+    get Plants() { return this.factory.Plants }
+    get Items() { return this.factory.Items }
 
     constructor() {
         this.canvas = this.factory.Canvas

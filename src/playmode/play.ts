@@ -1,14 +1,13 @@
-import App, { AppMode } from "./meta/app";
-import { InvenData } from "./meta/inventory/inventory";
-import { ItemId } from "./meta/inventory/items/itemdb";
-import { PlayerStatus } from "./meta/scenes/player/playerctrl";
-import { Ui } from "./models/ui";
-import { Page } from "./page";
+import App, { AppMode } from "../meta/app";
+import { InvenData } from "../meta/inventory/inventory";
+import { ItemId } from "../meta/inventory/items/itemdb";
+import { PlayerStatus } from "../meta/scenes/player/playerctrl";
+import { Ui } from "../models/ui";
+import { Page } from "../page";
 import { UiInven } from "./play_inven";
-import { Session } from "./session";
-import { BlockStore } from "./store";
-import { GlobalSaveTxId } from "./models/tx";
-import { IBuffItem } from "./meta/buff/buff";
+import { Session } from "../session";
+import { BlockStore } from "../store";
+import { IBuffItem } from "../meta/buff/buff";
 
 
 export class Play extends Page {
@@ -24,7 +23,7 @@ export class Play extends Page {
         private blockStore: BlockStore,
         private session: Session, 
         private meta: App, 
-        private inven: UiInven,
+        private uiInven: UiInven,
         url: string
     ) {
         super(url)
@@ -83,9 +82,10 @@ export class Play extends Page {
                 OnEnd: () => { },
                 OnSaveInven: (data: InvenData) => {
                     if (!this.session.CheckLogin() || data.inventroySlot.length < 1) return
-
-                    const json = this.meta.store.StoreInventory()
-                    this.SaveInventory(data, json)
+                    this.uiInven.SaveInventory(data, this.m_masterAddr)
+                        .then(() => {
+                            this.alarm.style.display = "none"
+                        })
                 }
             })
             lvTag.style.display = "none"
@@ -103,8 +103,8 @@ export class Play extends Page {
                     .then((inven: InvenData | undefined) => {
                         console.log(inven)
                         this.meta.store.LoadInventory(inven)
-                        this.inven.LoadInven(this.meta.store.GetEmptyInventory())
-                        this.inven.loadSlot()
+                        this.uiInven.LoadInven(this.meta.store.GetEmptyInventory())
+                        this.uiInven.loadSlot()
                     })
                 if (email == null) {
                     this.blockStore.FetchModels(this.m_masterAddr)
@@ -160,7 +160,7 @@ export class Play extends Page {
         </div>
         `
         const i = 0
-        const items = [this.inven.inven?.GetItemInfo(ItemId.Hanhwasbat)]
+        const items = [this.uiInven.inven?.GetItemInfo(ItemId.Hanhwasbat)]
 
         items.forEach((item) => {
             htmlString += `
@@ -178,11 +178,11 @@ export class Play extends Page {
         items.forEach((_b, i) => {
             const buff = document.getElementById("buff_" + i) as HTMLDivElement
             buff.onclick = async () => {
-                if(this.inven.inven == undefined) return
-                const item = await this.inven.inven?.NewItem(ItemId.Hanhwasbat)
+                if(this.uiInven.inven == undefined) return
+                const item = await this.uiInven.inven?.NewItem(ItemId.Hanhwasbat)
                 if(item == undefined) throw new Error("inventory is full");
                 
-                this.inven.equipmentItem(item)
+                this.uiInven.equipmentItem(item)
                 const lvTag = document.getElementById("levelup") as HTMLDivElement
                 lvTag.style.display = "none"
             }
@@ -236,34 +236,6 @@ export class Play extends Page {
             }
         })
     }
-    public SaveInventory(data: InvenData, json: string) {
-        const masterAddr = this.m_masterAddr;
-        const user = this.session.GetHonUser();
-        const addr = masterAddr + "/glambda?txid=" + encodeURIComponent(GlobalSaveTxId);
-
-        const formData = new FormData()
-        formData.append("key", encodeURIComponent(user.Email))
-        formData.append("email", encodeURIComponent(user.Email))
-        formData.append("id", user.Nickname)
-        formData.append("password", user.Password)
-        formData.append("data", json)
-        const time = (new Date()).getTime()
-        formData.append("date", time.toString())
-        formData.append("table", "inventory")
-        fetch(addr, {
-            method: "POST",
-            cache: "no-cache",
-            headers: {},
-            body: formData
-        })
-            .then((response) => response.json())
-            .then((ret) => {
-                console.log(ret)
-                this.blockStore.UpdateInventory(data, user.Email)
-                this.alarm.style.display = "none"
-            })
-    }
-    
     getParam(): string | null {
         const urlParams = new URLSearchParams(window.location.search);
         const email = encodeURIComponent(urlParams.get("email") ?? "");
@@ -275,7 +247,7 @@ export class Play extends Page {
         this.m_masterAddr = masterAddr;
         const email = this.getParam();
         this.CanvasRenderer(email)
-        this.inven.binding()
+        this.uiInven.binding()
 
         return true;
     }

@@ -19,8 +19,8 @@ export class MinataurFab extends AssetModel implements IAsset {
                 child.receiveShadow = true
             })
             const scale = 0.02
-            this.meshs.scale.set(scale, scale, scale)
-            this.meshs.children[0].position.z -= 70
+            this.meshs.children[0].scale.set(scale, scale, scale)
+            this.meshs.children[0].position.z -= 1.5
             console.log(this.meshs)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "Armature|idle"))

@@ -102,8 +102,10 @@ export class AppFactory {
     get Buff() { return this.buff }
     get GameCenter() { return this.gameCenter }
     get LoadingManager() { return this.loader.LoadingManager }
-    get Furnitures() {return this.furnDb}
-    get Plants() {return this.plantDb}
+    get Furnitures() { return this.furnDb }
+    get Plants() { return this.plantDb }
+    get Monsters() { return this.monDb }
+    get Items() { return this.invenFab.ItemDb }
 
     constructor() {
         this.worldSize = 300
@@ -135,7 +137,7 @@ export class AppFactory {
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
         this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.drop, this.plantDb)
-        this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.furnDb)
+        this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.furnDb, this.alarm, this.invenFab.invenHouse)
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.monDb, this.store)
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
