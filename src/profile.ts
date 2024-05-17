@@ -3,36 +3,23 @@ import { Session } from "./session";
 import { NewProfileTxId } from "./models/tx";
 import { Rout } from "./libs/router";
 import { Page } from "./page";
+import { StableDiffusionAi } from "./module/sdai";
 
 
 export class Profile extends Page implements Rout {
     m_masterAddr: string
-    m_img: Blob;
-    public constructor(private session: Session , private ipc: Channel, url: string) {
+    public constructor(
+        private sdai: StableDiffusionAi,
+        private session: Session, 
+        private ipc: Channel, 
+        url: string
+    ) {
         super(url)
+        this.sdai.Print = this.printLog
         this.m_masterAddr = "";
-        this.m_img = new Blob()
     }
     MsgHandler(msg: string, param: any): void {
-        switch (msg) {
-            case 'generateLog':
-                this.printLog(param)
-                break;
-            case 'reply_generateImage':
-                const filename: string = param
-                fetch(`${window.MasterAddr}/image?filename=${filename}`)
-                    .then(response => response.blob())
-                    .then(data => {
-                        const img = new Blob([data], { type: 'image/bmp' })
-                        const imageUrl = URL.createObjectURL(img)
-                        const imageElement = new Image()
-                        imageElement.src = imageUrl
-                        const container = document.getElementById("printImg") as HTMLDivElement;
-                        container.innerHTML = ""
-                        container.appendChild(imageElement)
-                        this.m_img = img
-                    })
-        }
+        this.sdai.MsgHandler(msg, param)
     }
     printLog(msg: string) {
         const printTag = document.getElementById("log") as HTMLDivElement;
@@ -55,7 +42,7 @@ export class Profile extends Page implements Rout {
         }
         const user = this.session.GetHonUser();
         const formData = new FormData()
-        formData.append("file", this.m_img)
+        formData.append("file", this.sdai.Image)
         formData.append("key", user.Email)
         formData.append("email", user.Email)
         formData.append("password", user.Password)
@@ -73,26 +60,6 @@ export class Profile extends Page implements Rout {
             .then((result) => this.requestResult(result))
     }
 
-    generateImage() {
-        const promptTag = document.getElementById("prompt") as HTMLInputElement;
-        const prompt = promptTag.value.toLowerCase();
-        const npromptTag = document.getElementById("nprompt") as HTMLInputElement;
-        const nprompt = npromptTag.value.toLowerCase();
-        const stepTag = document.getElementById("step") as HTMLInputElement;
-        const step = (stepTag.value == "") ? "20" : stepTag.value;
-        const height = "256"
-        const width = "256"
-        const seed = "-1"
-        const printTag = document.getElementById("printImg") as HTMLDivElement;
-        printTag.innerHTML = `
-            <div class="spinner-grow text-primary" role="status">
-                <span class="visually-hidden"></span>
-            </div>
-        `;
-        const prevent19 = (nprompt == "") ? "nude, naked, nsfw":", nude, naked, nsfw"
-        console.log(prompt,"|", nprompt + prevent19, "|",height, "|",width, "|",step, "|",seed)
-        this.ipc.SendMsg("generateImage", prompt, nprompt + prevent19, height, width, step, seed);
-    }
     public async Run(): Promise<boolean> {
         await this.LoadHtml()
 
@@ -104,17 +71,17 @@ export class Profile extends Page implements Rout {
                 ${NewProfileTxId}
             </a> `;
             */
-        const btn = document.getElementById("generateBtn") as HTMLButtonElement
-        btn.onclick = () => this.generateImage();
         const uploadBtn = document.getElementById("uploadBtn") as HTMLButtonElement
         uploadBtn.onclick = () => this.uploadImage();
         if (!this.session.CheckLogin()) {
             this.printLog("sign in을 해야 변경이 가능합니다.")
         }
+        this.sdai.drawhtml()
         return true;
     }
 
     public Release(): void {
         this.ReleaseHtml()
+        this.sdai.release()
     }
 }

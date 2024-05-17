@@ -16,6 +16,7 @@ import App from "./meta/app";
 import { EditHome } from "./editmode/edithome";
 import { Play } from "./playmode/play";
 import { UiInven } from "./playmode/play_inven";
+import { StableDiffusionAi } from "./module/sdai";
 
 
 interface IPage {
@@ -42,8 +43,9 @@ class Index {
     inven = new UiInven(this.meta, this.session, this.blockStore)
     ipc = new Socket
     router = new Router(this.ipc)
-    newHon = new NewHon(this.session, this.ipc, "views/newhon.html")
-    profile = new Profile(this.session, this.ipc, "views/profile.html")
+    sdai = new StableDiffusionAi(this.ipc)
+    newHon = new NewHon(this.sdai, this.session, this.ipc, "views/newhon.html")
+    profile = new Profile(this.sdai, this.session, this.ipc, "views/profile.html")
 
     CurrentPage?: IPage
     funcMap: FuncMap = {
