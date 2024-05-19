@@ -156,6 +156,11 @@ export class EditHome extends Page {
     public MenuEvent() {
         const sav = document.getElementById("save") as HTMLDivElement
         sav.onclick = async () => {
+            const tag = document.getElementById("confirmsave") as HTMLDivElement
+            tag.style.display = "block"
+        }
+        const saveConfirmBtn = document.getElementById("saveConfirmBtn") as HTMLButtonElement
+        saveConfirmBtn.onclick = async () => {
             this.alarm.style.display = "block"
             this.alarmText.innerHTML = "저장 중입니다."
 
@@ -164,7 +169,13 @@ export class EditHome extends Page {
             await this.inven.SaveInventory(invenData, this.m_masterAddr)
             await this.RequestNewMeta(models)
             this.alarm.style.display = "none"
-
+            const tag = document.getElementById("confirmsave") as HTMLDivElement
+            tag.style.display = "none"
+        }
+        const saveCancelBtn = document.getElementById("saveCancelBtn") as HTMLButtonElement
+        saveCancelBtn.onclick = () => {
+            const tag = document.getElementById("confirmsave") as HTMLDivElement
+            tag.style.display = "none"
         }
         const play = document.getElementById("editplaymode") as HTMLDivElement
         if(play) play.onclick = () => {

@@ -137,6 +137,18 @@ export class Main extends Page {
                 const tag = document.getElementById("tutorial") as HTMLDivElement;
                 tag.insertAdjacentHTML("beforeend", res)
             })
+        await fetch("views/tutorial/interior.html")
+            .then(response => { return response.text(); })
+            .then((res) => {
+                const tag = document.getElementById("tutorial") as HTMLDivElement;
+                tag.insertAdjacentHTML("beforeend", res)
+            })
+        await fetch("views/tutorial/farm.html")
+            .then(response => { return response.text(); })
+            .then((res) => {
+                const tag = document.getElementById("tutorial") as HTMLDivElement;
+                tag.insertAdjacentHTML("beforeend", res)
+            })
 
     }
     public CanvasRenderer() {

@@ -69,6 +69,10 @@ export class EditFurniture {
             }
             idx++
         })
+        const exit = document.getElementById("furniturectrlexit")
+        if(exit) exit.onclick = () => {
+            this.unbinding()
+        }
     }
     unbinding() {
         const ctrl = document.getElementById("furniturectrl") as HTMLDivElement
