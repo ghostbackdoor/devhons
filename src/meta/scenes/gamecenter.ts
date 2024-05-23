@@ -54,7 +54,6 @@ export class GameCenter implements IViewer, IModelReload {
     deckInfo: DeckInfo[] = []
     keytimeout?:NodeJS.Timeout
     startTimeout?:NodeJS.Timeout
-    deckEmpty = false
 
     constructor(
         private player: Player, 
@@ -75,7 +74,6 @@ export class GameCenter implements IViewer, IModelReload {
             switch (e) {
                 case EventFlag.Start:
                     this.safe = true
-                    this.deckEmpty = false
                     this.invenFab.inven.Clear()
                     this.StartDeckParse()
                     //delayed start
@@ -126,8 +124,19 @@ export class GameCenter implements IViewer, IModelReload {
         this.dom.innerText = ((min < 10) ? "0" + min : min) + ":" + ((sec < 10) ? "0" + sec : sec)
         return true
     }
+    checkEndPlay() {
+        // timeover
+        if(this.currentSec >= 15 * 60) {
+            return true
+        }
+        // play die
+        return false
+    }
     Setup(opt: GameOptions) {
         this.opt = opt
+    }
+    EndOfGame() {
+        this.opt?.OnEnd()
     }
     StartDeckParse() {
         console.log("start deck", this.saveData)
@@ -157,18 +166,16 @@ export class GameCenter implements IViewer, IModelReload {
     }
     currentMin = -1
     ExecuteDeck() {
-        if(this.deckEmpty) return
+        const nowMin = Math.floor(this.currentSec / 60)
+        if(this.currentMin != nowMin) { this.currentMin = nowMin } else { return }
+
         if(this.deckInfo.length == 0) {
             //todo: random deck execute
             const r = THREE.MathUtils.randInt(0, DeckId.List.length - 1)
             const rDeck = Deck.DeckDb.get(DeckId.List[r])
             this.monster.RandomDeckMonsters(rDeck ?? Deck.Zombie)
-            this.deckEmpty = true
             return
         }
-        const nowMin = Math.floor(this.currentSec / 60)
-        if(this.currentMin != nowMin) { this.currentMin = nowMin } else { return }
-
         this.deckInfo.forEach((e) => {
             if(!e.execute && e.time <= this.currentMin) {
                 //todo: execute
@@ -227,6 +234,9 @@ export class GameCenter implements IViewer, IModelReload {
         if (!this.playing) return
         if(this.updateTimer(delta)) {
             this.ExecuteDeck()
+        }
+        if( this.checkEndPlay()) {
+            this.EndOfGame()
         }
         this.CheckPortal(delta)
     }

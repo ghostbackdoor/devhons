@@ -66,6 +66,9 @@ export class FurnDb {
             name: "Bath",
             namekr: "욕조",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 10 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultBookShelf, {
             id: FurnId.DefaultBookShelf,
@@ -75,7 +78,7 @@ export class FurnDb {
             namekr: "책장",
             buildingTime: 1000 * 60, // a min
             madeby: [
-                { itemId: ItemId.Logs, count: 1 },
+                { itemId: ItemId.Logs, count: 5 },
             ]
         })
         this.furnDb.set(FurnId.DefaultCloset, {
@@ -85,6 +88,9 @@ export class FurnDb {
             name: "Closet",
             namekr: "옷장",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Logs, count: 10 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultDesk, {
             id: FurnId.DefaultDesk,
@@ -93,6 +99,9 @@ export class FurnDb {
             name: "Desk",
             namekr: "컴퓨터책상",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Logs, count: 10 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultKitchen, {
             id: FurnId.DefaultKitchen,
@@ -101,6 +110,10 @@ export class FurnDb {
             name: "Kitchen",
             namekr: "부엌",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 5 },
+                { itemId: ItemId.Logs, count: 20 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultKitTable, {
             id: FurnId.DefaultKitTable,
@@ -109,6 +122,9 @@ export class FurnDb {
             name: "Kitchen Table",
             namekr: "식탁",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Logs, count: 5 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultOven, {
             id: FurnId.DefaultOven,
@@ -117,6 +133,10 @@ export class FurnDb {
             name: "Oven",
             namekr: "오븐",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 10 },
+                { itemId: ItemId.Logs, count: 2 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultRefrigerator, {
             id: FurnId.DefaultRefrigerator,
@@ -134,7 +154,7 @@ export class FurnDb {
             namekr: "세면대",
             buildingTime: 1000 * 60, // a min
             madeby: [
-                { itemId: ItemId.Rocks, count: 1 },
+                { itemId: ItemId.Rocks, count: 20 },
             ]
         })
         this.furnDb.set(FurnId.DefaultTable, {
@@ -152,6 +172,9 @@ export class FurnDb {
             name: "Toilet",
             namekr: "변기",
             buildingTime: 1000 * 60, // a min
+            madeby: [
+                { itemId: ItemId.Rocks, count: 10 },
+            ]
         })
         this.furnDb.set(FurnId.DefaultTv, {
             id: FurnId.DefaultTv,

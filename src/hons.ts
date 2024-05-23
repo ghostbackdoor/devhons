@@ -108,10 +108,10 @@ export class Hons extends Page {
         canvas.style.display = "block"
         this.profileVisible = false
         this.meta.RegisterInitEvent(() => {
-                //this.meta.ModeChange(AppMode.Long, false)
-                this.ui.UiOn()
-                this.meta.render()
-            })
+            //this.meta.ModeChange(AppMode.Long, false)
+            this.ui.UiOn()
+            this.meta.render()
+        })
         const myModel = this.blockStore.GetModel(this.session.UserId)
         this.blockStore.FetchModels(this.m_masterAddr)
             .then(async (result) => {

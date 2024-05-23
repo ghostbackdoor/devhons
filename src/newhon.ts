@@ -32,12 +32,14 @@ export class NewHon extends Page{
             `;
     }
     warningMsg(msg: string) {
+        this.alarm.style.display = "none"
         const info = document.getElementById("information");
         if (info == null) return;
         info.innerHTML = msg;
     }
     newHonResult(ret: FetchResult) {
         console.log(ret);
+        this.alarm.style.display = "none"
         if (ret.result == "null") {
             this.warningMsg("등록 실패");
         } else {
@@ -50,6 +52,8 @@ export class NewHon extends Page{
         const inputContent = document.getElementById("inputContent") as HTMLTextAreaElement;
         const addr = masterAddr + "/glambda?txid=" + encodeURIComponent(NewHonTxId);
 
+        this.alarm.style.display = "block"
+        this.alarmText.innerText = "등록중입니다."
         const threadTag = document.getElementById("thread") as HTMLInputElement
         const tag = "#" + ((threadTag.value == "") ? "daliy log" : threadTag.value.replace("#", ""))
         const formData = new FormData()
