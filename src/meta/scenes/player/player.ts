@@ -10,8 +10,8 @@ import { Ani, Bind, Char, IAsset } from "../../loader/assetmodel";
 import { Portal } from "../models/portal";
 import { AppMode } from "../../app";
 import { Inventory } from "../../inventory/inventory";
-import { Damage } from "../../effects/damage";
 import { TextStatus } from "../../effects/status";
+import { EffectType, Effector } from "../../effects/effector";
 
 export enum ActionType {
     Idle,
@@ -48,9 +48,9 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
     private playerModel: Char = Char.Male
     bindMesh: THREE.Group[] = []
 
-    damageEffect = new Damage(this.CannonPos.x, this.CannonPos.y, this.CannonPos.z)
     txtStatus = new TextStatus("0", "#ff0000")
     clipMap = new Map<ActionType, THREE.AnimationClip | undefined>()
+    private effector = new Effector(this.game)
 
     get BoxPos() {
         return this.asset.GetBoxPos(this.meshs)
@@ -169,6 +169,7 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
         this.clipMap.set(ActionType.Jump, this.asset.GetAnimationClip(Ani.Jump))
         this.clipMap.set(ActionType.Punch, this.asset.GetAnimationClip(Ani.Punch))
         this.clipMap.set(ActionType.Sword, this.asset.GetAnimationClip(Ani.Sword))
+        this.clipMap.set(ActionType.Gun, this.asset.GetAnimationClip(Ani.Shooting))
         this.clipMap.set(ActionType.Fight, this.asset.GetAnimationClip(Ani.FightIdle))
         this.clipMap.set(ActionType.Dance, this.asset.GetAnimationClip(Ani.Dance0))
         this.clipMap.set(ActionType.MagicH1, this.asset.GetAnimationClip(Ani.MagicH1))
@@ -183,8 +184,8 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
         
         this.changeAnimate(this.clipMap.get(this.currentActionType))
 
-        this.meshs.add(this.damageEffect.Mesh)
-        this.damageEffect.Mesh.visible = false
+        this.effector.Enable(EffectType.BloodExplosion, this.meshs)
+
         this.meshs.add(this.txtStatus)
         this.txtStatus.visible = false
 
@@ -225,7 +226,7 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
         return clip?.duration
     }
     DamageEffect(damage: number) {
-        this.damageEffect.Start()
+        this.effector.StartEffector(EffectType.BloodExplosion)
         this.txtStatus.Start(damage.toString(), "#fff")
     }
     HealEffect(heal: number) {
@@ -233,7 +234,7 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
     }
     Update() {
         const delta = this.clock.getDelta()
-        this.damageEffect.Update(delta)
+        this.effector.Update(delta)
         this.txtStatus.Update(delta)
         this.mixer?.update(delta)
     }

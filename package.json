@@ -38,6 +38,7 @@
     "eventemitter3": "^5.0.1",
     "gsap": "^3.12.5",
     "stats.js": "^0.17.0",
-    "three": "^0.160.0"
+    "three": "^0.160.0",
+    "three.quarks": "^0.12.1"
   }
 }

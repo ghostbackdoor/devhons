@@ -5,7 +5,7 @@ import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./
 import { IPhysicsObject } from "../../models/iobject";
 import { Legos } from "../../bricks/legos";
 import { EventBricks } from "../../bricks/eventbricks";
-import { IMonsterCtrl, IPlayerAction, MonsterBox } from "../monsters";
+import { IMonsterCtrl, IMonsterAction, MonsterBox } from "../monsters";
 import { EventController } from "../../../event/eventctrl";
 import { MonsterProperty } from "../monsterdb";
 import { EffectType } from "../../../effects/effector";
@@ -20,7 +20,7 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
     DyingSt = new DyingZState(this, this.zombie, this.gphysic, this.eventCtrl)
     JumpSt = new JumpZState(this, this.zombie, this.gphysic)
 
-    currentState: IPlayerAction = this.IdleSt
+    currentState: IMonsterAction = this.IdleSt
     raycast = new THREE.Raycaster()
     dir = new THREE.Vector3(0, 0, 0)
     moveDirection = new THREE.Vector3()

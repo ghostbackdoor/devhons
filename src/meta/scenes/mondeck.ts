@@ -55,7 +55,6 @@ export class MonDeck implements IModelReload, IViewer {
     saveData = this.store.Deck
     need2Reload = false
     deckSet: DeckSet[] = []
-    effector = new Effector()
     torus = new CircleEffect(2)
     deck?: DeckType
     lastDeckMsg?: DeckMsg
@@ -109,7 +108,6 @@ export class MonDeck implements IModelReload, IViewer {
             opts.forEach((opt) => {
                 let obj = opt.obj as DeckBox
                 if (obj == null) return
-                this.effector.meshs.position.copy(obj.position)
                 this.DeleteDeck(obj.Id)
             })
         })
@@ -227,7 +225,7 @@ export class MonDeck implements IModelReload, IViewer {
     async NewDeckEntryPool(deck: DeckType, pos: THREE.Vector3): Promise<DeckSet> {
         const property = this.monDb.GetItem(deck.monId)
         const asset = this.loader.GetAssets(property.model)
-        const mon = new Zombie(asset, property.id)
+        const mon = new Zombie(asset, property.id, new Effector(this.game))
         const name = (deck.monId as string) + "Deck"
         await mon.Loader(pos, name, this.deckSet.length)
         mon.Visible = true

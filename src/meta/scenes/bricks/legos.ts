@@ -52,6 +52,14 @@ export class Legos extends Bricks implements IModelReload {
             if (opt.v) {
                 this.brickSize.copy(opt.v)
                 this.brickGuide.Meshs.scale.copy(opt.v)
+                const pos = this.brickGuide.Meshs.position 
+                console.log(pos, opt.v)
+                this.brickGuide.Meshs.position.set(
+                    Math.floor(pos.x) + (opt.v.x % 2) * (.5),
+                    Math.floor(pos.y) + (opt.v.y % 2) * (.5),
+                    Math.floor(pos.z) + (opt.v.z % 2) * (.5)
+                ) 
+                console.log(pos)
             }
             if (opt.r) {
                 this.brickGuide.Meshs.rotateX(THREE.MathUtils.degToRad(opt.r.x))

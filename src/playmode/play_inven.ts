@@ -1,6 +1,7 @@
 import App from "../meta/app";
 import { InvenData, Inventory, InventorySlot } from "../meta/inventory/inventory";
 import { IItem, Item } from "../meta/inventory/items/item";
+import { ItemId } from "../meta/inventory/items/itemdb";
 import { Bind } from "../meta/loader/assetmodel";
 import { GlobalSaveTxId } from "../models/tx";
 import { Session } from "../session";
@@ -59,6 +60,12 @@ export class UiInven {
             }
             itemInfo.appendChild(equipBtn)
         }
+    }
+    newItem(key: ItemId) {
+        this.inven?.NewItem(key)
+    }
+    getItemInfo(key: ItemId){
+        return this.inven?.GetItemInfo(key)
     }
     toInvenItem(bind: Bind) {
         if (this.inven == undefined) throw new Error("inventory undefined");

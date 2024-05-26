@@ -41,10 +41,10 @@ export class MonsterBox extends THREE.Mesh {
         this.name = ObjName
     }
 }
-export interface IPlayerAction {
+export interface IMonsterAction {
     Init(): void
     Uninit(): void
-    Update(delta: number, v: THREE.Vector3, dist: number): IPlayerAction
+    Update(delta: number, v: THREE.Vector3, dist: number): IMonsterAction
 }
 
 export class Monsters {
@@ -52,7 +52,7 @@ export class Monsters {
     keytimeout?:NodeJS.Timeout
     respawntimeout?:NodeJS.Timeout
     mode = AppMode.Close
-    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.eventBricks, this.gphysic, this.monDb)
+    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.eventBricks, this.gphysic, this.game, this.monDb)
 
     constructor(
         private loader: Loader,
@@ -130,7 +130,7 @@ export class Monsters {
         }
     }
     async RandomDeckMonsters(deck: DeckType) {
-        console.log("Start Random Deck---------------")
+        console.log("Start Random Deck---------------", deck.id)
 
         this.RandomSpawning(deck)
     }

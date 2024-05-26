@@ -38,6 +38,7 @@ import { KitTableFab, KitchenFab, OvenFab, RefrigeratorFab } from "./furniture/k
 import { AppleFab, CoconutFab } from "./plant/fruitfab";
 import { DogFab } from "./pet/dogfab";
 import { PetSnakeFab } from "./pet/animalpackfab";
+import { BeeFab } from "./pet/bee";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -72,6 +73,7 @@ export class Loader {
     // Pet //
     private bilby = new BilbyFab(this)
     private dog = new DogFab(this)
+    private bee = new BeeFab(this)
     private petSnake = new PetSnakeFab(this)
 
     // stup //
@@ -130,6 +132,7 @@ export class Loader {
 
     get BilbyAsset(): IAsset { return this.bilby }
     get DogAsset(): IAsset { return this.dog }
+    get BeeAsset(): IAsset { return this.bee }
     get PetSnakeAsset(): IAsset { return this.petSnake }
 
     get GunAsset(): IAsset { return this.gun }
@@ -204,6 +207,7 @@ export class Loader {
 
         this.assets.set(Char.Bilby, this.bilby)
         this.assets.set(Char.Dog, this.dog)
+        this.assets.set(Char.Bee, this.bee)
         this.assets.set(Char.PetSnake, this.petSnake)
 
         this.assets.set(Char.Bat, this.bat)

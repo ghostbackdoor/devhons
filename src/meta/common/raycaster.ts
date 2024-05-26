@@ -42,8 +42,8 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
             return
         }
 
-        this.dir.subVectors(this.target.CenterPos, this._camera.position)
-        this.set(this._camera.position, this.dir.normalize())
+        this.dir.subVectors(this._camera.position, this.target.CenterPos)
+        this.set(this.target.CenterPos, this.dir.normalize())
 
         if (this.legos.instancedBlock != undefined)
             this.CheckVisible(this.legos.instancedBlock)
@@ -64,15 +64,18 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
         const intersects = this.intersectObject(physBox, false)
         const dis = this.target.CenterPos.distanceTo(this._camera.position)
         if (intersects.length > 0 && intersects[0].distance < dis) {
-            (physBox.material as THREE.MeshStandardMaterial).opacity = 0.5;
+            this._camera.position.copy(intersects[0].point);
+            //(physBox.material as THREE.MeshStandardMaterial).opacity = 0.5;
         } else {
-            (physBox.material as THREE.MeshStandardMaterial).opacity = 1;
-        }
+            //(physBox.material as THREE.MeshStandardMaterial).opacity = 1;
+        } 
     }
     CheckVisibleMeshs(physBox: THREE.Mesh[], opacityBox: THREE.Mesh[]) {
         const intersects = this.intersectObjects(physBox, false)
         const dis = this.target.CenterPos.distanceTo(this._camera.position)
         if (intersects.length > 0 && intersects[0].distance < dis) {
+            this._camera.position.copy(intersects[0].point)
+            /*
             intersects.forEach((obj) => {
                 if (obj.distance > dis) return false
                 const mesh = obj.object as THREE.Mesh
@@ -82,6 +85,7 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
                     (mesh.material as THREE.MeshStandardMaterial).opacity = 0.1
                 }
             })
+            */
         } else {
             this.ResetBox(opacityBox)
         }

@@ -23,6 +23,16 @@ export type MonsterProperty = {
 export class MonsterDb {
     monDb = new Map<MonsterId, MonsterProperty>()
     constructor() {
+        this.monDb.set(MonsterId.Bee, {
+            id: MonsterId.Bee,
+            type: MonsterType.Insect,
+            model: Char.Bee,
+            health: 10,
+            speed: 1,
+            damageMin:1,
+            damageMax: 5,
+            attackSpeed: 2,
+        })
         this.monDb.set(MonsterId.Zombie, {
             id: MonsterId.Zombie,
             type: MonsterType.Undead,

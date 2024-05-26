@@ -60,6 +60,7 @@ export class PlayerCtrl implements IGPhysic {
     contollerEnable = true
     inputMode = false
     moveDirection = new THREE.Vector3()
+    playEnable = false
 
     spec: PlayerSpec = new PlayerSpec(this.inventory)
     keyType: KeyType = KeyType.None
@@ -81,6 +82,13 @@ export class PlayerCtrl implements IGPhysic {
     DeleteSt = new DeleteState(this, this.player, this.gphysic, this.eventCtrl)
     currentState: IPlayerAction = this.IdleSt
 
+    get Health() { return this.spec.Health }
+    set Enable(mode: boolean) { 
+        this.playEnable = mode 
+        this.currentState.Uninit()
+        this.currentState = this.IdleSt
+        this.currentState.Init()
+    }
 
     constructor(
         private player: Player,
@@ -96,6 +104,7 @@ export class PlayerCtrl implements IGPhysic {
             if (mode == AppMode.EditPlay || mode == AppMode.Weapon) {
                 switch (e) {
                     case EventFlag.Start:
+                        this.playEnable = true
                         while (this.gphysic.Check(player)) {
                             player.CannonPos.y += 0.2
                         }
@@ -103,6 +112,7 @@ export class PlayerCtrl implements IGPhysic {
                         this.currentState.Init()
                         break
                     case EventFlag.End:
+                        this.playEnable = false
                         this.currentState.Uninit()
                         break
                 }
@@ -110,28 +120,30 @@ export class PlayerCtrl implements IGPhysic {
             if (mode == AppMode.Play) {
                 switch (e) {
                     case EventFlag.Start:
+                        this.playEnable = true
                         this.spec.ResetStatus()
                         eventCtrl.OnChangePlayerStatusEvent(this.spec.Status)
                         this.currentState = this.IdleSt
                         this.currentState.Init()
                         break
                     case EventFlag.End:
+                        this.playEnable = false
                         this.currentState.Uninit()
                         break
                 }
             }
         })
         eventCtrl.RegisterKeyDownEvent((keyCommand: IKeyCommand) => {
-            if (!this.contollerEnable) return
+            if (!this.contollerEnable || !this.playEnable) return
             this.keyDownQueue.push(keyCommand)
         })
         eventCtrl.RegisterKeyUpEvent((keyCommand: IKeyCommand) => {
-            if (!this.contollerEnable) return
+            if (!this.contollerEnable || !this.playEnable) return
             this.keyUpQueue.push(keyCommand)
         })
 
         eventCtrl.RegisterInputEvent((e: any, real: THREE.Vector3) => { 
-            if (!this.contollerEnable) return
+            if (!this.contollerEnable || !this.playEnable) return
             if (e.type == "move") {
                 this.inputVQueue.push(new THREE.Vector3().copy(real))
                 this.inputMode = true
@@ -147,17 +159,17 @@ export class PlayerCtrl implements IGPhysic {
             }
         })
         eventCtrl.RegisterAttackEvent("player", (opts: AttackOption[]) => {
+            if (this.currentState != this.DyingSt && this.spec.CheckDie()) {
+                this.currentState = this.DyingSt
+                this.currentState.Init()
+            }
+            if (!this.playEnable) return
             opts.forEach((opt) => {
                 switch(opt.type) {
                     case AttackType.NormalSwing:
                     case AttackType.Magic0:
-                        if(this.currentState == this.DyingSt) break;
                         this.spec.ReceiveCalcDamage(opt.damage)
                         this.player.DamageEffect(opt.damage)
-                        if(this.spec.CheckDie()) {
-                            this.currentState = this.DyingSt
-                            this.currentState.Init()
-                        }
                         break;
                     case AttackType.Exp:
                         this.spec.ReceiveExp(opt.damage)

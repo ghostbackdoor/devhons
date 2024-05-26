@@ -44,6 +44,7 @@ export class PlayerSpec {
         return this.attackDamageMin
     }
     get Status() { return this.status}
+    get Health() { return this.status.health }
 
     constructor(private inven: Inventory) { }
 

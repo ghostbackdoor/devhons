@@ -38,7 +38,7 @@ import { MonDeck } from "../scenes/mondeck";
 import { NonLegos } from "../scenes/bricks/nonlegos";
 import { FurnDb } from "../scenes/furniture/furndb";
 import { PlantDb } from "../scenes/plants/plantdb";
-
+import { Friendly } from "../scenes/friendly/friendly";
 
 export class AppFactory {
     phydebugger: any
@@ -68,6 +68,7 @@ export class AppFactory {
     private portal: Portal
     private npcs: NpcManager
     private monsters: Monsters
+    private friendly: Friendly
     private materials: Materials
     private farmer: Farmer
     private carp: Carpenter
@@ -134,21 +135,19 @@ export class AppFactory {
         this.nonLegos = new NonLegos(this.game, this.eventCtrl, this.store, this.Physics, this.player)
         this.npcs = new NpcManager(this.loader, this.eventCtrl, this.game, this.canvas, this.store, this.gphysics)
         this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.brick, this.gphysics, this.drop, this.monDb)
+        this.friendly = new Friendly(this.loader, this.eventCtrl, this.gphysics, this.game, this.player, this.playerCtrl, this.monDb)
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
         this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.drop, this.plantDb)
         this.carp = new Carpenter(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.furnDb, this.alarm, this.invenFab.invenHouse)
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.monDb, this.store)
 
-        this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
+        this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.friendly, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
 
         this.camera = new Camera(this.canvas, this.player, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
         this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.brick, this.canvas, this.eventCtrl)
         this.renderer = new Renderer(this.camera, this.game, this.canvas)
         this.currentScene = this.game
-
-      
-        
     }
     async MassMushroomLoader(type: number) {
         const mushasset = (type == 1) ? this.loader.Mushroom1Asset : this.loader.Mushroom2Asset

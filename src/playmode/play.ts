@@ -18,6 +18,7 @@ export class Play extends Page {
     alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
 
     defaultLv = 1
+    randomBoxOpend = false
 
     constructor(
         private blockStore: BlockStore,
@@ -30,6 +31,7 @@ export class Play extends Page {
     }
 
     startPlay() {
+        this.randomBoxOpend = false
         const lvView = document.getElementById("levelview") as HTMLDivElement
         lvView.replaceChildren()
 
@@ -79,7 +81,7 @@ export class Play extends Page {
         const startBtn = document.getElementById("startBtn") as HTMLButtonElement
         startBtn.onclick = () => {
             this.meta.Setup({
-                OnEnd: () => { },
+                OnEnd: (ret: boolean) => { this.endPlay(ret) },
                 OnSaveInven: (data: InvenData) => {
                     if (!this.session.CheckLogin() || data.inventroySlot.length < 1) return
                     this.uiInven.SaveInventory(data, this.m_masterAddr)
@@ -92,6 +94,64 @@ export class Play extends Page {
             this.ui.UiOff(AppMode.Play)
             this.LevelUp()
         }
+    }
+    endPlay(ret: boolean) {
+        const lvView = document.getElementById("levelview") as HTMLDivElement
+        lvView.replaceChildren()
+
+        let htmlString = `
+        <div class="row pb-2">
+            <div class="col xxx-large text-white text-center h2">${(ret) ? "Game Complete" : "Game Over"}</div>
+        </div>`
+
+        if (ret) htmlString += `
+        <div class="row p-2">
+            <div class="col-auto text-white text-weight-bold">보상을 선택하세요!</div>
+        </div>
+        <div class="row p-2">
+            <div class="col text-white text-center handcursor" id="randomBox1"><img src="assets/icons/Misc/Chest.png"></div>
+            <div class="col text-white text-center handcursor" id="randomBox2"><img src="assets/icons/Misc/Chest.png"></div>
+            <div class="col text-white text-center handcursor" id="randomBox3"><img src="assets/icons/Misc/Chest.png"></div>
+        </div>`
+
+        htmlString += `
+        <div class="row p-2">
+            <div class="col text-white text-center">
+            <button type="button" class="btn btn-primary" id="endBtn">나가기</button>
+            </div>
+        </div>
+        `
+        lvView.innerHTML = htmlString
+
+        const lvTag = document.getElementById("levelup") as HTMLDivElement
+        lvTag.style.display = "block"
+        const endBtn = document.getElementById("endBtn") as HTMLButtonElement
+        endBtn.onclick = () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen()
+            }
+            history.back()
+        }
+        if (ret) {
+            const randomBox1 = document.getElementById("randomBox1") as HTMLButtonElement
+            const randomBox2 = document.getElementById("randomBox2") as HTMLButtonElement
+            const randomBox3 = document.getElementById("randomBox3") as HTMLButtonElement
+            randomBox1.onclick = () => this.openRandomBox(randomBox1)
+            randomBox2.onclick = () => this.openRandomBox(randomBox2)
+            randomBox3.onclick = () => this.openRandomBox(randomBox3)
+        }
+    }
+    openRandomBox(dom: HTMLElement) {
+        if (this.randomBoxOpend) return 
+        this.randomBoxOpend = true
+        const category = Math.floor(Math.random() * ItemId.ItemCategory.length)
+        const list = ItemId.ItemCategory[category]
+        const itemNo = Math.floor(Math.random() * Math.random() * list.length)
+        const itemId = list[itemNo]
+        this.uiInven.newItem(itemId)
+        const itemInfo = this.uiInven.getItemInfo(itemId)
+
+        dom.innerHTML = `<img src="assets/icons/${itemInfo?.icon}"><br>${itemInfo?.namekr ?? itemInfo?.name}`
     }
 
     public CanvasRenderer(email: string | null) {
@@ -159,10 +219,10 @@ export class Play extends Page {
             <div class="col xxx-large text-white text-center h2">무기를 선택하세요!</div>
         </div>
         `
-        const i = 0
-        const items = [this.uiInven.inven?.GetItemInfo(ItemId.Hanhwasbat)]
+        const items = [ItemId.Hanhwasbat, ItemId.DefaultGun,]
 
-        items.forEach((item) => {
+        items.forEach((id, i) => {
+            const item = this.uiInven.inven?.GetItemInfo(id)
             htmlString += `
         <div class="row p-2 handcursor" id="buff_${i}">
             <div class="col-auto"><img src="assets/icons/${item?.icon}" style="width: 45px;"></div>
@@ -175,11 +235,11 @@ export class Play extends Page {
         const lvTag = document.getElementById("levelup") as HTMLDivElement
         lvTag.style.display = "block"
 
-        items.forEach((_b, i) => {
+        items.forEach((id, i) => {
             const buff = document.getElementById("buff_" + i) as HTMLDivElement
             buff.onclick = async () => {
                 if(this.uiInven.inven == undefined) return
-                const item = await this.uiInven.inven?.NewItem(ItemId.Hanhwasbat)
+                const item = await this.uiInven.inven?.NewItem(id)
                 if(item == undefined) throw new Error("inventory is full");
                 
                 this.uiInven.equipmentItem(item)

@@ -146,9 +146,11 @@ export class ModelStore {
         this.name = name
         this.data.legos.length = 0
         this.data.bricks.length = 0
+        this.data.plants.length = 0
         this.data.owner = undefined
         this.data.ownerModel = Char.Male
         this.data.portal = SConf.DefaultPortalPosition
+        this.data.furn.length = 0
 
         const promise = this.mgrs.map(async (mgr) => {
             await mgr.Reload()

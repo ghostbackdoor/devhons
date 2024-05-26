@@ -34,7 +34,7 @@ export class Inventory {
     GetItem(id: ItemId) {
         return this.data.inventroySlot.find(e => e.item.Id == id)
     }
-    async NewItem(key: string) {
+    async NewItem(key: ItemId) {
         if(this.data.inventroySlot.length == maxSlot) {
             this.alarm.NotifyInfo("인벤토리가 가득찼습니다.", AlarmType.Warning)
             return 
@@ -74,7 +74,7 @@ export class Inventory {
     GetBindItem(pos: Bind) {
         return this.data.bodySlot[pos]
     }
-    GetItemInfo(key: string) {
+    GetItemInfo(key: ItemId) {
         return this.itemDb.GetItem(key)
     }
     Copy(inven: InvenData) {

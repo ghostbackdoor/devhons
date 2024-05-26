@@ -19,7 +19,6 @@ export class Zombie extends GhostModel implements IPhysicsObject {
 
     private controllerEnable: boolean = false
 
-    effector = new Effector()
     movePos = new THREE.Vector3()
     vFlag = true
 
@@ -30,7 +29,8 @@ export class Zombie extends GhostModel implements IPhysicsObject {
 
     constructor(
         asset: IAsset,
-        private monId: MonsterId
+        private monId: MonsterId,
+        private effector: Effector
     ) {
         super(asset)
         this.text = new FloatingName(this.monId.toString())
@@ -76,6 +76,7 @@ export class Zombie extends GhostModel implements IPhysicsObject {
             this.meshs.add(this.text)
         }
         this.meshs.add(this.effector.meshs)
+        this.effector.Enable(EffectType.BloodExplosion, this.meshs)
 
         this.mixer = this.asset.GetMixer(text + id)
         if (this.mixer == undefined) throw new Error("mixer is undefined");
@@ -140,7 +141,7 @@ export class Zombie extends GhostModel implements IPhysicsObject {
             case EffectType.Damage:
             default:
                 //this.effector.StartEffector(EffectType.Lightning)
-                this.effector.StartEffector(EffectType.Damage)
+                this.effector.StartEffector(EffectType.BloodExplosion)
                 break;
             case EffectType.Lightning:
                 this.effector.StartEffector(EffectType.Damage)

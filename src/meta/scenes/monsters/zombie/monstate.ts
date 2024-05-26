@@ -3,7 +3,7 @@ import { GPhysics } from "../../../common/physics/gphysics"
 import { ActionType } from "../../player/player"
 import { Zombie } from "./zombie"
 import { MonsterCtrl } from "./monctrl";
-import { IPlayerAction } from "../monsters";
+import { IMonsterAction } from "../monsters";
 import { EventController } from "../../../event/eventctrl";
 import { AttackType } from "../../player/playerctrl";
 import { MonsterProperty } from "../monsterdb";
@@ -33,7 +33,7 @@ class State {
         this.zombie.Meshs.position.y += 0.5
     }
 }
-export class JumpZState implements IPlayerAction {
+export class JumpZState implements IMonsterAction {
     speed = 10
     velocity_y = 16
     dirV = new THREE.Vector3(0, 0, 0)
@@ -50,7 +50,7 @@ export class JumpZState implements IPlayerAction {
     Uninit(): void {
         this.velocity_y = 16
     }
-    Update(delta: number, v: THREE.Vector3): IPlayerAction {
+    Update(delta: number, v: THREE.Vector3): IMonsterAction {
         const movX = v.x * delta * this.speed
         const movZ = v.z * delta * this.speed
         const movY = this.velocity_y * delta
@@ -85,7 +85,7 @@ export class JumpZState implements IPlayerAction {
         return this
     }
 }
-export class AttackZState extends State implements IPlayerAction {
+export class AttackZState extends State implements IMonsterAction {
     keytimeout?:NodeJS.Timeout
     attackSpeed = this.property.attackSpeed
     attackProcess = false
@@ -106,7 +106,7 @@ export class AttackZState extends State implements IPlayerAction {
     Uninit(): void {
         if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
     }
-    Update(delta: number, v: THREE.Vector3, dist: number): IPlayerAction {
+    Update(delta: number, v: THREE.Vector3, dist: number): IMonsterAction {
         if (dist > this.attackDist) {
             const checkRun = this.CheckRun(v)
             if (checkRun != undefined) return checkRun
@@ -135,7 +135,7 @@ export class AttackZState extends State implements IPlayerAction {
     }
 }
 
-export class IdleZState extends State implements IPlayerAction {
+export class IdleZState extends State implements IMonsterAction {
     constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics) {
         super(zCtrl, zombie, gphysic)
         this.Init()
@@ -146,14 +146,14 @@ export class IdleZState extends State implements IPlayerAction {
     Uninit(): void {
         
     }
-    Update(_delta: number, v: THREE.Vector3): IPlayerAction {
+    Update(_delta: number, v: THREE.Vector3): IMonsterAction {
         const checkRun = this.CheckRun(v)
         if (checkRun != undefined) return checkRun
 
         return this
     }
 }
-export class DyingZState extends State implements IPlayerAction {
+export class DyingZState extends State implements IMonsterAction {
     fadeMode = false
     fade = 1
     constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics, private eventCtrl: EventController) {
@@ -173,7 +173,7 @@ export class DyingZState extends State implements IPlayerAction {
     Uninit(): void {
         
     }
-    Update(delta: number): IPlayerAction {
+    Update(delta: number): IMonsterAction {
         if(this.fadeMode) {
             this.fade -= delta
             if (this.fade < 0) this.fade = 0
@@ -182,7 +182,7 @@ export class DyingZState extends State implements IPlayerAction {
         return this
     }
 }
-export class RunZState extends State implements IPlayerAction {
+export class RunZState extends State implements IMonsterAction {
     speed = this.property.speed
     constructor(zCtrl: MonsterCtrl, zombie: Zombie, gphysic: GPhysics, private property: MonsterProperty) {
         super(zCtrl, zombie, gphysic)
@@ -199,7 +199,7 @@ export class RunZState extends State implements IPlayerAction {
     MX = new THREE.Matrix4()
     QT = new THREE.Quaternion()
 
-    Update(delta: number, v: THREE.Vector3, dist: number): IPlayerAction {
+    Update(delta: number, v: THREE.Vector3, dist: number): IMonsterAction {
         const checkGravity = this.CheckGravity()
         if (checkGravity != undefined) return checkGravity
 

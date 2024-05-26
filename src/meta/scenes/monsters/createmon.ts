@@ -11,6 +11,8 @@ import { MonsterCtrl } from "./zombie/monctrl"
 import { MonsterDb } from "./monsterdb"
 import { MonsterId } from "./monsterid";
 import { NonLegos } from "../bricks/nonlegos";
+import { Game } from "../game";
+import { Effector } from "../../effects/effector";
 
 export class CreateMon {
     constructor(
@@ -21,6 +23,7 @@ export class CreateMon {
         private nonlegos: NonLegos,
         private eventBricks: EventBricks,
         private gphysic: GPhysics,
+        private game: Game,
         private monDb: MonsterDb,
     ) {
     }
@@ -28,7 +31,7 @@ export class CreateMon {
         if(!pos) pos = new THREE.Vector3(10, 0, 15)
         const property = this.monDb.GetItem(monId)
         const asset = this.loader.GetAssets(property.model)
-        const monster = new Zombie(asset, monId)
+        const monster = new Zombie(asset, monId, new Effector(this.game))
         await monster.Loader(pos, monId as string, id)
 
         const zCtrl = new MonsterCtrl(id, this.player, monster, this.legos, this.nonlegos, this.eventBricks, this.gphysic,

@@ -40,10 +40,15 @@ export class AttackState extends State implements IPlayerAction {
                 case AttackItemType.Blunt:
                 case AttackItemType.Axe:
                 case AttackItemType.Sword:
+                    this.player.ChangeAction(ActionType.Sword, this.attackSpeed)
+                    this.attackDist = 5
+                    break;
                 case AttackItemType.Knife:
+                    this.attackDist = 2
                     this.player.ChangeAction(ActionType.Sword, this.attackSpeed)
                     break;
                 case AttackItemType.Gun:
+                    this.attackDist = 20
                     this.player.ChangeAction(ActionType.Gun, this.attackSpeed)
                     break;
                 case AttackItemType.Bow:

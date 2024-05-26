@@ -43,7 +43,6 @@ export class EditFurniture {
         let html = ""
         let idx = 0
         this.furnDb.Items.forEach(v => {
-
             html += `
     <div class="row handcursor" id="furnslot${idx++}">
         <div class="col-auto ms-1 me-0 pb-1">

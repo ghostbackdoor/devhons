@@ -53,12 +53,12 @@ export class EditHome extends Page {
         const x_rotation = document.getElementById("x_rotation") as HTMLSpanElement
         const brickmodeExit = document.getElementById("brickmodeexit") as HTMLSpanElement
 
-        x_up.onclick = () => this.ChangeBrickSize("x", 2)
-        x_down.onclick = () => this.ChangeBrickSize("x", -2)
-        y_up.onclick = () => this.ChangeBrickSize("y", 2)
-        y_down.onclick = () => this.ChangeBrickSize("y", -2)
-        z_up.onclick = () => this.ChangeBrickSize("z", 2)
-        z_down.onclick = () => this.ChangeBrickSize("z", -2)
+        x_up.onclick = () => this.ChangeBrickSize("x", 1)
+        x_down.onclick = () => this.ChangeBrickSize("x", -1)
+        y_up.onclick = () => this.ChangeBrickSize("y", 1)
+        y_down.onclick = () => this.ChangeBrickSize("y", -1)
+        z_up.onclick = () => this.ChangeBrickSize("z", 1)
+        z_down.onclick = () => this.ChangeBrickSize("z", -1)
         y_rotation.onclick = () => this.ChangeRotation(0, 90, 0)
         x_rotation.onclick = () => this.ChangeRotation(90, 0, 0)
         brickmodeExit.onclick = () => {

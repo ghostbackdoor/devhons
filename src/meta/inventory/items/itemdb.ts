@@ -33,6 +33,22 @@ export class ItemId {
     public static Tomato = "Tomato"
     public static Potato = "Potato"
     public static Carrot = "Carrot"
+
+    public static DeckList: string[] = [
+        this.ZombieDeck, this.MinataurDeck, this.BatPigDeck, this.BilbyDeck,
+        this.BirdmonDeck, this.CrabDeck, this.SkeletonDeck, this.GolemDeck,
+        this.BigGolemDeck, this.KittenMonkDeck, this.SnakeDeck, this.BuilderDeck,
+        this.ToadMageDeck, this.VikingDeck, this.WereWolfDeck
+    ]
+    public static DropList: string[] = [
+        this.Leather, this.Logs, this.Rocks
+    ]
+    public static HavestList: string[] = [
+        this.Apple, this.Coconut, this.Tomato, this.Potato, this.Carrot
+    ]
+    public static ItemCategory: string[][] = [
+        this.DeckList, this.DropList, this.HavestList
+    ]
 }
 
 
@@ -67,7 +83,7 @@ export type ItemProperty = {
 }
 
 export class ItemDb {
-    itemDb = new Map<string, ItemProperty>()
+    itemDb = new Map<ItemId, ItemProperty>()
 
     constructor(private loader: Loader) {
         this.itemDb.set(ItemId.Hanhwasbat, {
@@ -81,6 +97,18 @@ export class ItemDb {
             icon: "WeaponTool/TopazStaff.png",
             stackable: false, binding: true,
             damageMax: 5, damageMin: 3, speed: 1,
+        })
+        this.itemDb.set(ItemId.DefaultGun, {
+            id: ItemId.DefaultGun,
+            type: ItemType.Attack,
+            weapon: AttackItemType.Gun,
+            bind: Bind.Hands_R,
+            asset: this.loader.GunAsset,
+            level: Level.Common,
+            name: "Legacy Gun",
+            icon: "WeaponTool/Bow.png",
+            stackable: false, binding: true,
+            damageMax: 2, damageMin: 1, speed: 1,
         })
         this.itemDb.set(ItemId.WarterCan, {
             id: ItemId.WarterCan,
@@ -310,7 +338,7 @@ export class ItemDb {
             price: 1,
         })
     }
-    GetItem(key: string): ItemProperty  {
+    GetItem(key: ItemId): ItemProperty  {
         const ret = this.itemDb.get(key)
         if(ret == undefined)
             throw new Error("unkown key");

@@ -28,7 +28,7 @@ export class Materials implements IViewer {
     private stoneBoxes: MonsterBox[] = []
     private treeBoxes: MonsterBox[] = []
     dropPos = new THREE.Vector3()
-    effector = new Effector()
+    effector = new Effector(this.game)
 
     material = new THREE.MeshBasicMaterial({ 
             //color: 0xD9AB61,

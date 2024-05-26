@@ -242,8 +242,12 @@ export class RunState extends State implements IPlayerAction {
         this.player.Meshs.quaternion.copy(qt)
 
         if (this.gphysic.Check(this.player)) {
-            this.player.Meshs.position.x -= movX
-            this.player.Meshs.position.z -= movZ
+            this.player.Meshs.position.y += 1 // 계단 체크
+            if (this.gphysic.Check(this.player)) {
+                this.player.Meshs.position.x -= movX
+                this.player.Meshs.position.z -= movZ
+                this.player.Meshs.position.y -= 1
+            }
         }
         return this
     }

@@ -13,6 +13,7 @@ import { CircleEffect } from "./models/circle";
 import { IModelReload, ModelStore } from "../common/modelstore";
 import { Deck, DeckId } from "../inventory/items/deck";
 import { MonsterId } from "./monsters/monsterid";
+import { Friendly } from "./friendly/friendly";
 
 export enum GameType {
     VamSer,
@@ -46,6 +47,7 @@ export class GameCenter implements IViewer, IModelReload {
     //  - Boss
     opt?: GameOptions
     timer = 0
+    defaultGameTime = 10
     safe = false
     playing = false
     dom = document.createElement("div")
@@ -60,6 +62,7 @@ export class GameCenter implements IViewer, IModelReload {
         private playerCtrl: PlayerCtrl,
         private portal: Portal,
         private monster: Monsters,
+        private friendly: Friendly,
         private invenFab: InvenFactory,
         canvas: Canvas,
         private alarm: Alarm,
@@ -75,6 +78,7 @@ export class GameCenter implements IViewer, IModelReload {
                 case EventFlag.Start:
                     this.safe = true
                     this.invenFab.inven.Clear()
+                    this.CallFriendly(MonsterId.Bee)
                     this.StartDeckParse()
                     //delayed start
                     this.startTimeout = setTimeout(() => {
@@ -118,7 +122,7 @@ export class GameCenter implements IViewer, IModelReload {
         if (this.currentSec == Math.floor(this.timer)) return false
 
         this.currentSec = Math.floor(this.timer)
-        const remainSec = 15 * 60 - this.currentSec
+        const remainSec = this.defaultGameTime * 60 - this.currentSec
         const min = Math.floor(remainSec / 60)
         const sec = remainSec % 60
         this.dom.innerText = ((min < 10) ? "0" + min : min) + ":" + ((sec < 10) ? "0" + sec : sec)
@@ -126,17 +130,27 @@ export class GameCenter implements IViewer, IModelReload {
     }
     checkEndPlay() {
         // timeover
-        if(this.currentSec >= 15 * 60) {
+        if (this.currentSec >= this.defaultGameTime * 60) {
+            this.EndOfGame(this.safe)
             return true
         }
         // play die
+        if (this.playerCtrl.Health <= 0) {
+            this.EndOfGame(false)
+        }
         return false
     }
     Setup(opt: GameOptions) {
         this.opt = opt
     }
-    EndOfGame() {
-        this.opt?.OnEnd()
+    EndOfGame(ret: boolean) {
+        this.playing = false
+        this.playerCtrl.Enable = false
+        this.opt?.OnEnd(ret)
+    }
+    CallFriendly(id: MonsterId) {
+        this.friendly.CreateFriendly(id, this.player.CannonPos)
+
     }
     StartDeckParse() {
         console.log("start deck", this.saveData)
@@ -235,9 +249,8 @@ export class GameCenter implements IViewer, IModelReload {
         if(this.updateTimer(delta)) {
             this.ExecuteDeck()
         }
-        if( this.checkEndPlay()) {
-            this.EndOfGame()
-        }
+        this.checkEndPlay()
+
         this.CheckPortal(delta)
     }
     async Viliageload(): Promise<void> {

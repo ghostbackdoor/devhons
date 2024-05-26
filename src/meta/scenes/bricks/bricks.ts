@@ -108,6 +108,7 @@ export class Bricks {
 
         }
         this.CheckCollision()
+        console.log("loc: ", this.brickGuide.position)
     }
 
     GetCollisionBox(): [IBuildingObject | undefined, string[]] {
@@ -214,8 +215,8 @@ export class Bricks {
     }
     CheckCollision() {
         if (this.brickGuide == undefined) return
-        this.brickGuide.CannonPos.x = Math.ceil(this.brickGuide.CannonPos.x)
-        this.brickGuide.CannonPos.z = Math.ceil(this.brickGuide.CannonPos.z)
+        //this.brickGuide.CannonPos.x = Math.ceil(this.brickGuide.CannonPos.x)
+        //this.brickGuide.CannonPos.z = Math.ceil(this.brickGuide.CannonPos.z)
         const min = this.brickGuide.Size.y / 2
         this.brickGuide.CannonPos.y = (this.brickGuide.CannonPos.y < min) ? min : this.brickGuide.CannonPos.y
         
