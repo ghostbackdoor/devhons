@@ -5,6 +5,7 @@ import {
     QuarksLoader,
 } from 'three.quarks';
 import { IEffect } from "./effector";
+import { IPhysicsObject } from "../scenes/models/iobject";
 
 
 export class QuarksVfx implements IEffect {
@@ -14,12 +15,12 @@ export class QuarksVfx implements IEffect {
     processFlag = false
     batchRenderer = new BatchedParticleRenderer();
     loaded = false
-    target?: THREE.Group
+    target?: IPhysicsObject
    
     groups: THREE.Object3D[] = []
     constructor(private vfxPath: string) {}
 
-    async initEffect(mesh: THREE.Group, game: THREE.Scene) {
+    async initEffect(mesh: IPhysicsObject, game: THREE.Scene) {
         if(this.loaded) return
         this.loaded = true
         new QuarksLoader().load(this.vfxPath, (obj) => {
@@ -38,14 +39,18 @@ export class QuarksVfx implements IEffect {
     }
 
     Start(): void {
-        if(this.processFlag) return
-        this.groups[this.refreshIndex].traverse((object) => {
-            if (object instanceof ParticleEmitter) {
-                object.system.restart();
-            }
-        });
-        if (this.target) this.groups[this.refreshIndex].position.copy(this.target.position)
-        console.log(this.target?.position)
+        if (this.processFlag || !this.loaded) return
+        try {
+            this.groups[this.refreshIndex].traverse((object) => {
+                if (object instanceof ParticleEmitter) {
+                    object.system.restart();
+                }
+            });
+        } catch (e) {
+            console.log(e, this.groups)
+        }
+        if (this.target) this.groups[this.refreshIndex].position.copy(this.target.CenterPos)
+        console.log(this.target?.CenterPos)
 
         this.processFlag = true
     }
@@ -64,6 +69,11 @@ export class QuarksVfx implements IEffect {
             this.totalTime = 0;
             this.processFlag = false
         }
-        if (this.batchRenderer) this.batchRenderer.update(delta);
+        if (this.batchRenderer) {
+            const tmp = console.warn
+            console.warn = () => { }
+            this.batchRenderer.update(delta);
+            console.warn = tmp
+        }
     }
 }

@@ -266,6 +266,16 @@ export class MonsterDb {
                 { itemId: ItemId.Logs, ratio: 1 }
             ]
         })
+        this.monDb.set(MonsterId.DefaultBall, {
+            id: MonsterId.DefaultBall,
+            type: MonsterType.Rock,
+            model: Char.None,
+            health: 1,
+            speed: 8,
+            damageMin:3,
+            damageMax: 4,
+            attackSpeed: 7,
+        })
     }
     GetItem(key: MonsterId): MonsterProperty  {
         const ret = this.monDb.get(key)

@@ -6,6 +6,7 @@ import { AppMode } from "../app";
 import { IPhysicsObject } from "../scenes/models/iobject";
 import { AttackOption, PlayerStatus } from "../scenes/player/playerctrl";
 import { Inventory } from "../inventory/inventory";
+import { ProjectileMsg } from "../scenes/projectile/projectile";
 
 export enum EventFlag {
     Start,
@@ -108,5 +109,11 @@ export class EventController {
     }
     RegisterChangePlayerStatusEvent(callback: (...e: any[]) => void) {
         this.eventEmitter.on(SConf.PlayerStatus, callback)
+    }
+    OnProjectileEvent(opt: ProjectileMsg) {
+        this.eventEmitter.emit(SConf.projectile, opt)
+    }
+    RegisterProjectileEvent(callback: (...e: any[]) => void) {
+        this.eventEmitter.on(SConf.projectile, callback)
     }
 }

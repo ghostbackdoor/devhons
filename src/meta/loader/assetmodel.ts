@@ -103,17 +103,26 @@ export enum Char{
     Toilet,
     TV,
     Stone,
+
+    None,
 }
 export enum ModelType {
     Gltf,
     GltfParser,
     Fbx
 }
+export type AssetInfo = {
+    scale?: number
+    calX?: number
+    calY?: number
+    calZ?: number
+}
 
 export interface IAsset {
     get Id(): Char
     get Clips(): Map<Ani, THREE.AnimationClip | undefined>
     get BoxMesh(): THREE.Mesh | undefined
+    get Info(): AssetInfo | undefined
     GetAnimationClip(id: Ani): THREE.AnimationClip | undefined 
     GetBox(mesh: THREE.Group): THREE.Box3
     GetBoxPos(mesh: THREE.Group): THREE.Vector3
@@ -133,10 +142,12 @@ export class AssetModel {
     private models = new Map<string, THREE.Group>()
     private mixers = new Map<string, THREE.AnimationMixer>()
     protected boxMat = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true})
+    protected info?: AssetInfo
 
     get Clips() { return this.clips }
     get Mixer() { return this.mixer }
     get BoxMesh() { return this.box }
+    get Info() { return this.info }
     constructor(
         protected loader: Loader, 
         private loaderType: ModelType,

@@ -39,6 +39,7 @@ import { NonLegos } from "../scenes/bricks/nonlegos";
 import { FurnDb } from "../scenes/furniture/furndb";
 import { PlantDb } from "../scenes/plants/plantdb";
 import { Friendly } from "../scenes/friendly/friendly";
+import { Projectile } from "../scenes/projectile/projectile";
 
 export class AppFactory {
     phydebugger: any
@@ -69,6 +70,7 @@ export class AppFactory {
     private npcs: NpcManager
     private monsters: Monsters
     private friendly: Friendly
+    private projectile: Projectile
     private materials: Materials
     private farmer: Farmer
     private carp: Carpenter
@@ -107,6 +109,7 @@ export class AppFactory {
     get Plants() { return this.plantDb }
     get Monsters() { return this.monDb }
     get Items() { return this.invenFab.ItemDb }
+    get Projectile() { return this.projectile }
 
     constructor() {
         this.worldSize = 300
@@ -136,6 +139,8 @@ export class AppFactory {
         this.npcs = new NpcManager(this.loader, this.eventCtrl, this.game, this.canvas, this.store, this.gphysics)
         this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.brick, this.gphysics, this.drop, this.monDb)
         this.friendly = new Friendly(this.loader, this.eventCtrl, this.gphysics, this.game, this.player, this.playerCtrl, this.monDb)
+        this.projectile = new Projectile(this.loader, this.canvas, this.eventCtrl, this.game, this.playerCtrl, this.monDb)
+
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
         this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.drop, this.plantDb)

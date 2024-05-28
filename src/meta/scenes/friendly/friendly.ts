@@ -22,6 +22,7 @@ export type FriendlySet = {
 }
 export interface IFlyCtrl {
     Respawning(): void
+    Release(): void
 }
 export class Friendly {
     friendly = new Map<MonsterId, FriendlySet>()
@@ -29,7 +30,7 @@ export class Friendly {
 
     constructor(
         private loader: Loader,
-        eventCtrl: EventController,
+        private eventCtrl: EventController,
         private gphysic: GPhysics,
         private game: Game,
         private player: Player,
@@ -53,6 +54,7 @@ export class Friendly {
     Release() {
         this.friendly.forEach(s => {
             s.friendlyModel.Meshs.visible = false
+            s.friendlyCtrl.Release()
             this.game.remove(s.friendlyModel.Meshs)
         })
     }
@@ -65,7 +67,7 @@ export class Friendly {
         await friendly.Loader(pos)
 
         const zCtrl = new FlyCtrl(friendly, this.player, this.playerCtrl,
-            this.gphysic, property)
+            this.gphysic, this.eventCtrl, property)
         const monSet: FriendlySet =  { 
             friendlyModel: friendly, friendlyCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
         }

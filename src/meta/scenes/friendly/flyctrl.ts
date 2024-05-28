@@ -5,17 +5,17 @@ import { MonsterProperty } from "../monsters/monsterdb";
 import { Player } from "../player/player";
 import { Fly } from "./fly";
 import { IFlyCtrl } from "./friendly";
-import { AttackFState, DyingFState, IdleFState, JumpFState, RunFState } from "./friendlystate";
+import { AttackFState, DyingFState, IdleFState, RunFState } from "./friendlystate";
 import { IMonsterAction } from "../monsters/monsters";
 import { PlayerCtrl } from "../player/playerctrl";
+import { EventController } from "../../event/eventctrl";
 
 
 export class FlyCtrl implements IGPhysic, IFlyCtrl {
     IdleSt = new IdleFState(this, this.fly, this.playerCtrl, this.gphysic)
-    AttackSt = new AttackFState(this, this.fly, this.gphysic, this.playerCtrl, this.property)
+    AttackSt = new AttackFState(this, this.fly, this.gphysic, this.playerCtrl, this.eventCtrl, this.property)
     RunSt = new RunFState(this, this.fly, this.gphysic, this.property)
     DyingSt = new DyingFState(this, this.fly, this.gphysic)
-    JumpSt = new JumpFState(this, this.fly, this.gphysic)
 
     currentState: IMonsterAction = this.IdleSt
     target? :IPhysicsObject
@@ -27,11 +27,18 @@ export class FlyCtrl implements IGPhysic, IFlyCtrl {
         private player: Player,
         private playerCtrl: PlayerCtrl,
         private gphysic: GPhysics,
+        private eventCtrl: EventController,
         private property: MonsterProperty
     ) {
-        gphysic.Register(this)
+        this.Init()
     }
 
+    Init() {
+        this.gphysic.Register(this)
+    }
+    Release() {
+        this.gphysic.Deregister(this)
+    }
     update(delta: number): void {
         if (!this.fly.Visible) return
         const dist = this.fly.CannonPos.distanceTo(this.player.CannonPos)

@@ -23,9 +23,10 @@ export class BeeFab extends AssetModel implements IAsset {
                 }
             })
             const scale = 0.1
+            this.info = { scale: scale }
             this.meshs.children[0].scale.set(scale, scale, scale)
             this.meshs.children[0].position.x = 1.68
-            this.meshs.children[0].position.y = 4
+            this.meshs.children[0].position.y = this.info.calY = 5
             this.meshs.children[0].rotateZ(Math.PI)
             this.mixer = new THREE.AnimationMixer(gltf.scene)
             console.log(gltf.animations)

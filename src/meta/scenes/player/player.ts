@@ -184,7 +184,7 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
         
         this.changeAnimate(this.clipMap.get(this.currentActionType))
 
-        this.effector.Enable(EffectType.BloodExplosion, this.meshs)
+        this.effector.Enable(EffectType.BloodExplosion, this)
 
         this.meshs.add(this.txtStatus)
         this.txtStatus.visible = false

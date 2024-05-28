@@ -4,8 +4,10 @@ import { ActionType } from "../player/player"
 import { Fly } from "./fly"
 import { FlyCtrl } from "./flyctrl"
 import { MonsterProperty } from "../monsters/monsterdb";
-import { AttackType, PlayerCtrl } from "../player/playerctrl";
+import { PlayerCtrl } from "../player/playerctrl";
 import { IMonsterAction } from "../monsters/monsters";
+import { EventController } from "../../event/eventctrl";
+import { MonsterId } from "../monsters/monsterid";
 
 
 class State {
@@ -21,16 +23,6 @@ class State {
             this.fCtrl.RunSt.Init()
             return this.fCtrl.RunSt
         }
-    }
-    CheckGravity() {
-        this.fly.Meshs.position.y -= 0.5
-        if (!this.gphysic.Check(this.fly)) {
-            this.fly.Meshs.position.y += 0.5
-            this.fCtrl.JumpSt.Init()
-            this.fCtrl.JumpSt.velocity_y = 0
-            return this.fCtrl.JumpSt
-        }
-        this.fly.Meshs.position.y += 0.5
     }
 }
 
@@ -82,12 +74,9 @@ export class IdleFState extends State implements IMonsterAction {
             this.dir.copy(v.multiplyScalar(1 / dist))
         }
 
-        const movX = this.dir.x * delta * this.speed
-        const movY = this.dir.y * delta * this.speed
-        const movZ = this.dir.z * delta * this.speed
-        this.fly.Meshs.position.x += movX
-        this.fly.Meshs.position.y += movY
-        this.fly.Meshs.position.z += movZ
+        this.fly.Meshs.position.x += this.dir.x * delta * this.speed
+        this.fly.Meshs.position.y += this.dir.y * delta * this.speed
+        this.fly.Meshs.position.z += this.dir.z * delta * this.speed
 
         this.dir.y = 0
         const mx = this.MX.lookAt(this.dir, this.ZeroV, this.YV)
@@ -98,7 +87,7 @@ export class IdleFState extends State implements IMonsterAction {
 
     checkAttack() {
         this.fly.Meshs.getWorldDirection(this.attackDir)
-        this.raycast.set(this.fly.CenterPos, this.attackDir.normalize())
+        this.raycast.set(this.fly.CannonPos, this.attackDir.normalize())
     
         const intersects = this.raycast.intersectObjects(this.playerCtrl.targets)
         if (intersects.length > 0 && intersects[0].distance < this.attackDist) {
@@ -107,76 +96,34 @@ export class IdleFState extends State implements IMonsterAction {
         }
     }
 }
-export class JumpFState implements IMonsterAction {
-    speed = 10
-    velocity_y = 16
-    dirV = new THREE.Vector3(0, 0, 0)
-    ZeroV = new THREE.Vector3(0, 0, 0)
-    YV = new THREE.Vector3(0, 1, 0)
-    MX = new THREE.Matrix4()
-    QT = new THREE.Quaternion()
-
-    constructor(private ctrl: FlyCtrl, private zombie: Fly, private gphysic: GPhysics) { }
-    Init(): void {
-        console.log("helper: Jump Init!!")
-        this.velocity_y = 16
-    }
-    Uninit(): void {
-        this.velocity_y = 16
-    }
-    Update(delta: number, v: THREE.Vector3): IMonsterAction {
-        const movX = v.x * delta * this.speed
-        const movZ = v.z * delta * this.speed
-        const movY = this.velocity_y * delta
-
-        this.zombie.Meshs.position.x += movX
-        this.zombie.Meshs.position.z += movZ
-
-        if (movX || movZ) {
-            this.dirV.copy(v)
-            this.dirV.y = 0
-            const mx = this.MX.lookAt(this.dirV, this.ZeroV, this.YV)
-            const qt = this.QT.setFromRotationMatrix(mx)
-            this.zombie.Meshs.quaternion.copy(qt)
-        }
-
-        if (this.gphysic.Check(this.zombie)) {
-            this.zombie.Meshs.position.x -= movX
-            this.zombie.Meshs.position.z -= movZ
-        }
-
-        this.zombie.Meshs.position.y += movY
-
-        if (this.gphysic.Check(this.zombie)) {
-            this.zombie.Meshs.position.y -= movY
-
-            this.Uninit()
-            this.ctrl.IdleSt.Init()
-            return this.ctrl.IdleSt
-        }
-        this.velocity_y -= 9.8 * 3 *delta
-
-        return this
-    }
-}
 export class AttackFState extends State implements IMonsterAction {
-    raycast = new THREE.Raycaster()
     dirV = new THREE.Vector3(0, 0, 0)
     ZeroV = new THREE.Vector3(0, 0, 0)
     YV = new THREE.Vector3(0, 1, 0)
     MX = new THREE.Matrix4()
     QT = new THREE.Quaternion()
+    playDist = 20
     attackDist = 5
     attackDir = new THREE.Vector3()
+    startPos = new THREE.Vector3()
+    targetPos = new THREE.Vector3()
     keytimeout?:NodeJS.Timeout
     attackSpeed = this.property.attackSpeed
     attackProcess = false
     attackTime = 0
+    speed = this.property.speed
     attackDamageMax = this.property.damageMax
     attackDamageMin = this.property.damageMin
     target?: THREE.Mesh
 
-    constructor(zCtrl: FlyCtrl, protected fly: Fly, gphysic: GPhysics, private playerCtrl: PlayerCtrl, private property: MonsterProperty) {
+    constructor(
+        zCtrl: FlyCtrl, 
+        protected fly: Fly, 
+        gphysic: GPhysics, 
+        private playerCtrl: PlayerCtrl, 
+        private eventCtrl: EventController,
+        private property: MonsterProperty
+    ) {
         super(zCtrl, fly, gphysic)
     }
     Init(): void {
@@ -184,6 +131,7 @@ export class AttackFState extends State implements IMonsterAction {
         const duration = this.fly.ChangeAction(ActionType.Punch)
         if (duration != undefined) this.attackSpeed = duration * 0.8
         this.attackTime = this.attackSpeed
+        this.attackProcess = false
     }
     InitWithTarget(target: THREE.Mesh) {
         this.target = target
@@ -193,10 +141,12 @@ export class AttackFState extends State implements IMonsterAction {
         if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
     }
     Update(delta: number, v: THREE.Vector3, dist: number): IMonsterAction {
-        if (dist > this.attackDist) {
+        if (dist > this.playDist) {
             const checkRun = this.CheckRun(v)
             if (checkRun != undefined) return checkRun
         }
+        this.approach(delta)
+
         if(this.attackProcess) return this
         this.attackTime += delta
         if (this.attackTime / this.attackSpeed < 1) {
@@ -204,41 +154,46 @@ export class AttackFState extends State implements IMonsterAction {
         }
         this.attackTime -= this.attackSpeed
         this.attackProcess = true
-
+        if (!this.playerCtrl.targets.find(e => e == this.target)) {
+            this.fCtrl.RunSt.Init()
+            return this.fCtrl.RunSt
+        }
         this.keytimeout = setTimeout(() => {
             this.attack()
         }, this.attackSpeed * 1000 * 0.4)
 
         return this
     }
-    attack() {
-        if(!this.target) return
-        this.attackDir.subVectors(this.target.position, this.fly.CenterPos)
+    approach(delta: number) {
+        if (!this.target) return
+        this.attackDir.subVectors(this.target.position, this.fly.CannonPos)
+        this.attackDir = this.attackDir.normalize()
+        const dist = this.target.position.distanceTo(this.fly.CannonPos)
+        if(dist > this.attackDist) {
+            this.fly.Meshs.position.x += this.attackDir.x * delta * this.speed
+            //this.fly.Meshs.position.y += this.attackDir.y * delta * this.speed
+            this.fly.Meshs.position.z += this.attackDir.z * delta * this.speed
+        }
     
+        this.attackDir.y = 0
         const mx = this.MX.lookAt(this.attackDir, this.ZeroV, this.YV)
         const qt = this.QT.setFromRotationMatrix(mx)
         this.fly.Meshs.quaternion.copy(qt)
-
-        this.raycast.set(this.fly.CenterPos, this.attackDir.normalize())
-        const intersects = this.raycast.intersectObjects(this.playerCtrl.targets)
-        if (intersects.length > 0 && intersects[0].distance < this.attackDist) {
-            const msgs = new Map()
-            intersects.forEach((obj) => {
-                if (obj.distance> this.attackDist) return false
-                const mons = msgs.get(obj.object.name)
-                const msg = {
-                        type: AttackType.NormalSwing,
-                        damage: THREE.MathUtils.randInt(this.attackDamageMin, this.attackDamageMax),
-                    }
-                if(mons == undefined) {
-                    msgs.set(obj.object.name, [msg])
-                } else {
-                    mons.push(msg)
-                }
-            })
-        }
-
+    }
+    attack() {
         this.attackProcess = false
+
+        if (!this.target) return
+        this.startPos.copy(this.fly.CenterPos)
+        this.startPos.y = this.fly.Asset.Info?.calY ?? this.fly.CenterPos.y
+        this.targetPos.copy(this.target.position)
+        this.targetPos.y += 2
+        this.attackDir = this.attackDir.subVectors(this.targetPos, this.startPos).normalize()
+        this.eventCtrl.OnProjectileEvent({
+            id: MonsterId.DefaultBall, 
+            src: this.startPos, 
+            dir: this.attackDir
+        })
     }
 }
 
@@ -279,8 +234,6 @@ export class RunFState extends State implements IMonsterAction {
     QT = new THREE.Quaternion()
 
     Update(delta: number, v: THREE.Vector3, dist: number): IMonsterAction {
-        const checkGravity = this.CheckGravity()
-        if (checkGravity != undefined) return checkGravity
 
         if(dist < this.protectDist) {
             this.fCtrl.IdleSt.Init()

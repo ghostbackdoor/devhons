@@ -43,6 +43,9 @@ export class GPhysics {
     Register(obj: IGPhysic) {
         this.objs.push(obj)
     }
+    Deregister(obj: IGPhysic) {
+        this.objs.splice(this.objs.indexOf(obj), 1)
+    }
 
     DebugMode(flag: boolean) {
         console.log("movingBox: ", this.movingBoxs.length)
