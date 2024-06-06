@@ -25,6 +25,7 @@ export enum AppMode {
     Lego,
     NonLego,
     LegoDelete,
+    EditCity,
 }
 
 

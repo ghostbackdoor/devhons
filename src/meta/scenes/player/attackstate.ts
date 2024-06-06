@@ -7,6 +7,7 @@ import { EventController } from "../../event/eventctrl";
 import { AttackItemType } from "../../inventory/items/item";
 import { PlayerSpec } from "./playerspec";
 import { Bind } from "../../loader/assetmodel";
+import { MonsterId } from "../monsters/monsterid";
 
 export class AttackState extends State implements IPlayerAction {
     raycast = new THREE.Raycaster()
@@ -19,6 +20,7 @@ export class AttackState extends State implements IPlayerAction {
     keytimeout?:NodeJS.Timeout
     attackProcess = false
     clock?: THREE.Clock
+    meleeAttackMode = true
 
     constructor(playerCtrl: PlayerCtrl, player: Player, gphysic: GPhysics, 
         private eventCtrl: EventController, private spec: PlayerSpec
@@ -42,20 +44,25 @@ export class AttackState extends State implements IPlayerAction {
                 case AttackItemType.Sword:
                     this.player.ChangeAction(ActionType.Sword, this.attackSpeed)
                     this.attackDist = 5
+                    this.meleeAttackMode = true
                     break;
                 case AttackItemType.Knife:
-                    this.attackDist = 2
                     this.player.ChangeAction(ActionType.Sword, this.attackSpeed)
+                    this.attackDist = 2
+                    this.meleeAttackMode = true
                     break;
                 case AttackItemType.Gun:
-                    this.attackDist = 20
                     this.player.ChangeAction(ActionType.Gun, this.attackSpeed)
+                    this.attackDist = 20
+                    this.meleeAttackMode = false
                     break;
                 case AttackItemType.Bow:
                     this.player.ChangeAction(ActionType.Bow, this.attackSpeed)
+                    this.meleeAttackMode = false
                     break;
                 case AttackItemType.Wand:
                     this.player.ChangeAction(ActionType.Wand, this.attackSpeed)
+                    this.meleeAttackMode = false
                     break;
             }
         }
@@ -67,8 +74,20 @@ export class AttackState extends State implements IPlayerAction {
     Uninit(): void {
         if (this.keytimeout != undefined) clearTimeout(this.keytimeout)
     }
+    rangedAttack() {
+        const startPos = new THREE.Vector3()
+        this.player.Meshs.getWorldDirection(this.attackDir)
+        this.player.GetItemPosition(startPos)
+        this.eventCtrl.OnProjectileEvent({
+            id: MonsterId.DefaultBullet, 
+            damage: THREE.MathUtils.randInt(this.attackDamageMin, this.attackDamageMax),
+            src: startPos, 
+            dir: this.attackDir
+        })
+        this.attackProcess = false
+    }
     
-    attack() {
+    meleeAttack() {
         this.player.Meshs.getWorldDirection(this.attackDir)
         this.raycast.set(this.player.CenterPos, this.attackDir.normalize())
     
@@ -97,7 +116,10 @@ export class AttackState extends State implements IPlayerAction {
     }
     Update(delta: number): IPlayerAction {
         const d = this.DefaultCheck()
-        if(d != undefined) return d
+        if(d != undefined) {
+            this.Uninit()
+            return d
+        }
         if(this.clock == undefined) return  this
 
         delta = this.clock?.getDelta()
@@ -111,7 +133,8 @@ export class AttackState extends State implements IPlayerAction {
 
         this.attackProcess = true
         this.keytimeout = setTimeout(() => {
-            this.attack()
+            if (this.meleeAttackMode) this.meleeAttack()
+            else this.rangedAttack()
         }, this.attackSpeed * 1000 * 0.6)
         return this
     }

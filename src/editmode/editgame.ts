@@ -20,7 +20,7 @@ export class EditGame {
     }
 
     LoadHtml() {
-        return fetch("views/editgame.html")
+        return fetch("views/editmode/editgame.html")
             .then(response => { return response.text(); })
             .then((res) => {
                 const ex = document.getElementById("extension") as HTMLDivElement

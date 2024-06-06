@@ -39,6 +39,7 @@ import { AppleFab, CoconutFab } from "./plant/fruitfab";
 import { DogFab } from "./pet/dogfab";
 import { PetSnakeFab } from "./pet/animalpackfab";
 import { BeeFab } from "./pet/bee";
+import { EmptyFab } from "./emptyfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -113,6 +114,8 @@ export class Loader {
     private wartercan = new WarteringCanFab(this)
     private hammer = new HammerFab(this)
 
+    private empty = new EmptyFab(this)
+
     get MaleAsset(): IAsset { return this.male }
     get FemaleAsset(): IAsset { return this.female }
     //get FemaleAsset(): IAsset { return this.test }
@@ -167,6 +170,8 @@ export class Loader {
     get Carrot0Asset(): IAsset { return this.carrot0 }
     get Carrot1Asset(): IAsset { return this.carrot1 }
     get Carrot2Asset(): IAsset { return this.carrot2 }
+
+    get EmptyAsset(): IAsset { return this.empty }
 
 
     get Load(): GLTFLoader { return this.loader }
@@ -245,6 +250,7 @@ export class Loader {
         this.assets.set(Char.Toilet, this.toilet)
         this.assets.set(Char.TV, this.tv)
 
+        this.assets.set(Char.Empty, this.empty)
         /*
         const progressBar = document.querySelector('#progress-bar') as HTMLProgressElement
         this.LoadingManager.onProgress = (_url, loaded, total) => {

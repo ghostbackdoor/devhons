@@ -296,16 +296,10 @@ export class Play extends Page {
             }
         })
     }
-    getParam(): string | null {
-        const urlParams = new URLSearchParams(window.location.search);
-        const email = encodeURIComponent(urlParams.get("email") ?? "");
-        if (email == "") return null;
-        return email;
-    }
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml()
         this.m_masterAddr = masterAddr;
-        const email = this.getParam();
+        const email = this.getParam("email");
         this.CanvasRenderer(email)
         this.uiInven.binding()
 

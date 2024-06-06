@@ -3,22 +3,30 @@ import { Canvas } from "../../common/canvas";
 import { EventController, EventFlag } from "../../event/eventctrl";
 import { Loader } from "../../loader/loader";
 import { Game } from "../game";
-import { IPhysicsObject } from "../models/iobject";
 import { IViewer } from "../models/iviewer";
 import { MonsterDb } from "../monsters/monsterdb";
 import { MonsterId } from "../monsters/monsterid";
 import { PlayerCtrl } from "../player/playerctrl";
+import { Bullet3 } from "./bullet3";
 import { DefaultBall } from "./defaultball";
 import { ProjectileCtrl } from "./projectilectrl";
 
+export interface IProjectileModel {
+    get Meshs(): THREE.Mesh | THREE.Points | undefined
+    create(position: THREE.Vector3): void
+    update(position:THREE.Vector3): void
+    release(): void
+}
+
 export type ProjectileMsg = {
-    id: MonsterId
+    id: MonsterId // TODO: Change Id Type
+    damage: number
     src: THREE.Vector3
     dir: THREE.Vector3
 }
 
 export type ProjectileSet = {
-    model: IPhysicsObject
+    model: IProjectileModel
     ctrl: ProjectileCtrl
 }
 
@@ -51,14 +59,24 @@ export class Projectile implements IViewer {
             }
         })
         eventCtrl.RegisterProjectileEvent((opt: ProjectileMsg) => {
-            this.AllocateProjPool(opt.id, opt.src, opt.dir)
+                this.AllocateProjPool(opt.id, opt.src, opt.dir, opt.damage)
         })
     }
-    CreateProjectile(id: MonsterId, src: THREE.Vector3, dir: THREE.Vector3) {
+    
+    GetModel(id: MonsterId) {
+        switch(id) {
+            case MonsterId.DefaultBullet:
+                return new Bullet3()
+            case MonsterId.DefaultBall:
+            default:
+                return new DefaultBall(.1)
+        }
+    }
+    CreateProjectile(id: MonsterId, src: THREE.Vector3, dir: THREE.Vector3, damage: number) {
         const property = this.monDb.GetItem(id)
-        const ball = new DefaultBall(.1)
+        const ball = this.GetModel(id)
         const ctrl = new ProjectileCtrl(ball, this.playerCtrl, this.eventCtrl, property)
-        ctrl.start(src, dir)
+        ctrl.start(src, dir, damage)
 
         const set: ProjectileSet = {
             model: ball, ctrl: ctrl
@@ -70,7 +88,7 @@ export class Projectile implements IViewer {
         this.projectiles.forEach(a => {
             a.forEach(s => {
                 s.ctrl.update(delta)
-                if (s.ctrl.attack()) {
+                if (s.ctrl.attack() || !s.ctrl.checkLifeTime()) {
                     this.Release(s)
                 }
             })
@@ -80,27 +98,27 @@ export class Projectile implements IViewer {
 
     Release(entry: ProjectileSet) {
         entry.ctrl.Release()
-        this.game.remove(entry.model.Meshs)
+        if (entry.model.Meshs) this.game.remove(entry.model.Meshs)
     }
-    AllocateProjPool(id: MonsterId, src: THREE.Vector3, dir: THREE.Vector3) {
+    AllocateProjPool(id: MonsterId, src: THREE.Vector3, dir: THREE.Vector3, damage: number) {
         let pool = this.projectiles.get(id)
         if(!pool) pool = []
         let set = pool.find((e) => e.ctrl.Live == false)
         if (!set) {
-            set = this.CreateProjectile(id, src, dir)
+            set = this.CreateProjectile(id, src, dir, damage)
             pool.push(set)
         } else {
-            set.ctrl.start(src, dir)
+            set.ctrl.start(src, dir, damage)
         }
         this.projectiles.set(id, pool)
-        this.game.add(set.model.Meshs)
+        if (set.model.Meshs) this.game.add(set.model.Meshs)
         return set
     }
     ReleaseAllProjPool() {
         this.projectiles.forEach(a => {
             a.forEach(s => {
                 s.ctrl.Release()
-                this.game.remove(s.model.Meshs)
+                if (s.model.Meshs) this.game.remove(s.model.Meshs)
             })
         })
     }

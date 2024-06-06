@@ -318,14 +318,8 @@ export class EditHome extends Page {
             this.meta.render()
         })
     }
-    getParam(): string | null {
-        const urlParams = new URLSearchParams(window.location.search);
-        const email = encodeURIComponent(urlParams.get("email")??"");
-        if (email == null) return null;
-        return email;
-    }
     loadHelper() {
-        fetch("views/edithelp.html")
+        fetch("views/editmode/edithelp.html")
             .then(response => { return response.text(); })
             .then((res) => {
                 const tag = document.getElementById("modalwindow") as HTMLDivElement;
@@ -342,7 +336,7 @@ export class EditHome extends Page {
         this.UpdateBrickUI()
         
         this.m_masterAddr = masterAddr;
-        const email = this.getParam();
+        const email = this.getParam("email");
         if(email == null) return false;
         this.loadHelper()
         this.CanvasRenderer(email)

@@ -11,7 +11,6 @@ export class Hons extends Page {
     m_masterAddr: string;
     loadedCount: number
     targetLoadCount: number
-    profileVisible = true
     requestCount = 5
     ui = new Ui(this.meta, AppMode.Long)
     public constructor(private blockStore: BlockStore
@@ -45,7 +44,7 @@ export class Hons extends Page {
     }
     async makeHtmlHon(ret: HonEntry, id: string) {
         this.loadedCount++
-        if ("result" in ret) return
+        if ("result" in ret || !this.active) return
         let html = this.blockStore.LoadHonView(id)
         if (html == undefined) {
             html = await DrawHtmlHonItem(this.blockStore, ret, id) 
@@ -62,17 +61,11 @@ export class Hons extends Page {
         this.ViewLoadingSpinner(false)
     }
     
-    getParam(): string | null {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tag = encodeURIComponent(urlParams.get("tag")??"");
-        if (tag == "") return null;
-        return tag;
-    }
     public RequestHons(s: number, n: number) {
         this.ViewLoadingSpinner(true)
         this.m_masterAddr = window.MasterAddr;
         const masterAddr = this.m_masterAddr;
-        const tag = this.getParam()
+        const tag = this.getParam("tag")
         const table = (tag == null) ? "feeds" : tag
         const addr = `
         ${masterAddr}/glambda?txid=${encodeURIComponent(HonsTxId)}&table=${table}&start=${s}&count=${n}`;
@@ -106,7 +99,6 @@ export class Hons extends Page {
     public CanvasRenderer() {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
-        this.profileVisible = false
         this.meta.RegisterInitEvent(() => {
             //this.meta.ModeChange(AppMode.Long, false)
             this.ui.UiOn()
@@ -124,11 +116,8 @@ export class Hons extends Page {
             window.ClickLoadPage("play", false)
         }
 
-
-
         const space = document.getElementById("avatar-space") as HTMLAnchorElement
         space.style.height = window.innerHeight - 230 + "px"
-
     }
     
     public async Run(masterAddr: string): Promise<boolean> {
@@ -143,7 +132,7 @@ export class Hons extends Page {
 
         const tagBtn = document.getElementById("tagtitle") as HTMLDivElement
         const newFeedlink = document.getElementById("newfeed") as HTMLAnchorElement
-        const tagText = this.getParam()
+        const tagText = this.getParam("tag")
         if (tagText == null ) {
             tagBtn.innerText = "#최신글"
         } else {

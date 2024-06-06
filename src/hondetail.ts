@@ -66,14 +66,8 @@ export class HonDetail extends Page {
             .then((result) => this.drawHtml(result))
             .catch(() => { console.log("Server에 문제가 생긴듯 합니다;;") });
     }
-
-    getParam(): string | null {
-        const urlParams = new URLSearchParams(window.location.search);
-        const email = encodeURIComponent(urlParams.get("email")??"");
-        if (email == null) return null;
-        return email;
-    }
     async drawHtmlHon(ret: HonEntry, id: string) {
+        if (!this.active) return
         let html = this.blockStore.LoadHonView(id)
         if (html == undefined) {
             html = await DrawHtmlHonItem(this.blockStore, ret, id) 
@@ -154,6 +148,7 @@ export class HonDetail extends Page {
             })
     }
     public makeFollowerHtml(email: string) {
+        if (!this.active) return
         console.log(email)
         this.blockStore.FetchProfile(window.MasterAddr, email)
             .then((ret: ProfileEntry) => {
@@ -185,13 +180,6 @@ export class HonDetail extends Page {
                         })
                 }
             })
-    }
-    drawHtmlEditHome(email: string) {
-        const link = document.getElementById("edithome") as HTMLAnchorElement
-        link.onclick = () => {
-            window.ClickLoadPage("edithome", false, "&email=" + email)
-        }
-
     }
     public CanvasRenderer(email: string) {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
@@ -231,7 +219,7 @@ export class HonDetail extends Page {
         space.style.height = window.innerHeight - 230 + "px"
     }
     popupVisible = false
-    public PopupMenu() {
+    public PopupMenu(email: string) {
         const btn = document.getElementById("menuBtn") as HTMLSpanElement
         const pop = document.getElementById("popmenu") as HTMLDivElement
         btn.onclick = () => {
@@ -247,23 +235,30 @@ export class HonDetail extends Page {
         logout.onclick = () => {
             this.session.SignOut()
         }
+        const link = document.getElementById("edithome") as HTMLAnchorElement
+        link.onclick = () => {
+            window.ClickLoadPage("edithome", false, "&email=" + email)
+        }
+        const city = document.getElementById("editcity") as HTMLAnchorElement
+        city.onclick = () => {
+            window.ClickLoadPage("newcity", false, "&email=" + email)
+        }
     }
 
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml()
         this.ui.Init()
         this.m_masterAddr = masterAddr;
-        const email = this.getParam();
+        const email = this.getParam("email");
         if(email == null) return false;
         this.targetHonEmail = email
         window.scrollTo({ top: 0, left: 0, behavior: 'auto'})
         this.requestUserInfo(email)
         this.RequestHons(email);
-        this.drawHtmlEditHome(email)
         this.Follow()
         this.GetFollowerList()
         this.CanvasRenderer(email)
-        this.PopupMenu()
+        this.PopupMenu(email)
 
         return true;
     }

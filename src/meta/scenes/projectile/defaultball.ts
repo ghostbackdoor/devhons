@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { IPhysicsObject } from "../models/iobject"
 import { GhostModel2 } from "../models/ghostmodel";
+import { IProjectileModel } from "./projectile";
 
-export class DefaultBall extends GhostModel2 implements IPhysicsObject {
+export class DefaultBall extends GhostModel2 implements IProjectileModel {
     get BoxPos() {
         const v = this.CannonPos
         return new THREE.Vector3(v.x, v.y, v.z)
@@ -16,5 +16,15 @@ export class DefaultBall extends GhostModel2 implements IPhysicsObject {
         })
 
         super(geometry, material)
+    }
+    create(position: THREE.Vector3): void {
+       this.CannonPos.copy(position) 
+       this.Visible = true
+    }
+    update(position: THREE.Vector3): void {
+       this.CannonPos.copy(position) 
+    }
+    release(): void {
+        this.Visible = false
     }
 }

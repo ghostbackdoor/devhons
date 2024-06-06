@@ -35,6 +35,14 @@ export type FetchResult = {
 export type JsonFetchResult = {
     json: string
 }
+export type CityEntry = {
+    email: string,
+    id: string,
+    citytitle: string,
+    openflag: string,
+    cityexplain: string,
+    time: number,
+}
 export type HonEntry = {
     email: string,
     id: string,

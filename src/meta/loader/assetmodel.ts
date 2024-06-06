@@ -104,6 +104,7 @@ export enum Char{
     TV,
     Stone,
 
+    Empty,
     None,
 }
 export enum ModelType {

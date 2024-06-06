@@ -5,6 +5,7 @@ import { TextStatus } from "./status"
 import { QuarksVfx } from "./quarksvfx";
 import { Game } from "../scenes/game";
 import { Trail } from "./trail";
+import { PointTrail } from "./pointtrail";
 
 export enum EffectType {
     Lightning,
@@ -12,12 +13,13 @@ export enum EffectType {
     Explosion,
     BloodExplosion,
     Trail,
+    PointTrail,
     Status
 }
 
 export interface IEffect {
     Start(...arg: any): void
-    Update(delta: number): void
+    Update(delta: number, ...arg: any): void
 }
 
 export class Effector {
@@ -48,6 +50,10 @@ export class Effector {
                 blood.initEffect(arg[0], this.game)
                 this.effects[EffectType.BloodExplosion] = blood
                 break;
+            case EffectType.PointTrail:
+                const ptrail = new PointTrail(arg[0], this.game)
+                this.effects[EffectType.PointTrail] = ptrail
+                break;
             case EffectType.Trail:
                 const trail = new Trail()
                 trail.initTrailEffect(arg[0], this.game)
@@ -65,9 +71,9 @@ export class Effector {
         this.effects[type].Start(...arg)
     }
 
-    Update(delta: number): void {
+    Update(delta: number, ...arg: any): void {
         this.effects.forEach((e)=> {
-            e.Update(delta)
+            e.Update(delta, arg)
         })
     }
 }

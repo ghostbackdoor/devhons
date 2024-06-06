@@ -49,12 +49,6 @@ export class Hon extends Page{
             })
     }
 
-    getParam(): string | null {
-        const urlParams = new URLSearchParams(window.location.search);
-        const email = encodeURIComponent(urlParams.get("key")??"");
-        if (email == null) return null;
-        return email;
-    }
     async drawHtmlHon(ret: HonEntry, key: string, targetDiv: string) {
         const feeds = document.getElementById(targetDiv);
         if (feeds == null) return;
@@ -70,7 +64,7 @@ export class Hon extends Page{
         if (ret.result == "null") {
             this.warningMsg("등록 실패");
         } else {
-            const key = this.getParam();
+            const key = this.getParam("key");
             window.ClickLoadPage("hon", false, `&key=${key}`);
         }
     }
@@ -147,7 +141,7 @@ export class Hon extends Page{
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml()
         this.m_masterAddr = masterAddr;
-        const key = this.getParam();
+        const key = this.getParam("key");
         if (key == null) return false
         //this.canvasVisible(false)
         this.RequestHon(key).then(() => {

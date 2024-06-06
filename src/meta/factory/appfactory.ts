@@ -40,6 +40,8 @@ import { FurnDb } from "../scenes/furniture/furndb";
 import { PlantDb } from "../scenes/plants/plantdb";
 import { Friendly } from "../scenes/friendly/friendly";
 import { Projectile } from "../scenes/projectile/projectile";
+import { Terrainer } from "../scenes/terrain/terrainer";
+import { TerrainCtrl } from "../scenes/terrain/terrainctrl";
 
 export class AppFactory {
     phydebugger: any
@@ -64,7 +66,10 @@ export class AppFactory {
     private plantDb = new PlantDb()
     monDeck: MonDeck
 
+    private terrainer: Terrainer
+    terrainCtrl: TerrainCtrl
     private player: Player
+    private playerCtrl : PlayerCtrl
     private floor: Floor
     private portal: Portal
     private npcs: NpcManager
@@ -76,7 +81,6 @@ export class AppFactory {
     private carp: Carpenter
 
     private buff: Buff
-    private playerCtrl : PlayerCtrl
     
     private deadtrees: DeadTree[]
     private mushrooms: Mushroom[]
@@ -131,6 +135,9 @@ export class AppFactory {
         this.player = new Player(this.loader, this.eventCtrl, this.portal, this.store, this.game)
         this.playerCtrl = new PlayerCtrl(this.player, this.invenFab.inven, this.invenFab, this.gphysics, this.eventCtrl)
 
+        this.terrainer = new Terrainer()
+        this.terrainCtrl = new TerrainCtrl(this.eventCtrl, this.game, this.terrainer, this.gphysics)
+
         this.drop = new Drop(this.alarm, this.invenFab.inven, this.player, this.canvas, this.game, this.eventCtrl)
 
         this.brick = new EventBricks(this.game, this.eventCtrl, this.store, this.gphysics, this.player)
@@ -149,7 +156,7 @@ export class AppFactory {
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.friendly, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
 
-        this.camera = new Camera(this.canvas, this.player, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
+        this.camera = new Camera(this.canvas, this.player, this.terrainer, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
         this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.brick, this.canvas, this.eventCtrl)
         this.renderer = new Renderer(this.camera, this.game, this.canvas)
         this.currentScene = this.game

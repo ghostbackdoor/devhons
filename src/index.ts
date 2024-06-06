@@ -17,6 +17,8 @@ import { EditHome } from "./editmode/edithome";
 import { Play } from "./playmode/play";
 import { UiInven } from "./playmode/play_inven";
 import { StableDiffusionAi } from "./module/sdai";
+import { CityMode } from "./citymode/citymode";
+import { CityMain } from "./citymode/citymain";
 
 
 interface IPage {
@@ -58,8 +60,10 @@ class Index {
         "uploadhon": new UploadHon("views/uploadhon.html"),
         "profile": this.profile,
         "main": new Main(this.blockStore, "views/main.html"),
-        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, "views/edithome.html"),
+        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, "views/editmode/edithome.html"),
         "play": new Play(this.blockStore, this.session, this.meta, this.inven, "views/play.html"),
+        "newcity": new CityMode(this.session, "views/citymode/citymode.html"),
+        "citymain": new CityMain(this.blockStore, this.session, this.meta, "views/citymode/citymain.html"),
     };
 
     urlToFileMap: UrlMap = {
@@ -72,7 +76,9 @@ class Index {
         "newhon": "views/newhon.html",
         "uploadhon": "views/uploadhon.html",
         "profile": "views/profile.html",
-        "edithome": "views/edithome.html",
+        "edithome": "views/editmode/edithome.html",
+        "newcity": "views/citymode/citymode.html",
+        "citymain": "views/citymode/citymain.html",
     };
     beforPage: string = ""
     constructor() {
@@ -178,7 +184,8 @@ class Index {
         if (tag != null) {
             if (location.protocol != 'http:') {
                 tag.innerHTML = this.errmsg(` https 를 지원하지 않습니다.`,
-                    `링크를 클릭해주세요. <a href="http://hons.ghostwebservice.com"> <strong class="me-auto">hons.ghostwebservice.com</strong> </a> `);
+                    `링크를 클릭해주세요. <a href="http://hons.ghostwebservice.com"> <strong class="me-auto">hons.ghostwebservice.com</strong> </a><br>
+                    만약 이 메시지가 계속 보인다면 브라우저에서 http 이동을 강제로 차단하고 있을 수 있습니다.`);
             } else {
                 addEventListener("load", () =>
                     fetch("http://lb.ghostnetroot.com:58083/nodes")

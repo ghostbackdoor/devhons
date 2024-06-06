@@ -38,6 +38,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
     constructor(
         canvas: Canvas,
         private player: IPhysicsObject,
+        private terrainer: IPhysicsObject,
         private npcs: NpcManager,
         private brick: EventBricks,
         private legos: Legos,
@@ -59,6 +60,15 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
 
         this.eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag, orbit: any[]) => {
             switch(mode) {
+                case AppMode.EditCity:
+                    if (e == EventFlag.Start) {
+                        this.viewMode = ViewMode.Target
+                        this.controls.enabled = false
+                        this.target = this.terrainer.Meshs
+
+                        this.focusAt(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 30, 30))
+                    }
+                    break;
                 case AppMode.Portal:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
@@ -119,20 +129,6 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         this.focusAt(this.target.position)
                     }
                     break;
-                    /*
-                case AppMode.EditPlay:
-                    if (e == EventFlag.Start) {
-                        this.viewMode = ViewMode.Edit
-                        this.controls.enabled = false
-                        if (this.animate != undefined) this.animate.kill()
-
-                        this.owner = this.npcs.Owner
-                        if (this.owner == undefined) return
-                        this.target = this.owner.Meshs
-                        this.focusAt(this.owner.CannonPos)
-                    }
-                    break;
-                    */
                 case AppMode.EditPlay:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target

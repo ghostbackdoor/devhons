@@ -95,6 +95,13 @@ export class Player extends GhostModel implements IPhysicsObject, IModelReload {
             this.ReloadBindingItem(inven, Bind.Hands_R)
         })
     }
+    GetItemPosition(target: THREE.Vector3) {
+        const rightId = this.asset.GetBodyMeshId(Bind.Hands_R)
+        if (rightId == undefined) return
+        const mesh = this.meshs.getObjectByName(rightId)
+        if (!mesh) return
+        mesh.getWorldPosition(target)
+    }
     ReloadBindingItem(inven: Inventory, bind: Bind) {
         const rightId = this.asset.GetBodyMeshId(bind)
         if (rightId == undefined) return

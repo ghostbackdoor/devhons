@@ -20,6 +20,7 @@ export class MonsterId {
     public static Bee = "Bee"
 
     public static DefaultBall = "DefaultBall"
+    public static DefaultBullet = "DefaultBullet"
     public static List = [
         this.Zombie, this.Minotaur, this.Batpig, this.Bilby, this.Birdmon,
         this.Crab, this.Builder, this.Golem, this.BigGolem, this.KittenMonk,

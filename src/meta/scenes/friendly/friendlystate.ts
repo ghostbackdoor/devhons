@@ -191,6 +191,7 @@ export class AttackFState extends State implements IMonsterAction {
         this.attackDir = this.attackDir.subVectors(this.targetPos, this.startPos).normalize()
         this.eventCtrl.OnProjectileEvent({
             id: MonsterId.DefaultBall, 
+            damage: THREE.MathUtils.randInt(this.attackDamageMin, this.attackDamageMax),
             src: this.startPos, 
             dir: this.attackDir
         })

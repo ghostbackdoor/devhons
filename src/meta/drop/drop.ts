@@ -238,7 +238,7 @@ export class Drop implements IViewer {
         uniforms.size.value = radius
         uniforms.scale.value = 100
 
-        this.points = new THREE.Points(this.pointsGeometry, new THREE.ShaderMaterial({
+        return new THREE.Points(this.pointsGeometry, new THREE.ShaderMaterial({
             uniforms: uniforms,
             defines: {
                 USE_COLOR: "",

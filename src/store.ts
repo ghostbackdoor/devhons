@@ -1,10 +1,11 @@
 import { InvenData } from "./meta/inventory/inventory";
-import { HonEntry, ModelsEntry, ProfileEntry } from "./models/param";
+import { CityEntry, HonEntry, ModelsEntry, ProfileEntry } from "./models/param";
 import { GlobalLoadListTx, GlobalLoadTx, HonTxId } from "./models/tx";
 
 
 export class BlockStore {
     hons = new Map<string, HonEntry>()
+    cityinfo = new Map<string, CityEntry>()
     profiles = new Map<string, ProfileEntry>()
     models = new Map<string, ModelsEntry>()
     honviews = new Map<string, string>()
@@ -93,6 +94,21 @@ export class BlockStore {
             })
     }
 
+    FetchCity(masterAddr: string, key: string): Promise<CityEntry>{
+        const hon = this.cityinfo.get(key)
+        if (hon != undefined) {
+            return Promise.resolve(hon)
+        }
+        const addr = masterAddr + "/glambda?txid=" + 
+            encodeURIComponent(GlobalLoadTx) + "&table=city&key=" + key;
+
+        return fetch(addr)
+            .then((response) => response.json())
+            .then((hon: CityEntry) => {
+                this.cityinfo.set(key, hon)
+                return hon
+            })
+    }
     FetchHon(masterAddr: string, key: string): Promise<HonEntry>{
         const hon = this.hons.get(key)
         if (hon != undefined) {
