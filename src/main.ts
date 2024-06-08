@@ -33,7 +33,7 @@ export class Main extends Page {
             </span>
             `
         })
-        taglist.innerHTML = htmlString
+        if (taglist) taglist.innerHTML = htmlString
     }
     async makeHtmlUserInfo(hon: ProfileEntry) {
         this.currenloadCnt++

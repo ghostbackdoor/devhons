@@ -42,6 +42,7 @@ import { Friendly } from "../scenes/friendly/friendly";
 import { Projectile } from "../scenes/projectile/projectile";
 import { Terrainer } from "../scenes/terrain/terrainer";
 import { TerrainCtrl } from "../scenes/terrain/terrainctrl";
+import { CityCenter } from "../scenes/citycenter";
 
 export class AppFactory {
     phydebugger: any
@@ -53,6 +54,7 @@ export class AppFactory {
     private loader = new Loader()
     deckDb = new Deck()
     private gameCenter: GameCenter
+    cityCenter: CityCenter
 
     private store: ModelStore
     input: Input
@@ -155,6 +157,7 @@ export class AppFactory {
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.monDb, this.store)
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.friendly, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
+        this.cityCenter = new CityCenter(this.terrainCtrl, this.eventCtrl, this.canvas, this.store)
 
         this.camera = new Camera(this.canvas, this.player, this.terrainer, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
         this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.brick, this.canvas, this.eventCtrl)
@@ -234,7 +237,7 @@ export class AppFactory {
         this.npcs.InitScene()
 
         this.Helper = new Helper(
-            this.game, this.player, this.playerCtrl, this.npcs, this.portal, this.floor,
+            this.game, this.light, this.player, this.playerCtrl, this.npcs, this.portal, this.floor,
             this.legos, this.camera, this.rayViewer, this.gphysics, 
             this.canvas, this.eventCtrl, this.drop
         )

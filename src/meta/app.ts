@@ -10,6 +10,7 @@ import { BrickOption } from "./scenes/bricks/bricks";
 import { IBuffItem } from "./buff/buff";
 import { GameOptions } from "./scenes/gamecenter";
 import { LoadingManager } from "three";
+import { TerrainOption } from "./scenes/terrain/terrainctrl";
 
 export enum AppMode {
     Long,
@@ -25,6 +26,7 @@ export enum AppMode {
     Lego,
     NonLego,
     LegoDelete,
+    CityView,
     EditCity,
 }
 
@@ -115,7 +117,7 @@ export default class App {
 
         progressBarContainer.style.display = 'none'
 
-        if (this.initCallbackFunc) this.initCallbackFunc()
+        if (this.initCallbackFunc) this.initCallbackFunc(true)
         return true
     }
 
@@ -157,6 +159,9 @@ export default class App {
     }
     ChangeBrickInfo(opt: BrickOption) {
         this.eventCtrl.OnChangeBrickInfo(opt)
+    }
+    ChangeTerrainInfo(opt: TerrainOption) {
+        this.eventCtrl.OnChangeTerrainInfo(opt)
     }
     ModeChange(mode: AppMode, ...arg: any) {
         this.eventCtrl.OnAppModeEvent(mode, ...arg)

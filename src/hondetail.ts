@@ -94,8 +94,10 @@ export class HonDetail extends Page {
         });
         const feedstag = document.getElementById("feeds") as HTMLDivElement
         if(feedstag) feedstag.innerHTML = htmlString
+        this.ViewLoadingSpinner(false)
     }
     public RequestHons(email: string) {
+        this.ViewLoadingSpinner(true)
         this.m_masterAddr = window.MasterAddr;
         const masterAddr = this.m_masterAddr;
         const addr = `
@@ -243,6 +245,14 @@ export class HonDetail extends Page {
         city.onclick = () => {
             window.ClickLoadPage("newcity", false, "&email=" + email)
         }
+    }
+    public ViewLoadingSpinner(onoff: boolean){
+        const printTag = document.getElementById("loading") as HTMLDivElement;
+        if(printTag) printTag.innerHTML = (onoff) ? `
+            <div class="spinner-grow text-primary" role="status">
+                <span class="visually-hidden"></span>
+            </div>
+        `:"";
     }
 
     public async Run(masterAddr: string): Promise<boolean> {

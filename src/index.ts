@@ -17,8 +17,10 @@ import { EditHome } from "./editmode/edithome";
 import { Play } from "./playmode/play";
 import { UiInven } from "./playmode/play_inven";
 import { StableDiffusionAi } from "./module/sdai";
-import { CityMode } from "./citymode/citymode";
+import { NewCity } from "./citymode/newcity";
 import { CityMain } from "./citymode/citymain";
+import { EditCity } from "./citymode/editcity";
+import { UiBrick } from "./module/uibrick";
 
 
 interface IPage {
@@ -43,6 +45,7 @@ class Index {
     session = new Session(this.blockStore);
     meta = new App()
     inven = new UiInven(this.meta, this.session, this.blockStore)
+    brick = new UiBrick(this.meta)
     ipc = new Socket
     router = new Router(this.ipc)
     sdai = new StableDiffusionAi(this.ipc)
@@ -50,23 +53,8 @@ class Index {
     profile = new Profile(this.sdai, this.session, this.ipc, "views/profile.html")
 
     CurrentPage?: IPage
-    funcMap: FuncMap = {
-        "signin": new Signin(this.session, "views/signin.html"),
-        "signup":  new Signup("views/signup.html"),
-        "hon": new Hon(this.blockStore, this.session, "views/hon.html"),
-        "hons": new Hons(this.blockStore, this.session, this.meta, "views/hons.html"),
-        "hondetail": new HonDetail(this.blockStore, this.session, this.meta, "views/hondetail.html"),
-        "newhon": this.newHon,
-        "uploadhon": new UploadHon("views/uploadhon.html"),
-        "profile": this.profile,
-        "main": new Main(this.blockStore, "views/main.html"),
-        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, "views/editmode/edithome.html"),
-        "play": new Play(this.blockStore, this.session, this.meta, this.inven, "views/play.html"),
-        "newcity": new CityMode(this.session, "views/citymode/citymode.html"),
-        "citymain": new CityMain(this.blockStore, this.session, this.meta, "views/citymode/citymain.html"),
-    };
 
-    urlToFileMap: UrlMap = {
+    urlhtml: UrlMap = {
         "signin": "views/signin.html",
         "signup": "views/signup.html",
         "main": "views/main.html",
@@ -79,7 +67,26 @@ class Index {
         "edithome": "views/editmode/edithome.html",
         "newcity": "views/citymode/citymode.html",
         "citymain": "views/citymode/citymain.html",
+        "editcity": "views/citymode/editcity.html",
     };
+    funcMap: FuncMap = {
+        "signin": new Signin(this.session, "views/signin.html"),
+        "signup":  new Signup("views/signup.html"),
+        "hon": new Hon(this.blockStore, this.session, "views/hon.html"),
+        "hons": new Hons(this.blockStore, this.session, this.meta, "views/hons.html"),
+        "hondetail": new HonDetail(this.blockStore, this.session, this.meta, "views/hondetail.html"),
+        "newhon": this.newHon,
+        "uploadhon": new UploadHon("views/uploadhon.html"),
+        "profile": this.profile,
+        "main": new Main(this.blockStore, "views/main.html"),
+        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, this.brick, "views/editmode/edithome.html"),
+        "play": new Play(this.blockStore, this.session, this.meta, this.inven, "views/play.html"),
+        "newcity": new NewCity(this.session, this.urlhtml["newcity"]),
+        "citymain": new CityMain(this.blockStore, this.session, this.meta, this.urlhtml["citymain"]),
+        "editcity": new EditCity(this.blockStore, this.session, this.meta, this.inven, this.brick, this.urlhtml["editcity"]),
+    };
+
+    
     beforPage: string = ""
     constructor() {
         this.router.RegisterClient("newhon", this.newHon)

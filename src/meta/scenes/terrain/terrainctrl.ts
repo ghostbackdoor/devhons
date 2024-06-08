@@ -4,9 +4,15 @@ import { EventController, EventFlag } from "../../event/eventctrl";
 import { IKeyCommand } from "../../event/keycommand";
 import { Terrainer } from "./terrainer";
 
+export type TerrainOption = {
+    r?: THREE.Vector3,
+    clear?: boolean
+}
 
 export class TerrainCtrl {
     mode = false
+    checktime = 0
+
     constructor(
         eventCtrl: EventController,
         game: THREE.Scene,
@@ -41,7 +47,6 @@ export class TerrainCtrl {
         this.CheckCollision()
     }
     CheckCollision() {
-        
         if (this.physics.CheckBox(this.terrainer.position, this.terrainer.Box)) {
             do {
                 this.terrainer.CannonPos.y += .5
@@ -49,8 +54,15 @@ export class TerrainCtrl {
         } else {
             do {
                 this.terrainer.CannonPos.y -= .5
-            } while (!this.physics.CheckBox(this.terrainer.position, this.terrainer.Box))
+            } while (!this.physics.CheckBox(this.terrainer.position, this.terrainer.Box) && this.terrainer.CannonPos.y > 0)
             this.terrainer.CannonPos.y += .5
         }
+    }
+    update(delta: number) {
+        this.checktime += delta
+        if( Math.floor(this.checktime) < 1)  return
+        this.checktime = 0   
+
+        this.CheckCollision()
     }
 }

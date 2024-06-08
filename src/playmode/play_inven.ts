@@ -13,12 +13,23 @@ export class UiInven {
     slots: InventorySlot[] = []
     colCont = 5
     alarm = document.getElementById("alarm-msg") as HTMLDivElement
+    html: string = ""
+    get Html() { return this.html }
 
     constructor(
         private meta: App, 
         private session: Session,
         private blockStore: BlockStore
-    ) {}
+    ) { 
+        this.LoadHtml()
+    }
+    async LoadHtml() {
+        return await fetch("views/common/inventory.html")
+            .then(response => { return response.text(); })
+            .then(data => {
+                this.html = data
+            })
+    }
 
     Clear() {
         this.slots.length = 0

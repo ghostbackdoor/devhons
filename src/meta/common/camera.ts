@@ -25,14 +25,15 @@ enum ViewMode {
 
 export class Camera extends THREE.PerspectiveCamera implements IViewer{
     private controls: OrbitControls
-    private longPos: THREE.Vector3
-    private shortPos: THREE.Vector3
     private bakRotation: THREE.Euler
     private target: THREE.Mesh | THREE.Group | undefined
     private owner: Npc | undefined
     private viewMode: ViewMode
-    private animate: gsap.core.Tween | undefined
+    private animate: gsap.core.Tween[] = []
 
+    cityPos = new THREE.Vector3(-40, 50, 100)
+    longPos = new THREE.Vector3(16, 24, 79)
+    shortPos = new THREE.Vector3(0, 0, 0)
     debugMode = false
 
     constructor(
@@ -51,28 +52,48 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
         super(75, canvas.Width / canvas.Height, 0.1, 800)
         canvas.RegisterViewer(this)
         this.controls = new OrbitControls(this, canvas.Canvas)
-        this.longPos = new THREE.Vector3(16, 24, 79)
-        this.shortPos = new THREE.Vector3(0, 0, 0)
         this.bakRotation = new THREE.Euler().copy(this.rotation.set(-0.27, 0.0, 0.03))
         
         this.viewMode = ViewMode.Long
         this.position.set(this.longPos.x, this.longPos.y, this.longPos.z)
 
         this.eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag, orbit: any[]) => {
+            this.controls.enabled = false
+            if (this.animate != undefined) this.animate.forEach(e => e.kill())
             switch(mode) {
+                case AppMode.CityView:
+                    if (e == EventFlag.Start) {
+                        this.viewMode = ViewMode.Long
+                        this.eventCtrl.OnChangeCtrlObjEvent(this.portal)
+
+                        this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                        this.rotation.x = -Math.PI / 4
+                        this.position.set(this.cityPos.x, this.cityPos.y, this.cityPos.z)
+                        this.animate.push(gsap.to(this.cityPos, {
+                            x: 16, y: 30, z: 50,
+                            duration: 10, ease: "power1.inOut", onUpdate: () => {
+                                this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                                this.position.set(this.cityPos.x, this.cityPos.y,
+                                    this.cityPos.z)
+                            }
+                        }))
+                        this.animate.push(gsap.to(this.rotation, {
+                            x: -0.5, y: 0, z: 0,
+                            duration: 10, ease: "power1.inOut"
+                        }))
+                    }
+                    break
                 case AppMode.EditCity:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.terrainer.Meshs
 
-                        this.focusAt(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 30, 30))
+                        this.focusAt(this.terrainer.CannonPos, new THREE.Vector3(0, 40, 50))
                     }
                     break;
                 case AppMode.Portal:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
 
                         this.target = this.portal.Meshs
                         this.focusAt(this.portal.CannonPos, new THREE.Vector3(0, 30, 30))
@@ -81,7 +102,6 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.Furniture:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.carp.target?.Meshs
                         if (!this.target) break;
 
@@ -91,7 +111,6 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.Farmer:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.farmer.target?.Meshs
                         if (!this.target) break;
 
@@ -101,9 +120,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.NonLego:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.nonlegos.GetBrickGuide(this.player.CenterPos)
-                        if (this.animate != undefined) this.animate.kill()
 
                         this.focusAt(this.target.position)
                     }
@@ -112,9 +129,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.Lego:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.legos.GetBrickGuide(this.player.CenterPos)
-                        if (this.animate != undefined) this.animate.kill()
 
                         this.focusAt(this.target.position)
                     }
@@ -122,9 +137,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.Brick:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.brick.GetBrickGuide(this.player.CenterPos)
-                        if (this.animate != undefined) this.animate.kill()
 
                         this.focusAt(this.target.position)
                     }
@@ -132,24 +145,20 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                 case AppMode.EditPlay:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Target
-                        this.controls.enabled = false
                         this.target = this.player.Meshs
-                        if (this.animate != undefined) this.animate.kill()
                         this.focusAt(this.target.position)
                     }
                     break;
                 case AppMode.Play:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Play
-                        this.controls.enabled = false
-                        if (this.animate != undefined) this.animate.kill()
 
                         this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                         this.rotation.x = -Math.PI / 4
 
                         const position = this.player.CannonPos
 
-                        this.animate = gsap.to(this.position, {
+                        this.animate.push(gsap.to(this.position, {
                             x: position.x, y: position.y + 13, z: position.z + 13,
                             duration: 2, ease: "power1.inOut",
                             onComplete: () => {
@@ -158,16 +167,14 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                                 this.lookAt(position.x, position.y, position.z)
                                 this.viewMode = ViewMode.PlayDone
                             }
-                        })
+                        }))
                     }
                     break;
                 case AppMode.Close:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Close
-                        this.controls.enabled = false
                         this.owner = this.npcs.Owner
                         if (this.owner == undefined) return
-                        if (this.animate != undefined) this.animate.kill()
                         this.focusAt(this.owner.CannonPos)
                     }
                     break;
@@ -179,27 +186,19 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                     }
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Long
-                        if (this.animate != undefined) this.animate.kill()
 
                         this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                         this.rotation.x = -Math.PI / 4
                         this.position.set(this.longPos.x, this.longPos.y, this.longPos.z)
-                        /*
-                        this.animate = gsap.to(this.rotation, {
-                            y: 0,
-                            duration: 4, ease: "power1.inOut", onComplete: () => {
-                                this.rotateY(0)
-                            }
-                        })
-                        */
-                        this.animate = gsap.to(this.longPos, {
+                        
+                        this.animate.push(gsap.to(this.longPos, {
                             x: 16, y: 4, z: 36,
                             duration: 4, ease: "power1.inOut", onUpdate: () => {
                                 this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                                 this.position.set(this.longPos.x, this.longPos.y,
                                     this.longPos.z)
                             }
-                        })
+                        }))
                     }
                     break;
             }

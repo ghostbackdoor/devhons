@@ -64,13 +64,11 @@ export class BlockStore {
                 throw ""
             })
             .then(async (keys: string[]) => {
-                const wait = []
                 const promise = keys.map(async (key) => {
-                    const w = await this.FetchModel(masterAddr, atob(key))
+                    await this.FetchModel(masterAddr, atob(key))
                         .then((model: ModelsEntry) => {
                             data.set(model.id, model.models)
                         })
-                    wait.push(w)
                 })
                 return Promise.all(promise)
             })
@@ -104,9 +102,9 @@ export class BlockStore {
 
         return fetch(addr)
             .then((response) => response.json())
-            .then((hon: CityEntry) => {
-                this.cityinfo.set(key, hon)
-                return hon
+            .then((e: CityEntry) => {
+                this.cityinfo.set(key, e)
+                return e
             })
     }
     FetchHon(masterAddr: string, key: string): Promise<HonEntry>{

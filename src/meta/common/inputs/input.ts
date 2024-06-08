@@ -61,6 +61,7 @@ export class Input {
                 case AppMode.Portal:
                 case AppMode.Farmer:
                 case AppMode.Furniture:
+                case AppMode.EditCity:
                     if (e == EventFlag.Start) {
                         this.LegacyButtonShow()
                         this.ButtonShow()

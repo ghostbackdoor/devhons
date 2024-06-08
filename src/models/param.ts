@@ -42,6 +42,7 @@ export type CityEntry = {
     openflag: string,
     cityexplain: string,
     time: number,
+    models?: string,
 }
 export type HonEntry = {
     email: string,

@@ -50,6 +50,7 @@ export class NpcManager implements IModelReload {
                 case AppMode.Brick:
                 case AppMode.Lego:
                 case AppMode.LegoDelete:
+                case AppMode.EditCity:
                     switch (e) {
                         case EventFlag.Start:
                             this.owner.Visible = false
@@ -123,7 +124,7 @@ export class NpcManager implements IModelReload {
         const info: UserInfo = {
             name: this.store.Name,
             position: (loadPos == undefined) ?
-                new THREE.Vector3(10, 5, 15) : new THREE.Vector3().copy(loadPos),
+                new THREE.Vector3(10, 0, 15) : new THREE.Vector3().copy(loadPos),
             model: (this.store.OwnerModel == undefined) ? Char.Male : this.store.OwnerModel,
             actionType: this.store.OwnerAction
         }

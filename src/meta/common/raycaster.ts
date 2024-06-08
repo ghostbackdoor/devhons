@@ -5,8 +5,9 @@ import { Legos } from "../scenes/bricks/legos";
 import { EventBricks } from "../scenes/bricks/eventbricks";
 import { Canvas } from "./canvas";
 import { IViewer } from "../scenes/models/iviewer";
-import { EventController } from "../event/eventctrl";
+import { EventController, EventFlag } from "../event/eventctrl";
 import { NonLegos } from "../scenes/bricks/nonlegos";
+import { AppMode } from "../app";
 
 
 export class RayViwer extends THREE.Raycaster implements IViewer {
@@ -14,6 +15,7 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
     pos = new THREE.Vector3(0, 0, 0)
     objs: THREE.Object3D[] = []
     color = new THREE.Color()
+    opacityMode = false
     constructor(
         private target: IPhysicsObject, 
         private _camera: Camera, 
@@ -29,12 +31,21 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
             console.log("change obj", obj)
             this.target = obj
         })
+        eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
+            if (mode != AppMode.EditCity) return
+
+            if (e == EventFlag.Start) {
+                this.opacityMode = true
+            } else if (e == EventFlag.End) {
+                this.opacityMode = false
+            }
+        })
     }
     resize(): void { }
 
     update(): void {
         if (this.target == undefined) {
-            this.opacityBox.forEach((box)=> {
+            if (this.opacityMode) this.opacityBox.forEach((box) => {
                 if (box.length) {
                     this.ResetBox(box)
                 }
@@ -64,30 +75,31 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
         const intersects = this.intersectObject(physBox, false)
         const dis = this.target.CenterPos.distanceTo(this._camera.position)
         if (intersects.length > 0 && intersects[0].distance < dis) {
-            this._camera.position.copy(intersects[0].point);
-            //(physBox.material as THREE.MeshStandardMaterial).opacity = 0.5;
+            if (this.opacityMode) (physBox.material as THREE.MeshStandardMaterial).opacity = 0.5;
+            else this._camera.position.copy(intersects[0].point);
         } else {
-            //(physBox.material as THREE.MeshStandardMaterial).opacity = 1;
+            if (this.opacityMode) (physBox.material as THREE.MeshStandardMaterial).opacity = 1;
         } 
     }
     CheckVisibleMeshs(physBox: THREE.Mesh[], opacityBox: THREE.Mesh[]) {
         const intersects = this.intersectObjects(physBox, false)
         const dis = this.target.CenterPos.distanceTo(this._camera.position)
         if (intersects.length > 0 && intersects[0].distance < dis) {
-            this._camera.position.copy(intersects[0].point)
-            /*
-            intersects.forEach((obj) => {
-                if (obj.distance > dis) return false
-                const mesh = obj.object as THREE.Mesh
-                if ((mesh.material as THREE.MeshStandardMaterial).opacity != 0.1) {
-                    opacityBox.push(mesh);
-                    mesh.castShadow = false;
-                    (mesh.material as THREE.MeshStandardMaterial).opacity = 0.1
-                }
-            })
-            */
+            if (this.opacityMode) {
+                intersects.forEach((obj) => {
+                    if (obj.distance > dis) return false
+                    const mesh = obj.object as THREE.Mesh
+                    if ((mesh.material as THREE.MeshStandardMaterial).opacity != 0.1) {
+                        opacityBox.push(mesh);
+                        mesh.castShadow = false;
+                        (mesh.material as THREE.MeshStandardMaterial).opacity = 0.1
+                    }
+                })
+            } else {
+                this._camera.position.copy(intersects[0].point)
+            }
         } else {
-            this.ResetBox(opacityBox)
+            if (this.opacityMode) this.ResetBox(opacityBox)
         }
     }
     ResetBox(box: THREE.Mesh[]) {

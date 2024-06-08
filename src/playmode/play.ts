@@ -297,7 +297,7 @@ export class Play extends Page {
         })
     }
     public async Run(masterAddr: string): Promise<boolean> {
-        await this.LoadHtml()
+        await this.LoadHtml(this.uiInven.Html)
         this.m_masterAddr = masterAddr;
         const email = this.getParam("email");
         this.CanvasRenderer(email)

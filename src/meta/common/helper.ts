@@ -16,6 +16,7 @@ import { IViewer } from "../scenes/models/iviewer";
 import { Canvas } from "./canvas";
 import { PlayerCtrl } from "../scenes/player/playerctrl";
 import { Drop } from "../drop/drop";
+import { Light } from "./light";
 
 export const gui = new GUI()
 gui.hide()
@@ -26,12 +27,14 @@ export class Helper implements IViewer {
     debugMode = false
     axesHelper: THREE.AxesHelper = new THREE.AxesHelper(300)
     gridHelper: THREE.GridHelper = new THREE.GridHelper(300)
+    lightHelper: THREE.DirectionalLightHelper = new THREE.DirectionalLightHelper(this.light)
     stats = new Stats()
     arrowHelper: THREE.ArrowHelper
     arrowAttackHelper: THREE.ArrowHelper
 
     constructor(
         private scene: Game,
+        private light: Light,
         player: Player,
         private playerCtrl: PlayerCtrl,
         npcs: NpcManager,
@@ -53,6 +56,7 @@ export class Helper implements IViewer {
         this.CreateMeshGui(npcs.Helper2.Meshs, "Helper2")
         this.CreateMeshGui(portal.Meshs, "Portal")
         this.CreateMeshGui(drop.points, "drop")
+        this.CreateMeshGui(this.light, "light")
 
         const cp = this.CreateMeshGui(camera, "Camera")
         cp.add(camera, "debugMode").listen()
@@ -91,6 +95,7 @@ export class Helper implements IViewer {
                 this.gridHelper,
                 this.arrowHelper,
                 this.arrowAttackHelper,
+                this.lightHelper,
             )
             document.body.removeChild(this.stats.dom)
             this.gui.hide()
@@ -103,6 +108,7 @@ export class Helper implements IViewer {
                 this.gridHelper,
                 this.arrowHelper,
                 this.arrowAttackHelper,
+                this.lightHelper,
             )
             document.body.appendChild(this.stats.dom)
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -129,7 +135,7 @@ export class Helper implements IViewer {
         f.add(v, "y", -100, 100, 0.1).listen().name(name + "Y")
         f.add(v, "z", -100, 100, 0.1).listen().name(name + "Z")
     }
-    CreateMeshGui(meshs: THREE.Group | THREE.Mesh | Camera | THREE.Sprite | THREE.Points, name: string) {
+    CreateMeshGui(meshs: THREE.Group | THREE.Mesh | Camera | Light | THREE.Sprite | THREE.Points, name: string) {
         const fp = this.gui.addFolder(name)
         this.CreateVectorGui(fp, meshs.position, "Pos")
         this.CreateVectorGui(fp, meshs.rotation, "Rot")

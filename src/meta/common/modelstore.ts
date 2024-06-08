@@ -180,6 +180,7 @@ export class ModelStore {
         this.owners.length = 0
         this.ownerModels.length = 0
         users.forEach((user) => {
+            if(user.length == 0) return
             i++
             const data = JSON.parse(user) as StoreData
             if(i == 0) {

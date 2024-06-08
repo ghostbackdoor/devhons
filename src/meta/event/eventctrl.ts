@@ -7,6 +7,7 @@ import { IPhysicsObject } from "../scenes/models/iobject";
 import { AttackOption, PlayerStatus } from "../scenes/player/playerctrl";
 import { Inventory } from "../inventory/inventory";
 import { ProjectileMsg } from "../scenes/projectile/projectile";
+import { TerrainOption } from "../scenes/terrain/terrainctrl";
 
 export enum EventFlag {
     Start,
@@ -65,6 +66,13 @@ export class EventController {
     }
     RegisterBrickInfo(callback: (...e: any[]) => void) {
         this.eventEmitter.on("bsize", callback)
+    }
+    // terrain Event
+    OnChangeTerrainInfo(opt: TerrainOption) { 
+        this.eventEmitter.emit("tsize", opt)
+    }
+    RegisterTerrainInfo(callback: (...e: any[]) => void) {
+        this.eventEmitter.on("tsize", callback)
     }
 
     //Attack Event

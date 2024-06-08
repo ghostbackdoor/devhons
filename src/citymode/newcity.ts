@@ -3,7 +3,7 @@ import { GlobalSaveTxId } from "../models/tx";
 import { Page } from "../page";
 import { Session } from "../session";
 
-export class CityMode extends Page {
+export class NewCity extends Page {
     masterAddr = ""
 
     alarm = document.getElementById("alarm-msg") as HTMLDivElement
