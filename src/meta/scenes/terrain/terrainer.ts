@@ -19,6 +19,15 @@ export class Terrainer extends GhostModel2 implements IPhysicsObject {
         super(geometry, material)
         this.rotateX(-Math.PI / 2)
         this.position.set(0, 50, 0)
+
+        const origin = new THREE.Vector3(0, 0, 0);
+        const to = new THREE.Vector3(0, 1, 0);
+        const length = SConf.LegoFieldH / 2 + 1;
+        const hex = 0xff0000;
+        const dir = to.subVectors(origin, to).normalize()
+
+        const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
+        this.Meshs.add(arrowHelper)
     }
 }
 

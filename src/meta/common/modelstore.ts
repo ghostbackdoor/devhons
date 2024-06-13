@@ -22,8 +22,11 @@ type Brick = {
     position: THREE.Vector3
     color: THREE.Color
 }
+export type House = {
+    position: THREE.Vector3
+}
 
-type StoreData = {
+export type StoreData = {
     furn: FurnEntry[]
     plants: PlantEntry[]
     monDeck: DeckEntry[]
@@ -35,10 +38,15 @@ type StoreData = {
     ownerAction: ActionType
     portal: THREE.Vector3 | undefined
 }
+type StoreCityData = {
+    house: House[]
+    portal: THREE.Vector3 | undefined
+}
 
 export interface IModelReload {
     Reload(): Promise<void>
-    Viliageload(): Promise<void>
+    Viliageload?(): Promise<void>
+    Cityload?(): Promise<void>
 }
 
 export class ModelStore {
@@ -58,10 +66,18 @@ export class ModelStore {
         ownerAction: ActionType.Idle,
         portal: undefined,
     }
+    private cityData: StoreCityData = {
+        house: [],
+        portal: undefined,
+    }
+    private houses?: Map<string, string>
     private owners = new Array<THREE.Vector3 | undefined>()
     private ownerModels = new Array<Char | undefined>()
     private name: string = "unknown"
 
+    get Houses() { return this.houses } // indivisual user
+    get CityHouses() { return this.cityData.house }
+    get CityPortal() { return this.cityData.portal }
     set Portal(pos: THREE.Vector3) { 
         this.data.portal = (this.data.portal == undefined) ? 
             new THREE.Vector3().copy(pos) : this.data.portal.copy(pos)
@@ -170,15 +186,27 @@ export class ModelStore {
             })
         await Promise.all(promise)
     }
+    async LoadCity(users: Map<string, string>, playerModel: string | undefined) {
+        if (playerModel != undefined) {
+            const playerData = JSON.parse(playerModel)
+            this.playerModel = playerData.ownerModel
+        }
+        this.houses = users
+        const promise = this.mgrs.map(async (mgr) => {
+            await mgr.Cityload?.()
+        })
+        await Promise.all(promise)
+    }
     async LoadVillage(users: Map<string, string>, playerModel: string | undefined) {
         if (playerModel != undefined) {
             const playerData = JSON.parse(playerModel)
             this.playerModel = playerData.ownerModel
         }
-        let i = -1
         this.data.legos.length = 0
         this.owners.length = 0
         this.ownerModels.length = 0
+
+        let i = -1
         users.forEach((user) => {
             if(user.length == 0) return
             i++
@@ -196,7 +224,7 @@ export class ModelStore {
             this.ownerModels.push(data.ownerModel)
         })
         const promise = this.mgrs.map(async (mgr) => {
-            await mgr.Viliageload()
+            await mgr.Viliageload?.()
         })
         await Promise.all(promise)
     }

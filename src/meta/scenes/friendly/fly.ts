@@ -88,7 +88,7 @@ export class Fly extends GhostModel implements IPhysicsObject {
         this.changeAnimate(clip)
         return clip?.duration
     }
-    update(): void {
-        
+    update(delta: number): void {
+        this.mixer?.update(delta)
     }
 }

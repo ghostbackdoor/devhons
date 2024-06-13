@@ -16,7 +16,7 @@ export interface IPhysicsObject {
     set Visible(flag: boolean)
     get Meshs(): THREE.Group | THREE.Mesh
     get UUID(): string
-    update?():void
+    update?(delta?: number):void
 }
 export interface IBuildingObject {
     get Size() : THREE.Vector3

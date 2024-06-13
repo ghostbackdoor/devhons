@@ -7,6 +7,7 @@ import { UiInven } from "../playmode/play_inven";
 import { Session } from "../session";
 import { BlockStore } from "../store";
 import { UiBrick } from "../module/uibrick";
+import { TerOptType } from "../meta/scenes/terrain/terrainctrl";
 
 export class EditCity extends Page {
     masterAddr = ""
@@ -16,15 +17,13 @@ export class EditCity extends Page {
     brickSize = new THREE.Vector3(3, 3, 1)
     brickRotate = new THREE.Vector3()
 
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
 
     constructor(
         private blockStore: BlockStore,
-        private session: Session, 
-        private meta: App, 
+        private session: Session,
+        private meta: App,
         private inven: UiInven,
-        private brick: UiBrick, 
+        private brick: UiBrick,
         url: string
     ) {
         super(url)
@@ -32,11 +31,13 @@ export class EditCity extends Page {
     UpdateMenu() {
         console.log("current Mode", this.mode)
         const play = document.getElementById("editcity") as HTMLDivElement
-        if(play) play.style.backgroundColor = (this.mode == AppMode.EditCity) ? "silver" : "transparent"
+        if (play) play.style.backgroundColor = (this.mode == AppMode.EditCity) ? "silver" : "transparent"
         const div = document.getElementById("brickmode") as HTMLDivElement
         div.style.backgroundColor = (this.mode == AppMode.NonLego) ? "silver" : "transparent"
         const brickctrl = document.getElementById("brickctrl") as HTMLDivElement
         brickctrl.style.display = (this.mode == AppMode.Lego || this.mode == AppMode.NonLego) ? "block" : "none"
+        const explain = document.getElementById("explain") as HTMLDivElement
+        explain.style.display = (this.mode == AppMode.Lego || this.mode == AppMode.NonLego) ? "none" : "block"
     }
     loadHelper() {
         fetch("views/citymode/edithelp.html")
@@ -49,6 +50,7 @@ export class EditCity extends Page {
             })
     }
     public MenuEvent() {
+        const explain = document.getElementById("explaintext") as HTMLDivElement
         const sav = document.getElementById("save") as HTMLDivElement
         sav.onclick = async () => {
             const tag = document.getElementById("confirmsave") as HTMLDivElement
@@ -56,14 +58,13 @@ export class EditCity extends Page {
         }
         const saveConfirmBtn = document.getElementById("saveConfirmBtn") as HTMLButtonElement
         saveConfirmBtn.onclick = async () => {
-            this.alarm.style.display = "block"
-            this.alarmText.innerHTML = "저장 중입니다."
+            this.alarmOn("저장 중입니다.")
 
             //const models = this.meta.ModelStore()
             //const invenData = this.meta.store.StoreInventory()
             //await this.inven.SaveInventory(invenData, this.m_masterAddr)
             //await this.RequestNewMeta(models)
-            this.alarm.style.display = "none"
+            this.alarmOff()
             const tag = document.getElementById("confirmsave") as HTMLDivElement
             tag.style.display = "none"
         }
@@ -72,16 +73,26 @@ export class EditCity extends Page {
             const tag = document.getElementById("confirmsave") as HTMLDivElement
             tag.style.display = "none"
         }
+        const camera = document.getElementById("camera") as HTMLDivElement
+        camera.onclick = () => {
+            this.meta.ChangeTerrainInfo({ to: TerOptType.Camera })
+        }
+        const rotate = document.getElementById("rotatehome") as HTMLDivElement
+        rotate.onclick = () => {
+            this.meta.ChangeTerrainInfo({ to: TerOptType.Rotate })
+        }
         const city = document.getElementById("editcity") as HTMLDivElement
         city.onclick = () => {
             this.meta.ModeChange(AppMode.EditCity)
             this.UpdateMenu()
+            explain.innerText = "마을 주민의 집 위치를 지정합니다."
         }
         const gate = document.getElementById("gate") as HTMLDivElement
         gate.onclick = () => {
             this.mode = (this.mode != AppMode.Portal) ? AppMode.Portal : AppMode.EditCity
             this.meta.ModeChange(this.mode)
             this.UpdateMenu()
+            explain.innerText = "유저가 소환되는 포탈의 위치를 정합니다."
         }
         const div = document.getElementById("brickmode") as HTMLDivElement
         div.onclick = () => {
@@ -116,33 +127,31 @@ export class EditCity extends Page {
                     console.log(inven)
                     this.inven.LoadInven(this.meta.store.LoadInventory(inven))
                     this.inven.loadSlot()
-                    if(this.inven.inven) this.meta.store.ChangeInventory(this.inven.inven.data)
+                    if (this.inven.inven) this.meta.store.ChangeInventory(this.inven.inven.data)
                 })
             this.meta.ModeChange(AppMode.EditCity)
             if (email == null) {
-                this.alarm.style.display = "block"
-                this.alarmText.innerText = "Login이 필요합니다."
+                this.alarmOn("Login이 필요합니다.")
                 setTimeout(() => {
-                    this.alarm.style.display = "none"
+                    this.alarmOff()
                 }, 2000)
             } else {
                 if (!inited) return
 
-                this.alarm.style.display = "block"
-                this.alarmText.innerText = "이동중입니다."
+                this.alarmOn("이동중입니다.")
 
                 this.blockStore.FetchCity(this.masterAddr, email)
                     .then(async (result) => {
                         await this.meta.LoadModel(result.models ?? "", result.id, myModel?.models)
-                        this.alarm.style.display = "none"
+                        this.alarmOff()
                     })
                     .then(() => {
                         this.meta.ModeChange(AppMode.EditCity)
                     })
                     .catch(async () => {
-                        this.alarm.style.display = "none"
                         await this.meta.LoadModelEmpty(email, myModel?.models)
                         this.meta.ModeChange(AppMode.EditCity)
+                        this.alarmOff()
                     })
             }
             this.ui.UiOff(AppMode.EditCity)
@@ -152,7 +161,7 @@ export class EditCity extends Page {
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml(this.inven.Html, this.brick.Html)
         const email = this.getParam("email");
-        if(email == null) return false;
+        if (email == null) return false;
         this.masterAddr = masterAddr
         this.loadHelper()
         this.brick.Initialize(AppMode.EditCity, () => { this.mode = AppMode.EditCity; this.UpdateMenu() })
@@ -166,7 +175,7 @@ export class EditCity extends Page {
         this.UpdateMenu()
         return true
     }
-    public Release(): void { 
+    public Release(): void {
         this.ReleaseHtml()
     }
 }

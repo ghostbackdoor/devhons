@@ -21,6 +21,7 @@ import { NewCity } from "./citymode/newcity";
 import { CityMain } from "./citymode/citymain";
 import { EditCity } from "./citymode/editcity";
 import { UiBrick } from "./module/uibrick";
+import { CitySetup } from "./citymode/citysetup";
 
 
 interface IPage {
@@ -65,25 +66,28 @@ class Index {
         "uploadhon": "views/uploadhon.html",
         "profile": "views/profile.html",
         "edithome": "views/editmode/edithome.html",
-        "newcity": "views/citymode/citymode.html",
+        "play": "views/play.html",
+        "newcity": "views/citymode/newcity.html",
         "citymain": "views/citymode/citymain.html",
         "editcity": "views/citymode/editcity.html",
+        "setupcity": "views/citymode/citysetup.html",
     };
     funcMap: FuncMap = {
-        "signin": new Signin(this.session, "views/signin.html"),
-        "signup":  new Signup("views/signup.html"),
-        "hon": new Hon(this.blockStore, this.session, "views/hon.html"),
-        "hons": new Hons(this.blockStore, this.session, this.meta, "views/hons.html"),
-        "hondetail": new HonDetail(this.blockStore, this.session, this.meta, "views/hondetail.html"),
+        "signin": new Signin(this.session, this.urlhtml["signin"]),
+        "signup":  new Signup(this.urlhtml["signup"]),
+        "hon": new Hon(this.blockStore, this.session, this.urlhtml["hon"]),
+        "hons": new Hons(this.blockStore, this.session, this.meta, this.urlhtml["hons"]),
+        "hondetail": new HonDetail(this.blockStore, this.session, this.meta, this.urlhtml["hondetail"]),
         "newhon": this.newHon,
-        "uploadhon": new UploadHon("views/uploadhon.html"),
+        "uploadhon": new UploadHon(this.urlhtml["uploadhon"]),
         "profile": this.profile,
-        "main": new Main(this.blockStore, "views/main.html"),
-        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, this.brick, "views/editmode/edithome.html"),
-        "play": new Play(this.blockStore, this.session, this.meta, this.inven, "views/play.html"),
+        "main": new Main(this.blockStore, this.urlhtml["main"]),
+        "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, this.brick, this.urlhtml["edithome"]),
+        "play": new Play(this.blockStore, this.session, this.meta, this.inven, this.urlhtml["play"]),
         "newcity": new NewCity(this.session, this.urlhtml["newcity"]),
         "citymain": new CityMain(this.blockStore, this.session, this.meta, this.urlhtml["citymain"]),
         "editcity": new EditCity(this.blockStore, this.session, this.meta, this.inven, this.brick, this.urlhtml["editcity"]),
+        "setupcity": new CitySetup(this.blockStore, this.urlhtml["setupcity"]),
     };
 
     

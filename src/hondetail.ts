@@ -20,9 +20,6 @@ export class HonDetail extends Page {
     honsData: HonsData[] = []
     ui = new Ui(this.meta, AppMode.Close)
 
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
-
     public constructor(private blockStore: BlockStore
         , private session: Session, private meta: App, url: string) {
         super(url)
@@ -194,15 +191,14 @@ export class HonDetail extends Page {
         }
 
         this.meta.RegisterInitEvent(() => {
-            this.alarm.style.display = "block"
-            this.alarmText.innerHTML = "이동중입니다."
+            this.alarmOn("이동중입니다.")
             this.ui.UiOn()
 
             const myModel = this.blockStore.GetModel(this.session.UserId)
             this.blockStore.FetchModel(this.m_masterAddr, email)
                 .then(async (result) => {
                     await this.meta.LoadModel(result.models, result.id, myModel?.models)
-                    this.alarm.style.display = "none"
+                    this.alarmOff()
                 })
                 .then(() => {
                     this.meta.ModeChange(AppMode.Close)
@@ -211,7 +207,7 @@ export class HonDetail extends Page {
                     this.meta.render()
                 })
                 .catch(async () => {
-                    this.alarm.style.display = "none"
+                    this.alarmOff()
                     await this.meta.LoadModelEmpty(email, myModel?.models)
                     this.meta.ModeChange(AppMode.Close)
                 })

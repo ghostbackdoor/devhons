@@ -30,7 +30,7 @@ export class Canvas {
         this.width = window.innerWidth
         this.height = window.innerHeight
         this.objs.forEach((obj) => {
-            obj.resize(this.width, this.height)
+            obj.resize?.(this.width, this.height)
         })
     }
 

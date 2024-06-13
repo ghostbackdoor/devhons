@@ -6,8 +6,6 @@ import { Page } from "./page";
 
 export class Signup extends Page {
     m_masterAddr: string;
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
 
     public constructor(url: string) {
         super(url)
@@ -15,14 +13,14 @@ export class Signup extends Page {
     }
 
     warningMsg(msg: string) {
-        this.alarm.style.display = "none"
+        this.alarmOff()
         const info = document.getElementById("information");
         if (info == null) return;
         info.innerHTML = msg;
     }
     signupResult(ret: FetchResult) {
         console.log(ret);
-        this.alarm.style.display = "none"
+        this.alarmOff()
         if (ret.result == "null") {
             this.warningMsg("Signup 실패");
         } else if ("result" in ret){
@@ -43,8 +41,7 @@ export class Signup extends Page {
         const id = inputId?.value;
         const addr = masterAddr + "/glambda?txid=" + encodeURIComponent(SignupTxId);
 
-        this.alarm.style.display = "block"
-        this.alarmText.innerText = "등록중입니다."
+        this.alarmOn("등록중입니다.")
 
         const formData = new FormData()
         formData.append("key", encodeURIComponent(email))

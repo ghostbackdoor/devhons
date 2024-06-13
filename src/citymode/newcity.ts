@@ -6,9 +6,6 @@ import { Session } from "../session";
 export class NewCity extends Page {
     masterAddr = ""
 
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
-
     constructor(
         private session: Session, 
         url: string
@@ -16,18 +13,18 @@ export class NewCity extends Page {
         super(url)
     }
     warningMsg(msg: string) {
-        this.alarm.style.display = "none"
+        this.alarmOff()
         const info = document.getElementById("information");
         if (info == null) return;
         info.innerHTML = msg;
     }
     newHonResult(ret: FetchResult) {
         console.log(ret);
-        this.alarm.style.display = "none"
+        this.alarmOff()
         if (ret.result == "null") {
             this.warningMsg("등록 실패");
         } else {
-            window.ClickLoadPage("hons", false);
+            window.history.back()
         }
     }
     RegisterCity() {
@@ -37,8 +34,7 @@ export class NewCity extends Page {
         const openflag = (document.querySelector('input[name="openFlag"]:checked') as HTMLInputElement).value;
         const addr = this.masterAddr + "/glambda?txid=" + encodeURIComponent(GlobalSaveTxId);
 
-        this.alarm.style.display = "block"
-        this.alarmText.innerText = "등록중입니다."
+        this.alarmOn("등록중입니다.")
         const formData = new FormData()
         formData.append("key", encodeURIComponent(user.Email))
         formData.append("email", encodeURIComponent(user.Email))

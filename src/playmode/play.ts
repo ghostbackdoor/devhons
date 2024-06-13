@@ -14,9 +14,6 @@ export class Play extends Page {
     m_masterAddr: string = ""
     ui = new Ui(this.meta, AppMode.Play)
 
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
-
     defaultLv = 1
     randomBoxOpend = false
 
@@ -86,7 +83,7 @@ export class Play extends Page {
                     if (!this.session.CheckLogin() || data.inventroySlot.length < 1) return
                     this.uiInven.SaveInventory(data, this.m_masterAddr)
                         .then(() => {
-                            this.alarm.style.display = "none"
+                            this.alarmOff()
                         })
                 }
             })
@@ -177,18 +174,17 @@ export class Play extends Page {
                         this.startPlay()
                         return
                     }
-                    this.alarm.style.display = "block"
-                    this.alarmText.innerHTML = "이동중입니다."
+                    this.alarmOn("이동중입니다.")
 
                     this.blockStore.FetchModel(this.m_masterAddr, email)
                         .then(async (result) => {
                             await this.meta.LoadModel(result.models, result.id, myModel?.models)
-                            this.alarm.style.display = "none"
+                            this.alarmOff()
                             this.startPlay()
                         })
                         .catch(async () => {
-                            this.alarm.style.display = "none"
                             await this.meta.LoadModelEmpty(email, myModel?.models)
+                            this.alarmOff()
                             this.startPlay()
                         })
                 }

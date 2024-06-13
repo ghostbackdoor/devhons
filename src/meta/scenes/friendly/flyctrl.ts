@@ -52,7 +52,7 @@ export class FlyCtrl implements IGPhysic, IFlyCtrl {
         }
         */
         this.currentState = this.currentState.Update(delta, this.moveDirection, dist)
-        this.fly.update()
+        this.fly.update(delta)
         
     }
     Respawning(): void {

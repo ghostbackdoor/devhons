@@ -7,8 +7,6 @@ import { Page } from "./page";
 export class Signin extends Page {
     m_masterAddr: string;
     m_user: HonUser;
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
 
     public constructor(private session: Session, url: string) {
         super(url)
@@ -17,13 +15,13 @@ export class Signin extends Page {
     }
 
     warningMsg(msg: string) {
-        this.alarm.style.display = "none"
+        this.alarmOff()
         const info = document.getElementById("information");
         if (info == null) return;
         info.innerHTML = msg;
     }
     loginResult(ret: any) {
-        this.alarm.style.display = "none"
+        this.alarmOff()
         if ("email" in ret) {
             this.session.SignIn({ 
                 Email: ret.email, Nickname: ret.id, 
@@ -44,8 +42,7 @@ export class Signin extends Page {
         this.m_user.Email = email;
         this.m_user.Password = password;
 
-        this.alarm.style.display = "block"
-        this.alarmText.innerText = "로그인중입니다."
+        this.alarmOn("로그인중입니다.")
         const formData = new FormData()
         formData.append("key", encodeURIComponent(email))
         formData.append("email", encodeURIComponent(email))

@@ -186,6 +186,10 @@ export default class App {
         this.eventCtrl.OnSceneClearEvent()
         await this.store.LoadVillage(users, playerModel)
     }
+    async LoadCity(users: Map<string, string>, playerModel: string | undefined) {
+        this.eventCtrl.OnSceneClearEvent()
+        await this.store.LoadCity(users, playerModel)
+    }
     resize() {
         this.canvas.resize()
     }

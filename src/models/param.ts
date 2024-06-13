@@ -44,6 +44,13 @@ export type CityEntry = {
     time: number,
     models?: string,
 }
+export type CitizenEntry = {
+    email: string,
+    id: string,
+    nickname: string,
+    activate: boolean,
+    time: number,
+}
 export type HonEntry = {
     email: string,
     id: string,

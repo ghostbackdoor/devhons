@@ -3,10 +3,15 @@ import { GPhysics } from "../../common/physics/gphysics";
 import { EventController, EventFlag } from "../../event/eventctrl";
 import { IKeyCommand } from "../../event/keycommand";
 import { Terrainer } from "./terrainer";
+export enum TerOptType {
+    Rotate,
+    Camera
+}
 
 export type TerrainOption = {
-    r?: THREE.Vector3,
+    to: TerOptType,
     clear?: boolean
+    orbitcontrol?: boolean
 }
 
 export class TerrainCtrl {
@@ -30,6 +35,11 @@ export class TerrainCtrl {
                     this.mode = false
                     game.remove(this.terrainer)
                     break
+            }
+        })
+        eventCtrl.RegisterTerrainInfo((opt: TerrainOption) => {
+            if(opt.to == TerOptType.Rotate) {
+                this.terrainer.rotateZ(Math.PI / 4)
             }
         })
         eventCtrl.RegisterKeyDownEvent((keyCommand: IKeyCommand) => {

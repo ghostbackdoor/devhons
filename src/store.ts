@@ -1,5 +1,5 @@
 import { InvenData } from "./meta/inventory/inventory";
-import { CityEntry, HonEntry, ModelsEntry, ProfileEntry } from "./models/param";
+import { CitizenEntry, CityEntry, HonEntry, ModelsEntry, ProfileEntry } from "./models/param";
 import { GlobalLoadListTx, GlobalLoadTx, HonTxId } from "./models/tx";
 
 
@@ -91,7 +91,30 @@ export class BlockStore {
                 return model
             })
     }
+    FetchCitizen(masterAddr: string, table: string): Promise<CitizenEntry[]> {
+        const addr = masterAddr + "/glambda?txid=" + 
+            encodeURIComponent(GlobalLoadListTx) + "&table=citizen_" + table + "&start=0&count=20";
+        const data: CitizenEntry[] = []
 
+        return fetch(addr)
+            .then((response) => response.json())
+            .then((ret) => {
+                if ("json" in ret) {
+                    const keys = JSON.parse(ret.json as string);
+                    return keys;
+                }
+                throw ""
+            })
+            .then(async (keys: CitizenEntry[]) => {
+                data.push(...keys)
+                const promise = keys.map((key) => {
+                    this.FetchModel(masterAddr, atob(key.email))
+                })
+                return Promise.all(promise)
+            })
+            .then(() => data)
+            .catch(() => data)
+    }
     FetchCity(masterAddr: string, key: string): Promise<CityEntry>{
         const hon = this.cityinfo.get(key)
         if (hon != undefined) {

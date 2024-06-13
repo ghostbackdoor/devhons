@@ -28,9 +28,6 @@ export class EditHome extends Page {
     myPicker?: ColorPicker
     color: string = "#fff"
 
-    alarm = document.getElementById("alarm-msg") as HTMLDivElement
-    alarmText = document.getElementById("alarm-msg-text") as HTMLDivElement
-
     constructor(
         private blockStore: BlockStore,
         private session: Session, 
@@ -105,14 +102,13 @@ export class EditHome extends Page {
         }
         const saveConfirmBtn = document.getElementById("saveConfirmBtn") as HTMLButtonElement
         saveConfirmBtn.onclick = async () => {
-            this.alarm.style.display = "block"
-            this.alarmText.innerHTML = "저장 중입니다."
+            this.alarmOn("저장 중입니다.")
 
             const models = this.meta.ModelStore()
             const invenData = this.meta.store.StoreInventory()
             await this.inven.SaveInventory(invenData, this.m_masterAddr)
             await this.RequestNewMeta(models)
-            this.alarm.style.display = "none"
+            this.alarmOff()
             const tag = document.getElementById("confirmsave") as HTMLDivElement
             tag.style.display = "none"
         }
@@ -233,29 +229,27 @@ export class EditHome extends Page {
                 })
             this.meta.ModeChange(AppMode.EditPlay)
             if (email == null) {
-                this.alarm.style.display = "block"
-                this.alarmText.innerText = "Login이 필요합니다."
+                this.alarmOn("Login이 필요합니다.")
                 setTimeout(() => {
-                    this.alarm.style.display = "none"
+                    this.alarmOff()
                 }, 2000)
             } else {
                 if (!inited) return
 
-                this.alarm.style.display = "block"
-                this.alarmText.innerText = "이동중입니다."
+                this.alarmOn("이동중입니다.")
 
                 this.blockStore.FetchModel(this.m_masterAddr, email)
                     .then(async (result) => {
                         await this.meta.LoadModel(result.models, result.id, myModel?.models)
-                        this.alarm.style.display = "none"
+                        this.alarmOff()
                     })
                     .then(() => {
                         this.meta.ModeChange(AppMode.EditPlay)
                     })
                     .catch(async () => {
-                        this.alarm.style.display = "none"
                         await this.meta.LoadModelEmpty(email, myModel?.models)
                         this.meta.ModeChange(AppMode.EditPlay)
+                        this.alarmOff()
                     })
             }
             this.ui.UiOff(AppMode.EditPlay)
