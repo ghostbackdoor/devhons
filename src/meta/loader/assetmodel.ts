@@ -38,6 +38,12 @@ export enum Ani {
 export enum Char{
     Male,
     Female,
+    TwoB,
+    Wizard,
+    CuteGirl,
+    OfficeGirl,
+    Hellboy,
+
     Tree,
     DeadTree,
     DeadTree2,

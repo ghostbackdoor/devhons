@@ -5,6 +5,7 @@ import { GlobalLoadListTx, GlobalLoadTx, HonTxId } from "./models/tx";
 
 export class BlockStore {
     hons = new Map<string, HonEntry>()
+    citizeninfo = new Map<string, CitizenEntry>()
     cityinfo = new Map<string, CityEntry>()
     profiles = new Map<string, ProfileEntry>()
     models = new Map<string, ModelsEntry>()
@@ -91,10 +92,10 @@ export class BlockStore {
                 return model
             })
     }
-    FetchCitizen(masterAddr: string, table: string): Promise<CitizenEntry[]> {
+    FetchCitizenList(masterAddr: string, table: string): Promise<string[]> {
         const addr = masterAddr + "/glambda?txid=" + 
             encodeURIComponent(GlobalLoadListTx) + "&table=citizen_" + table + "&start=0&count=20";
-        const data: CitizenEntry[] = []
+        const data: string[] = []
 
         return fetch(addr)
             .then((response) => response.json())
@@ -105,15 +106,31 @@ export class BlockStore {
                 }
                 throw ""
             })
-            .then(async (keys: CitizenEntry[]) => {
-                data.push(...keys)
+            .then(async (keys: string[]) => {
                 const promise = keys.map((key) => {
-                    this.FetchModel(masterAddr, atob(key.email))
+                    const email = atob(key)
+                    this.FetchModel(masterAddr, email)
+                    data.push(email)
                 })
                 return Promise.all(promise)
             })
             .then(() => data)
             .catch(() => data)
+    }
+    FetchCitizen(masterAddr: string, table: string, key: string): Promise<CitizenEntry> {
+        const hon = this.citizeninfo.get(key)
+        if (hon != undefined) {
+            return Promise.resolve(hon)
+        }
+        const addr = masterAddr + "/glambda?txid=" + 
+            encodeURIComponent(GlobalLoadTx) + "&table=citizen_"+table+"&key=" + key;
+
+        return fetch(addr)
+            .then((response) => response.json())
+            .then((e: CitizenEntry) => {
+                this.citizeninfo.set(key, e)
+                return e
+            })
     }
     FetchCity(masterAddr: string, key: string): Promise<CityEntry>{
         const hon = this.cityinfo.get(key)

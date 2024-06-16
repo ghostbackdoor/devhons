@@ -1,4 +1,5 @@
 import App, { AppMode } from "../meta/app";
+import { ProfileEntry } from "../models/param";
 import { GlobalSaveTxId } from "../models/tx";
 import { Ui } from "../models/ui";
 import { Page } from "../page";
@@ -38,6 +39,7 @@ export class CityMain extends Page {
             .then((response) => response.json())
             .then(() => {
                 this.alarmOff()
+                window.location.reload()
             })
     }
     public async CanvasRenderer(cityKey: string) {
@@ -50,16 +52,19 @@ export class CityMain extends Page {
         this.alarmOn("마을 정보를<br>불러오고 있습니다.")
         const myModel = this.blockStore.GetModel(this.session.UserId)
 
+        /* load city & citizen */
         const [city, citizen] = await Promise.all([
             this.blockStore.FetchCity(this.masterAddr, cityKey),
-            this.blockStore.FetchCitizen(this.masterAddr, cityKey),
+            this.blockStore.FetchCitizenList(this.masterAddr, cityKey),
         ])
+        /* load data model */
         const data = new Map<string, string>()
         data.set(city.id, city.models ?? "")
-        await citizen.map(async (e) => {
-            const modelEntry = await this.blockStore.FetchModel(this.masterAddr, e.id)
+        await Promise.all(citizen.map(async (e) => {
+            const modelEntry = await this.blockStore.FetchModel(this.masterAddr, e)
             data.set(modelEntry.id, modelEntry.models)
-        })
+            this.makeMemberHtml(e)
+        }))
 
         await this.meta.LoadCity(data, myModel?.models)
         this.alarmOff()
@@ -99,11 +104,11 @@ export class CityMain extends Page {
 
         const city = document.getElementById("editcity") as HTMLAnchorElement
         city.onclick = () => {
-            window.ClickLoadPage("editcity", false, "&email=" + cityKey)
+            window.ClickLoadPage("editcity", false, "&city=" + cityKey)
         }
         const setup = document.getElementById("setupcity") as HTMLAnchorElement
         setup.onclick = () => {
-            window.ClickLoadPage("setupcity", false, "&email=" + cityKey)
+            window.ClickLoadPage("setupcity", false, "&city=" + cityKey)
         }
         const join = document.getElementById("join") as HTMLAnchorElement
         join.onclick = () => {
@@ -120,6 +125,40 @@ export class CityMain extends Page {
         const exit = document.getElementById("exit") as HTMLAnchorElement
         exit.onclick = () => {
         }
+    }
+    public makeMemberHtml(email: string) {
+        if (!this.active) return
+        console.log(email)
+        this.blockStore.FetchProfile(window.MasterAddr, email)
+            .then((ret: ProfileEntry) => {
+                console.log(ret)
+                const uniqId = ret.id + ret.time.toString()
+                const memberrTag = document.getElementById("memberlist") as HTMLDivElement;
+                memberrTag.insertAdjacentHTML("beforeend", `
+                <div class="row p-1 border-top handcursor" onclick="ClickLoadPage('hondetail', false, '&email=${ret.email}')">
+                    <div class="col-auto">
+                            <span id="${uniqId}" class="m-1"></span>
+                    </div>
+                    <div class="col">
+                        <b>${ret.id}</b> @${ret.email}
+                    </div>
+                </div>
+                `)
+
+                if (ret.file != "") {
+                    fetch("data:image/jpg;base64," + ret.file)
+                        .then(res => res.blob())
+                        .then(img => {
+                            const imageUrl = URL.createObjectURL(img)
+                            const imageElement = new Image()
+                            imageElement.src = imageUrl
+                            imageElement.className = 'profile-sm';
+                            const container = document.getElementById(uniqId) as HTMLSpanElement
+                            container.innerHTML = ''
+                            container.appendChild(imageElement)
+                        })
+                }
+            })
     }
 
     public async Run(masterAddr: string): Promise<boolean> {

@@ -1,4 +1,3 @@
-import { CitizenEntry } from "../models/param";
 import { Page } from "../page";
 import { BlockStore } from "../store";
 
@@ -11,15 +10,17 @@ export class CitySetup extends Page {
     ) {
         super(url)
     }
-    DrawCitizenList(citizen: CitizenEntry[]) {
+    async DrawCitizenList(table: string, citizen: string[]) {
         let html = `<ul class="list-group-flush">`
         if (!citizen.length) {
             html += `
                 <li class="list-group-item">시민이 없습니다...</li>
             `
         } else {
-            citizen.forEach(e => {
-                html += `
+            const list = await Promise.all(citizen.map((e) => {
+                return this.blockStore.FetchCitizen(this.masterAddr, table, e)
+                    .then((e) => {
+                        return `
                 <li class="list-group-item">
                     <div class="container-fluid m-0 p-0>
                         <div class="row">
@@ -33,22 +34,28 @@ export class CitySetup extends Page {
                         </div>
                     </div>
                 </li> `
-            })
+                    })
+            }));
+            html += list.join();
         }
         html += "</ul>"
-        document.getElementById("setup")?.insertAdjacentHTML("afterbegin", html)
+        document.getElementById("setup")?.insertAdjacentHTML("afterend", html)
     }
     async RequestCityInfo(key: string) {
-        const citizens = await this.blockStore.FetchCitizen(this.masterAddr, key)
+        const citizens = await this.blockStore.FetchCitizenList(this.masterAddr, key)
         const explain = document.getElementById("explain")
-        if(explain) explain.innerText = ""
-        this.DrawCitizenList(citizens)
+        if (explain) explain.innerText = ""
+        this.DrawCitizenList(key, citizens)
+
     }
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml()
         this.masterAddr = masterAddr
+        const cityKey = this.getParam("city") ?? "ghost"
+        this.RequestCityInfo(cityKey)
         return true
     }
     public Release(): void {
+        this.ReleaseHtml()
     }
 }

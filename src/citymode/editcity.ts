@@ -160,15 +160,15 @@ export class EditCity extends Page {
     }
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml(this.inven.Html, this.brick.Html)
-        const email = this.getParam("email");
-        if (email == null) return false;
+        const city = this.getParam("city");
+        if (city == null) return false;
         this.masterAddr = masterAddr
         this.loadHelper()
         this.brick.Initialize(AppMode.EditCity, () => { this.mode = AppMode.EditCity; this.UpdateMenu() })
         this.brick.GetElement()
         this.brick.UpdateBrickUI()
 
-        this.CanvasRenderer(email)
+        this.CanvasRenderer(city)
 
         this.MenuEvent()
         this.inven.binding()

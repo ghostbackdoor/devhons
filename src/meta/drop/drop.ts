@@ -26,6 +26,7 @@ export class Drop implements IViewer {
     moveDist = 6
     dummy = new THREE.Object3D()
     createPos = new THREE.Vector3()
+    moveDirection = new THREE.Vector3()
 
     constructor(
         private alarm: Alarm,
@@ -120,8 +121,7 @@ export class Drop implements IViewer {
     }
     pointsUpdate(delta: number) {
         if (!this.activeDropBox.length || this.pointsGeometry == undefined) return
-        this.createPos.copy(this.player.CannonPos)
-        this.createPos.y += this.player.Size.y / 2
+        this.createPos.copy(this.player.CenterPos)
         const points = this.pointsGeometry.attributes.position
         for (let i = 0; i < this.activeDropBox.length; i++) {
             const b = this.activeDropBox[i];
@@ -140,6 +140,9 @@ export class Drop implements IViewer {
                     this.inventory.NewItem(item)
                 })
             } else if (dist < this.moveDist) {
+                this.moveDirection.subVectors(this.createPos, pos).normalize()
+                pos.addScaledVector(this.moveDirection, delta * this.speed)
+                /*
                 if (this.createPos.x - pos.x < 0) {
                     pos.x -= delta * this.speed
                 } else {
@@ -150,6 +153,7 @@ export class Drop implements IViewer {
                 } else {
                     pos.z += delta * this.speed
                 }
+                */
                 points.setX(b.id, pos.x)
                 points.setY(b.id, pos.y)
                 points.setZ(b.id, pos.z)
@@ -160,7 +164,7 @@ export class Drop implements IViewer {
 
     resize(): void { }
 
-    speed = 1
+    speed = 4
     update(delta: number): void {
         this.pointsUpdate(delta)
         //this.instanceUpdate(delta)

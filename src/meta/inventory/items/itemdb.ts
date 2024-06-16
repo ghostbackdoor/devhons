@@ -108,7 +108,7 @@ export class ItemDb {
             name: "Legacy Gun",
             icon: "WeaponTool/Bow.png",
             stackable: false, binding: true,
-            damageMax: 2, damageMin: 1, speed: 1,
+            damageMax: 9, damageMin: 3, speed: 1,
         })
         this.itemDb.set(ItemId.WarterCan, {
             id: ItemId.WarterCan,

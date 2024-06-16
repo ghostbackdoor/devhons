@@ -40,6 +40,11 @@ import { DogFab } from "./pet/dogfab";
 import { PetSnakeFab } from "./pet/animalpackfab";
 import { BeeFab } from "./pet/bee";
 import { EmptyFab } from "./emptyfab";
+import { HellBoyFab } from "./hellboy";
+import { CuteGirlFab } from "./cutegirl";
+import { OfficeGirlFab } from "./officegirl";
+import { WizardFab } from "./wizardfab";
+import { TwoBFab } from "./twobfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -48,6 +53,12 @@ export class Loader {
 
     private male = new MaleFab(this)
     private female = new FemaleFab(this)
+    private hellboy = new HellBoyFab(this)
+    private cutegirl = new CuteGirlFab(this)
+    private officegirl = new OfficeGirlFab(this)
+    private wizard = new WizardFab(this)
+    private twoB = new TwoBFab(this)
+
     private mushroom1 = new MushroomFab(this, 1)
     private mushroom2 = new MushroomFab(this, 2)
     private tree = new TreeFab(this)
@@ -118,6 +129,11 @@ export class Loader {
 
     get MaleAsset(): IAsset { return this.male }
     get FemaleAsset(): IAsset { return this.female }
+    get CuteGirlAsset(): IAsset { return this.cutegirl }
+    get OfficeGirlAsset(): IAsset { return this.officegirl }
+    get WizardAsset(): IAsset { return this.wizard }
+    get TwoBAsset(): IAsset { return this.twoB }
+    get HellboyAsset(): IAsset { return this.hellboy }
     //get FemaleAsset(): IAsset { return this.test }
     get Mushroom1Asset(): IAsset { return this.mushroom1 }
     get Mushroom2Asset(): IAsset { return this.mushroom2 }
@@ -187,6 +203,11 @@ export class Loader {
 
         this.assets.set(Char.Male, this.male)
         this.assets.set(Char.Female, this.female)
+        this.assets.set(Char.Hellboy, this.hellboy)
+        this.assets.set(Char.CuteGirl, this.cutegirl)
+        this.assets.set(Char.OfficeGirl, this.officegirl)
+        this.assets.set(Char.Wizard, this.wizard)
+        this.assets.set(Char.TwoB, this.twoB)
         //this.assets.set(Char.Female, this.test)
         this.assets.set(Char.Tree, this.tree)
         this.assets.set(Char.DeadTree, this.deadtree)

@@ -10,6 +10,7 @@ export class Floor extends GhostModel2 implements IObject, IPhysicsObject {
         return new THREE.Vector3(v.x, v.y, v.z)
     }
     constructor(width: number) {
+        width *= 10
         const geometry = new THREE.CircleGeometry(width, 6)
         const material = new THREE.MeshStandardMaterial({ 
             color: 0xffcc66,
