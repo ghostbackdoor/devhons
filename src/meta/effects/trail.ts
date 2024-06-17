@@ -22,16 +22,16 @@ import { IEffect } from "./effector";
 export class Trail implements IEffect {
     totalTime = 0;
     refreshIndex = 0;
-    refreshTime = 2;
+    refreshTime = 5;
     processFlag = false
     batchRenderer = new BatchedParticleRenderer();
     loaded = false
-    target?: THREE.Group
+    target?: THREE.Vector3
     textureloader = new THREE.TextureLoader()   
     texture?: THREE.Texture
     groups: THREE.Object3D[] = []
 
-    async initTrailEffect(mesh: THREE.Group, game: THREE.Scene) {
+    async initTrailEffect(pos: THREE.Vector3, game: THREE.Scene) {
         if(this.loaded) return
         this.texture = await this.textureloader.loadAsync('assets/vfx/textures/texture1.png');
         this.texture.name = 'assets/vfx/textures/texture1.png';
@@ -124,21 +124,21 @@ export class Trail implements IEffect {
         group.add(beam.emitter);
         this.batchRenderer.addSystem(beam);
 
-        this.target = mesh
+        this.target = pos
         group.visible = true;
         game.add(this.batchRenderer, group)
         this.groups.push(group);
     }
 
     Start(): void {
-        if(this.processFlag) return
+        if(this.processFlag || !this.target) return
         this.groups[this.refreshIndex].traverse((object) => {
             if (object instanceof ParticleEmitter) {
                 object.system.restart();
             }
         });
-        if (this.target) this.groups[this.refreshIndex].position.copy(this.target.position)
-        console.log(this.target?.position)
+        this.groups[this.refreshIndex].position.copy(this.target)
+        console.log(this.target)
 
         this.processFlag = true
     }

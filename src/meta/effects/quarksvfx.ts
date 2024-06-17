@@ -5,22 +5,21 @@ import {
     QuarksLoader,
 } from 'three.quarks';
 import { IEffect } from "./effector";
-import { IPhysicsObject } from "../scenes/models/iobject";
 
 
 export class QuarksVfx implements IEffect {
     totalTime = 0;
     refreshIndex = 0;
-    refreshTime = 1;
+    refreshTime = 2;
     processFlag = false
     batchRenderer = new BatchedParticleRenderer();
     loaded = false
-    target?: IPhysicsObject
+    target?: THREE.Vector3
    
     groups: THREE.Object3D[] = []
     constructor(private vfxPath: string) {}
 
-    async initEffect(mesh: IPhysicsObject, game: THREE.Scene) {
+     initEffect(pos: THREE.Vector3, game: THREE.Scene) {
         if(this.loaded) return
         this.loaded = true
         new QuarksLoader().load(this.vfxPath, (obj) => {
@@ -34,7 +33,7 @@ export class QuarksVfx implements IEffect {
             }
             game.add(this.batchRenderer, obj)
             this.groups.push(obj);
-            this.target = mesh
+            this.target = pos
         });
     }
 
@@ -49,8 +48,8 @@ export class QuarksVfx implements IEffect {
         } catch (e) {
             console.log(e, this.groups)
         }
-        if (this.target) this.groups[this.refreshIndex].position.copy(this.target.CenterPos)
-        console.log(this.target?.CenterPos)
+        if (this.target) this.groups[this.refreshIndex].position.copy(this.target)
+        console.log(this.target)
 
         this.processFlag = true
     }

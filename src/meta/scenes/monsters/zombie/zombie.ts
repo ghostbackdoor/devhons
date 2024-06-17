@@ -76,7 +76,7 @@ export class Zombie extends GhostModel implements IPhysicsObject {
             this.meshs.add(this.text)
         }
         this.meshs.add(this.effector.meshs)
-        this.effector.Enable(EffectType.BloodExplosion, this)
+        this.effector.Enable(EffectType.BloodExplosion, this.CenterPos)
 
         this.mixer = this.asset.GetMixer(text + id)
         if (this.mixer == undefined) throw new Error("mixer is undefined");

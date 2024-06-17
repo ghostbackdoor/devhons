@@ -47,13 +47,16 @@ export class GuideMissle implements IEffect {
             positions.setZ(i, pos.z)
         }
         this.points.visible = true
+        this.processFlag = true
     }
     Complet() {
         this.points.visible = false
+        this.processFlag = false
         // this.scene.remove(this.points)
     }
     v = 0.01
     Update(delta: number) {
+        if (!this.processFlag) return
         const positions = this.points.geometry.attributes.position
         for (let i = 0; i < this.particles.length; i++) {
             let x = positions.getX(i) + this.randomV[i].x * delta

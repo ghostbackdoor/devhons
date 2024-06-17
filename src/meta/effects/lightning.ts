@@ -1,12 +1,11 @@
 import * as THREE from "three";
 import { IEffect } from "./effector";
-import SConf from "../configs/staticconf";
 
 export class Lightning implements IEffect {
     process = false
     points: THREE.Points;
     startTime = 0
-    start = SConf.StartPosition.clone()
+    start = new THREE.Vector3
     end = this.start.clone()
     count = 10
     constructor() {
@@ -15,7 +14,7 @@ export class Lightning implements IEffect {
         const lineVertex = this.lightning(this.start, this.end, THREE.MathUtils.randInt(5, 8), this.count)
         particlesGeometry.setFromPoints(lineVertex)
 
-        const colors = []
+        const colors: number[] = []
         const r = THREE.MathUtils.randInt(Math.random(), .1)
         const g = THREE.MathUtils.randInt(.6, 1)
         const b = THREE.MathUtils.randInt(0, .8)
@@ -93,7 +92,7 @@ export class Lightning implements IEffect {
 
     lightning(start: THREE.Vector3, end: THREE.Vector3, iterations: number, max: number) {
         let result = [start, end]
-        let temp = []
+        let temp:THREE.Vector3[] = []
         let mid, normal, randVec, l
         max = max || 100
 

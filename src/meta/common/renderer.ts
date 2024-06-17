@@ -4,7 +4,6 @@ import { Canvas } from "./canvas";
 import { IViewer } from "../scenes/models/iviewer";
 
 export class Renderer extends THREE.WebGLRenderer implements IViewer{
-    bloomLayer = new THREE.Layers()
 
     constructor(private camera: Camera, private scene: THREE.Scene, canvas: Canvas) {
         super({ /*alpha: true,*/ antialias: true, canvas: canvas.Canvas })

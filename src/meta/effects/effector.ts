@@ -3,7 +3,6 @@ import { Damage } from "./damage"
 import { Lightning } from "./lightning"
 import { TextStatus } from "./status"
 import { QuarksVfx } from "./quarksvfx";
-import { Game } from "../scenes/game";
 import { Trail } from "./trail";
 import { PointTrail } from "./pointtrail";
 
@@ -25,7 +24,7 @@ export interface IEffect {
 export class Effector {
     effects: IEffect[] = []
     meshs: THREE.Group = new THREE.Group()
-    constructor(private game: Game) {
+    constructor(private game: THREE.Scene) {
         this.meshs.name = "effector"
     }
     Enable(type: EffectType, ...arg: any) {

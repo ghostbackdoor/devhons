@@ -56,8 +56,8 @@ export class PointTrail implements IEffect {
         }   
     }
     GetGeometry(pos: THREE.Vector3) {
-        const colors = []
-        const sizes = []
+        const colors: number[] = []
+        const sizes: number[] = []
         for (let i = 0; i < this.trailPositions.length; i += 3) {
             this.trailPositions[i] = pos.x
             this.trailPositions[i + 1] = pos.y

@@ -87,11 +87,14 @@ export class TextStatus extends THREE.Sprite implements IEffect {
         this.position.set(THREE.MathUtils.randFloatSpread(1), 3.3, 0.5)
         this.material.opacity = 1 
         this.v = 0.0001
+        this.processFlag = true
     }
     Complete() {
         this.visible = false
+        this.processFlag = false
     }
     Update(delta: number) {
+        if (!this.processFlag) return
         this.position.y += delta * .5
         this.v += 0.001
         this.material.opacity -= this.v
