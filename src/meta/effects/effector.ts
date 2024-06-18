@@ -5,6 +5,7 @@ import { TextStatus } from "./status"
 import { QuarksVfx } from "./quarksvfx";
 import { Trail } from "./trail";
 import { PointTrail } from "./pointtrail";
+import { TestVfx } from "./testvfx";
 
 export enum EffectType {
     Lightning,
@@ -13,7 +14,8 @@ export enum EffectType {
     BloodExplosion,
     Trail,
     PointTrail,
-    Status
+    Status,
+    Test,
 }
 
 export interface IEffect {
@@ -28,7 +30,7 @@ export class Effector {
         this.meshs.name = "effector"
     }
     Enable(type: EffectType, ...arg: any) {
-        switch(type) {
+        switch (type) {
             case EffectType.Lightning:
                 const lightning = new Lightning()
                 this.effects[EffectType.Lightning] = lightning
@@ -64,6 +66,10 @@ export class Effector {
                 damage.Mesh.position.y += 2
                 this.meshs.add(damage.Mesh)
                 break;
+            case EffectType.Test:
+                const test = new TestVfx(this.game)
+                this.effects[EffectType.Test] = test
+                break
         }
     }
     StartEffector(type: EffectType, ...arg: any) {
@@ -71,7 +77,7 @@ export class Effector {
     }
 
     Update(delta: number, ...arg: any): void {
-        this.effects.forEach((e)=> {
+        this.effects.forEach((e) => {
             e.Update(delta, arg)
         })
     }

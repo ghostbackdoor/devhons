@@ -150,7 +150,7 @@ class Index {
     }
 
     parseResponse(nodes: GhostWebUser[]) {
-        nodes = nodes.filter(e=> e.User.Nickname !== "Adam")
+        nodes = nodes.filter(e=> e.User.Nickname !== "Adam" && e.User.Nickname !== "Eve")
         const randIdx = Math.floor(Math.random() * nodes.length);
         window.NodeCount = nodes.length;
         console.log(nodes);
