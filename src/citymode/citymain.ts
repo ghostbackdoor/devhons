@@ -59,14 +59,14 @@ export class CityMain extends Page {
         ])
         /* load data model */
         const data = new Map<string, string>()
-        data.set(city.id, city.models ?? "")
         await Promise.all(citizen.map(async (e) => {
             const modelEntry = await this.blockStore.FetchModel(this.masterAddr, e)
             data.set(modelEntry.id, modelEntry.models)
             this.makeMemberHtml(e)
         }))
 
-        await this.meta.LoadCity(data, myModel?.models)
+        this.meta.ModelClear()
+        await this.meta.LoadCity(data, city.models, myModel?.models)
         this.alarmOff()
 
         const play = document.getElementById("playBtn") as HTMLButtonElement

@@ -174,6 +174,13 @@ export default class App {
         return this.store.StoreModels()
     }
 
+    SaveCity() {
+        return this.store.SaveCity()
+    }
+    ModelClear() {
+        this.eventCtrl.OnSceneClearEvent()
+    }
+
     async LoadModel(models: string, name: string, playerModel: string | undefined) {
         this.eventCtrl.OnSceneClearEvent()
         await this.store.LoadModels(models, name, playerModel)
@@ -186,9 +193,8 @@ export default class App {
         this.eventCtrl.OnSceneClearEvent()
         await this.store.LoadVillage(users, playerModel)
     }
-    async LoadCity(users: Map<string, string>, playerModel: string | undefined) {
-        this.eventCtrl.OnSceneClearEvent()
-        await this.store.LoadCity(users, playerModel)
+    async LoadCity(users: Map<string, string>, city: string | undefined, playerModel: string | undefined) {
+        await this.store.LoadCity(users, city, playerModel)
     }
     resize() {
         this.canvas.resize()

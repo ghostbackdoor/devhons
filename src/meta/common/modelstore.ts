@@ -24,6 +24,7 @@ type Brick = {
 }
 export type House = {
     position: THREE.Vector3
+    rotation: THREE.Euler
 }
 
 export type StoreData = {
@@ -70,12 +71,12 @@ export class ModelStore {
         house: [],
         portal: undefined,
     }
-    private houses?: Map<string, string>
+    private userdata?: Map<string, string>
     private owners = new Array<THREE.Vector3 | undefined>()
     private ownerModels = new Array<Char | undefined>()
     private name: string = "unknown"
 
-    get Houses() { return this.houses } // indivisual user
+    get UserHouseData() { return this.userdata } // indivisual user
     get CityHouses() { return this.cityData.house }
     get CityPortal() { return this.cityData.portal }
     set Portal(pos: THREE.Vector3) { 
@@ -154,6 +155,11 @@ export class ModelStore {
         const json = JSON.stringify(this.data)
         return json
     }
+    SaveCity() {
+        const json = JSON.stringify(this.cityData)
+        return json
+    }
+
     async LoadModelsEmpty(name: string, playerModel: string | undefined)  {
         if (playerModel != undefined) {
             const playerData = JSON.parse(playerModel)
@@ -161,7 +167,7 @@ export class ModelStore {
         }
         this.name = name
         this.data.legos.length = 0
-        this.data.bricks.length = 0
+        if (this.data.bricks) this.data.bricks.length = 0
         this.data.plants.length = 0
         this.data.owner = undefined
         this.data.ownerModel = Char.Male
@@ -186,12 +192,15 @@ export class ModelStore {
             })
         await Promise.all(promise)
     }
-    async LoadCity(users: Map<string, string>, playerModel: string | undefined) {
-        if (playerModel != undefined) {
+    async LoadCity(users: Map<string, string>, city: string | undefined, playerModel: string | undefined) {
+        if (playerModel) {
             const playerData = JSON.parse(playerModel)
             this.playerModel = playerData.ownerModel
         }
-        this.houses = users
+        if (city) {
+            this.cityData = JSON.parse(city)
+        }
+        this.userdata = users
         const promise = this.mgrs.map(async (mgr) => {
             await mgr.Cityload?.()
         })

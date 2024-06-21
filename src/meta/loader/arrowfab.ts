@@ -1,23 +1,23 @@
 import * as THREE from "three";
-import { Loader } from "../loader";
-import { AssetModel, Char, IAsset, ModelType } from "../assetmodel";
+import { Loader } from "./loader";
+import { Ani, AssetModel, Char, IAsset, ModelType } from "./assetmodel";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
-export class BatFab extends AssetModel implements IAsset {
+export class ArrowFab extends AssetModel implements IAsset {
     gltf?:GLTF
 
-    get Id() {return Char.Bat}
+    get Id() {return Char.Arrow}
 
     constructor(loader: Loader) { 
-        super(loader, ModelType.Gltf, "assets/weapon/bat.glb", async (gltf: GLTF) => {
+        super(loader, ModelType.Gltf, "assets/etc/directional_arrow.glb", async (gltf: GLTF) => {
             this.gltf = gltf
             this.meshs = gltf.scene
             this.meshs.castShadow = true
 
-            const scale = 0.3
+            const scale = .3
             this.meshs.scale.set(scale, scale, scale)
-            this.meshs.position.set(0.1, 0.2, -0.1)
-            this.meshs.rotation.set(3, -0.5, -1.8)
+            console.log(gltf.animations)
+            this.clips.set(Ani.Idle, gltf.animations.find((clip) => clip.name == "CINEMA_4D_Main"))
         })
     }
     GetBodyMeshId() { return "mixamorigRightHand" }

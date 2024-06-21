@@ -45,6 +45,7 @@ import { CuteGirlFab } from "./cutegirl";
 import { OfficeGirlFab } from "./officegirl";
 import { WizardFab } from "./wizardfab";
 import { TwoBFab } from "./twobfab";
+import { ArrowFab } from "./arrowfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -58,6 +59,7 @@ export class Loader {
     private officegirl = new OfficeGirlFab(this)
     private wizard = new WizardFab(this)
     private twoB = new TwoBFab(this)
+    private arrow = new ArrowFab(this)
 
     private mushroom1 = new MushroomFab(this, 1)
     private mushroom2 = new MushroomFab(this, 2)
@@ -133,6 +135,8 @@ export class Loader {
     get OfficeGirlAsset(): IAsset { return this.officegirl }
     get WizardAsset(): IAsset { return this.wizard }
     get TwoBAsset(): IAsset { return this.twoB }
+    get ArrowAsset(): IAsset { return this.arrow }
+
     get HellboyAsset(): IAsset { return this.hellboy }
     //get FemaleAsset(): IAsset { return this.test }
     get Mushroom1Asset(): IAsset { return this.mushroom1 }
@@ -208,6 +212,7 @@ export class Loader {
         this.assets.set(Char.OfficeGirl, this.officegirl)
         this.assets.set(Char.Wizard, this.wizard)
         this.assets.set(Char.TwoB, this.twoB)
+        this.assets.set(Char.Arrow, this.arrow)
         //this.assets.set(Char.Female, this.test)
         this.assets.set(Char.Tree, this.tree)
         this.assets.set(Char.DeadTree, this.deadtree)

@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { IPhysicsObject } from "../scenes/models/iobject";
 import { Camera } from "./camera";
 import { Legos } from "../scenes/bricks/legos";
-import { EventBricks } from "../scenes/bricks/eventbricks";
 import { Canvas } from "./canvas";
 import { IViewer } from "../scenes/models/iviewer";
 import { EventController, EventFlag } from "../event/eventctrl";
 import { NonLegos } from "../scenes/bricks/nonlegos";
 import { AppMode } from "../app";
+import { Terrain } from "../scenes/terrain/terrain";
 
 
 export class RayViwer extends THREE.Raycaster implements IViewer {
@@ -21,7 +21,7 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
         private _camera: Camera, 
         private legos: Legos,
         private nonlegos: NonLegos,
-        private eventBricks: EventBricks,
+        private terrain: Terrain,
         canvas: Canvas,
         eventCtrl: EventController
     ) {
@@ -56,6 +56,11 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
         this.dir.subVectors(this._camera.position, this.target.CenterPos)
         this.set(this.target.CenterPos, this.dir.normalize())
 
+        if (this.terrain.InstancedMeshs.length > 0) {
+            this.terrain.InstancedMeshs.forEach(m => {
+                this.CheckVisible(m)
+            })
+        }
         if (this.legos.instancedBlock != undefined)
             this.CheckVisible(this.legos.instancedBlock)
         if( this.legos.bricks2.length > 0)
@@ -64,10 +69,6 @@ export class RayViwer extends THREE.Raycaster implements IViewer {
             this.CheckVisible(this.nonlegos.instancedBlock)
         if( this.nonlegos.bricks2.length > 0)
             this.CheckVisibleMeshs(this.nonlegos.bricks2, this.opacityBox[1])
-        if (this.eventBricks.instancedBlock != undefined)
-            this.CheckVisible(this.eventBricks.instancedBlock)
-        if( this.eventBricks.bricks2.length > 0)
-            this.CheckVisibleMeshs(this.eventBricks.bricks2, this.opacityBox[2])
 
     }
     opacityBox: THREE.Mesh[][] = [[],[], []]

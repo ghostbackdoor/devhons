@@ -41,8 +41,8 @@ import { PlantDb } from "../scenes/plants/plantdb";
 import { Friendly } from "../scenes/friendly/friendly";
 import { Projectile } from "../scenes/projectile/projectile";
 import { Terrainer } from "../scenes/terrain/terrainer";
-import { TerrainCtrl } from "../scenes/terrain/terrainctrl";
 import { CityCenter } from "../scenes/citycenter";
+import { Terrain } from "../scenes/terrain/terrain";
 
 export class AppFactory {
     phydebugger: any
@@ -69,7 +69,7 @@ export class AppFactory {
     monDeck: MonDeck
 
     private terrainer: Terrainer
-    terrainCtrl: TerrainCtrl
+    terrain: Terrain
     private player: Player
     private playerCtrl : PlayerCtrl
     private floor: Floor
@@ -137,8 +137,6 @@ export class AppFactory {
         this.player = new Player(this.loader, this.eventCtrl, this.portal, this.store, this.game)
         this.playerCtrl = new PlayerCtrl(this.player, this.invenFab.inven, this.invenFab, this.gphysics, this.eventCtrl)
 
-        this.terrainer = new Terrainer()
-        this.terrainCtrl = new TerrainCtrl(this.eventCtrl, this.game, this.terrainer, this.gphysics)
 
         this.drop = new Drop(this.alarm, this.invenFab.inven, this.player, this.canvas, this.game, this.eventCtrl)
 
@@ -150,6 +148,9 @@ export class AppFactory {
         this.friendly = new Friendly(this.loader, this.eventCtrl, this.gphysics, this.game, this.player, this.playerCtrl, this.monDb)
         this.projectile = new Projectile(this.loader, this.canvas, this.eventCtrl, this.game, this.playerCtrl, this.monDb)
 
+        this.terrainer = new Terrainer()
+        this.terrain = new Terrain(this.terrainer, this.eventCtrl, this.game, this.gphysics, this.loader)
+
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
         this.farmer = new Farmer(this.loader, this.player, this.playerCtrl, this.game, this.store, this.gphysics, this.canvas, this.eventCtrl, this.alarm, this.drop, this.plantDb)
@@ -157,10 +158,10 @@ export class AppFactory {
         this.monDeck = new MonDeck(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.canvas, this.monDb, this.store)
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.friendly, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
-        this.cityCenter = new CityCenter(this.terrainCtrl, this.eventCtrl, this.canvas, this.store)
+        this.cityCenter = new CityCenter(this.terrain, this.eventCtrl, this.canvas, this.store)
 
         this.camera = new Camera(this.canvas, this.player, this.terrainer, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
-        this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.brick, this.canvas, this.eventCtrl)
+        this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.terrain, this.canvas, this.eventCtrl)
         this.renderer = new Renderer(this.camera, this.game, this.canvas)
         this.currentScene = this.game
     }

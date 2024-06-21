@@ -3,12 +3,11 @@ import { Canvas } from "../common/canvas";
 import { IModelReload, ModelStore, StoreData } from "../common/modelstore";
 import { EventController, EventFlag } from "../event/eventctrl";
 import { IViewer } from "./models/iviewer";
-import { TerrainCtrl } from "./terrain/terrainctrl";
+import { Terrain } from "./terrain/terrain";
 
 export class CityCenter implements IViewer, IModelReload {
-    private data: StoreData[] = []
     constructor(
-        private terrainCtrl: TerrainCtrl,
+        private terrain: Terrain,
         eventCtrl: EventController,
         canvas: Canvas,
         private store: ModelStore,
@@ -25,18 +24,22 @@ export class CityCenter implements IViewer, IModelReload {
             }
         })
     }
+
     async Cityload(): Promise<void> {
-        const houses = this.store.Houses
-        if(!houses) return
-        houses.forEach((user) => {
+        this.terrain.LoadHouse(this.store.CityHouses)
+
+        const data = this.store.UserHouseData
+        if(!data) return
+        data.forEach((user) => {
             if(user.length == 0) return
             const data = JSON.parse(user) as StoreData
-            this.data.push(data)
+            this.terrain.Build(data)
         })
     }
+
     async Reload(): Promise<void> {}
 
     update(delta: number): void {
-        this.terrainCtrl.update(delta)
+        this.terrain.update(delta)
     }
 }

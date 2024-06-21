@@ -8,6 +8,7 @@ import { Session } from "../session";
 import { BlockStore } from "../store";
 import { UiBrick } from "../module/uibrick";
 import { TerOptType } from "../meta/scenes/terrain/terrainctrl";
+import { GlobalSaveTxId } from "../models/tx";
 
 export class EditCity extends Page {
     masterAddr = ""
@@ -60,7 +61,8 @@ export class EditCity extends Page {
         saveConfirmBtn.onclick = async () => {
             this.alarmOn("저장 중입니다.")
 
-            //const models = this.meta.ModelStore()
+            const citydata = this.meta.SaveCity()
+            this.SaveData(citydata)
             //const invenData = this.meta.store.StoreInventory()
             //await this.inven.SaveInventory(invenData, this.m_masterAddr)
             //await this.RequestNewMeta(models)
@@ -117,8 +119,34 @@ export class EditCity extends Page {
             tag.style.display = "none"
         }
     }
+    async SaveData(model: string) {
+        if (!this.session.CheckLogin()) return 
+        const data = await this.blockStore.FetchCity(this.masterAddr, this.session.UserId)
+        data.models = model
+        const addr = this.masterAddr + "/glambda?txid=" + encodeURIComponent(GlobalSaveTxId);
+
+        const formData = new FormData()
+        formData.append("key", encodeURIComponent(data.email))
+        formData.append("email", encodeURIComponent(data.email))
+        formData.append("password", this.session.GetHonUser().Password)
+        formData.append("id", data.id)
+        formData.append("time", (new Date()).getTime().toString())
+        formData.append("table", "city")
+        formData.append("citytitle", data.citytitle)
+        formData.append("cityexplain", data.cityexplain)
+        formData.append("openflag", data.openflag)
+        formData.append("models", data.models)
+        console.log(encodeURIComponent(data.email), data.models)
+        fetch(addr, {
+            method: "POST",
+            cache: "no-cache",
+            headers: {},
+            body: formData
+        })
+            .then((response) => response.json())
+    }
     public CanvasRenderer(email: string | null) {
-        const myModel = this.blockStore.GetModel(this.session.UserId)
+        //const myModel = this.blockStore.GetModel(this.session.UserId)
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
         this.meta.RegisterInitEvent((inited: Boolean) => {
@@ -137,7 +165,8 @@ export class EditCity extends Page {
                 }, 2000)
             } else {
                 if (!inited) return
-
+                this.meta.ModeChange(AppMode.EditCity)
+                /*
                 this.alarmOn("이동중입니다.")
 
                 this.blockStore.FetchCity(this.masterAddr, email)
@@ -150,9 +179,9 @@ export class EditCity extends Page {
                     })
                     .catch(async () => {
                         await this.meta.LoadModelEmpty(email, myModel?.models)
-                        this.meta.ModeChange(AppMode.EditCity)
                         this.alarmOff()
                     })
+                    */
             }
             this.ui.UiOff(AppMode.EditCity)
             this.meta.render()

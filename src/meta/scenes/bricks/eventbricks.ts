@@ -87,7 +87,7 @@ export class EventBricks extends Bricks implements IModelReload{
             this.physics.addBuilding(b, brick.position, collidingBoxSize, b.rotation)
         })
     }
-    CreateInstacedMesh(length: number) {
+    CreateInstacedMeshEventBrick2(length: number) {
         const geometry = new THREE.BoxGeometry(1, 1, 1)
         const material = new THREE.MeshStandardMaterial({ 
             //color: 0xD9AB61,
@@ -109,6 +109,7 @@ export class EventBricks extends Bricks implements IModelReload{
         this.ClearBlock()
         this.ClearEventBrick()
 
+        if (!this.store.Bricks) return
         const userBricks = this.store.Bricks
         if(userBricks.length == 0) {
             return
@@ -117,7 +118,7 @@ export class EventBricks extends Bricks implements IModelReload{
             this.EditMode()
             return
         }
-        this.instancedBlock = this.CreateInstacedMesh(userBricks.length)
+        this.instancedBlock = this.CreateInstacedMeshEventBrick2(userBricks.length)
 
         const matrix = new THREE.Matrix4()
         const q = new THREE.Quaternion()

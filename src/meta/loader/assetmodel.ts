@@ -44,6 +44,8 @@ export enum Char{
     OfficeGirl,
     Hellboy,
 
+    Arrow,
+
     Tree,
     DeadTree,
     DeadTree2,

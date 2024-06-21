@@ -19,8 +19,8 @@ export class Play extends Page {
 
     constructor(
         private blockStore: BlockStore,
-        private session: Session, 
-        private meta: App, 
+        private session: Session,
+        private meta: App,
         private uiInven: UiInven,
         url: string
     ) {
@@ -139,7 +139,7 @@ export class Play extends Page {
         }
     }
     openRandomBox(dom: HTMLElement) {
-        if (this.randomBoxOpend) return 
+        if (this.randomBoxOpend) return
         this.randomBoxOpend = true
         const category = Math.floor(Math.random() * ItemId.ItemCategory.length)
         const list = ItemId.ItemCategory[category]
@@ -151,45 +151,48 @@ export class Play extends Page {
         dom.innerHTML = `<img src="assets/icons/${itemInfo?.icon}"><br>${itemInfo?.namekr ?? itemInfo?.name}`
     }
 
-    public CanvasRenderer(email: string | null) {
-        const myModel = this.blockStore.GetModel(this.session.UserId)
+    public CanvasRenderer() {
+        //const myModel = this.blockStore.GetModel(this.session.UserId)
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
-        this.meta.RegisterInitEvent((inited: Boolean) => {
-                this.blockStore.FetchInventory(this.m_masterAddr, this.session.UserId)
-                    .then((inven: InvenData | undefined) => {
-                        console.log(inven)
-                        this.meta.store.LoadInventory(inven)
-                        this.uiInven.LoadInven(this.meta.store.GetEmptyInventory())
-                        this.uiInven.loadSlot()
-                    })
-                if (email == null) {
-                    this.blockStore.FetchModels(this.m_masterAddr)
-                        .then(async (result) => {
-                            await this.meta.LoadVillage(result, myModel?.models)
-                            this.startPlay()
-                        })
-                } else {
-                    if(!inited) {
+        this.meta.RegisterInitEvent(() => {
+            this.blockStore.FetchInventory(this.m_masterAddr, this.session.UserId)
+                .then((inven: InvenData | undefined) => {
+                    console.log(inven)
+                    this.meta.store.LoadInventory(inven)
+                    this.uiInven.LoadInven(this.meta.store.GetEmptyInventory())
+                    this.uiInven.loadSlot()
+                })
+            this.startPlay()
+                /*
+            if (email == null) {
+                this.blockStore.FetchModels(this.m_masterAddr)
+                    .then(async (result) => {
+                        await this.meta.LoadVillage(result, myModel?.models)
                         this.startPlay()
-                        return
-                    }
-                    this.alarmOn("이동중입니다.")
-
-                    this.blockStore.FetchModel(this.m_masterAddr, email)
-                        .then(async (result) => {
-                            await this.meta.LoadModel(result.models, result.id, myModel?.models)
-                            this.alarmOff()
-                            this.startPlay()
-                        })
-                        .catch(async () => {
-                            await this.meta.LoadModelEmpty(email, myModel?.models)
-                            this.alarmOff()
-                            this.startPlay()
-                        })
+                    })
+            } else {
+                if (!inited) {
+                    this.startPlay()
+                    return
                 }
-                this.meta.render()
-            })
+            this.alarmOn("이동중입니다.")
+
+            this.blockStore.FetchModel(this.m_masterAddr, email)
+                .then(async (result) => {
+                    await this.meta.LoadModel(result.models, result.id, myModel?.models)
+                    this.alarmOff()
+                    this.startPlay()
+                })
+                .catch(async () => {
+                    await this.meta.LoadModelEmpty(email, myModel?.models)
+                    this.alarmOff()
+                    this.startPlay()
+                })
+            }
+                */
+            this.meta.render()
+        })
 
         this.meta.RegisterChangePlayerStatusEvent((status: PlayerStatus) => {
             const hpBar = document.getElementById("hp-bar") as HTMLProgressElement
@@ -234,10 +237,10 @@ export class Play extends Page {
         items.forEach((id, i) => {
             const buff = document.getElementById("buff_" + i) as HTMLDivElement
             buff.onclick = async () => {
-                if(this.uiInven.inven == undefined) return
+                if (this.uiInven.inven == undefined) return
                 const item = await this.uiInven.inven?.NewItem(id)
-                if(item == undefined) throw new Error("inventory is full");
-                
+                if (item == undefined) throw new Error("inventory is full");
+
                 this.uiInven.equipmentItem(item)
                 const lvTag = document.getElementById("levelup") as HTMLDivElement
                 lvTag.style.display = "none"
@@ -246,13 +249,13 @@ export class Play extends Page {
     }
     buffQ: IBuffItem[][] = []
     LevelUp() {
-        if(this.defaultLv == 1) {
+        if (this.defaultLv == 1) {
             this.FirstLevelUp()
             return
         }
         const buffs = this.meta.GetRandomBuff()
         this.buffQ.push(buffs)
-        if(this.buffQ.length > 1) return
+        if (this.buffQ.length > 1) return
 
         this.SelectBuff(buffs)
     }
@@ -295,8 +298,7 @@ export class Play extends Page {
     public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml(this.uiInven.Html)
         this.m_masterAddr = masterAddr;
-        const email = this.getParam("email");
-        this.CanvasRenderer(email)
+        this.CanvasRenderer()
         this.uiInven.binding()
 
         return true;

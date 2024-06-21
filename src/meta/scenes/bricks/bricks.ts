@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { BrickGuide, BrickGuideType } from "./brickguide";
 import { Brick2 } from "./brick2";
-import { EventController } from "../../event/eventctrl";
+import { EventController, EventFlag } from "../../event/eventctrl";
 import { Lego, ModelStore } from "../../common/modelstore";
 import { GPhysics } from "../../common/physics/gphysics";
 import { IKeyCommand } from "../../event/keycommand";
@@ -39,6 +39,7 @@ export class Bricks {
     eventbricks: EventBrick[] = []
     deleteMode = false
     currentMode?: AppMode
+    dom: HTMLDivElement
 
     protected brickType = BrickGuideType.Event
     protected brickSize: THREE.Vector3 = new THREE.Vector3(1, 1, 1)
@@ -49,6 +50,8 @@ export class Bricks {
     protected fieldHeight = SConf.LegoFieldH
 
     protected checkEx?: Function
+    
+    set LegoStore(save: Lego[]) { this.save = save }
 
     constructor(
         protected scene: THREE.Scene,
@@ -60,6 +63,8 @@ export class Bricks {
         protected save: Lego[]
     ) {
 
+        this.dom = document.createElement("div")
+        this.drawHtml(this.dom)
         eventCtrl.RegisterInputEvent((e: any, _real: THREE.Vector3, vir: THREE.Vector3) => {
             if (this.brickGuide == undefined || !this.brickGuide.ControllerEnable) return
             if (this.currentMode != AppMode.LegoDelete && this.mode != this.currentMode) return
@@ -130,6 +135,7 @@ export class Bricks {
         this.physics.DeleteBox(keys, target)
         const b = (target instanceof Brick2) ? target as Brick2 : (target as EventBrick).brick
         if (b != undefined) {
+            this.bricks2.splice(this.bricks2.indexOf(b), 1)
             this.scene.remove(b)
             b.Dispose()
             this.DeleteLegos(b)
@@ -141,6 +147,7 @@ export class Bricks {
         const l = this.save
         for (let i = 0; i < l.length; i++) {
             if (this.VEqual(l[i].position, b.position)) {
+                console.log("delete", b.position)
                 l.splice(i, 1)
                 i--
             }
@@ -234,7 +241,145 @@ export class Bricks {
       
         if (this.currentMode != AppMode.LegoDelete && this.checkEx) this.checkEx()
     }
+    ChangeEvent(e: EventFlag) {
+        if (this.brickGuide == undefined) {
+            this.brickGuide = this.GetBrickGuide(this.player.CenterPos)
+        }
+        switch (e) {
+            case EventFlag.Start:
+                this.brickGuide.ControllerEnable = true
+                this.brickGuide.Visible = true
+                this.brickGuide.position.copy(this.player.CannonPos)
+                this.brickfield.visible = true
+                if (this.deleteMode) {
+                    this.dom.style.display = "block"
+                    this.brickGuide.scale.set(1, 1, 1)
+                    this.brickSize.set(1, 1, 1)
+                    console.log(this.brickGuide.position)
+                }
+                this.eventCtrl.OnChangeCtrlObjEvent(this.brickGuide)
+                this.CheckCollision()
+                break
+            case EventFlag.End:
+                if (this.deleteMode) {
+                    this.dom.style.display = "none"
+                }
+                this.brickGuide.ControllerEnable = false
+                this.brickGuide.Visible = false
+                this.brickfield.visible = false
+                break
+        }
+    }
+    ChangeOption(opt: BrickOption) {
+        if (opt.clear) {
+            const legos = this.store.Legos
+            if (legos) {
+                legos.length = 0
+            }
+            const nonLegos = this.store.NonLegos
+            if (nonLegos) {
+                nonLegos.length = 0
+            }
+            const userBricks = this.store.Bricks
+            if (userBricks) {
+                userBricks.length = 0
+            }
+        }
+
+        if (this.brickGuide == undefined) return
+
+        if (opt.v) {
+            this.brickSize.copy(opt.v)
+            this.brickGuide.Meshs.scale.copy(opt.v)
+            const pos = this.brickGuide.Meshs.position
+            console.log(pos, opt.v)
+            this.brickGuide.Meshs.position.set(
+                Math.floor(pos.x) + (opt.v.x % 2) * (.5),
+                Math.floor(pos.y) + (opt.v.y % 2) * (.5),
+                Math.floor(pos.z) + (opt.v.z % 2) * (.5)
+            )
+            console.log(pos)
+        }
+        if (opt.r) {
+            this.brickGuide.Meshs.rotateX(THREE.MathUtils.degToRad(opt.r.x))
+            this.brickGuide.Meshs.rotateY(THREE.MathUtils.degToRad(opt.r.y))
+            this.brickGuide.Meshs.rotateZ(THREE.MathUtils.degToRad(opt.r.z))
+        }
+        if (opt.color) {
+            this.brickColor.set(opt.color)
+        }
+        this.CheckCollision()
+    }
     ClearEventBrick() {
         this.eventbricks.length = 0
+    }
+    CreateBricks(userBricks: Lego[]) {
+
+        const collidingBoxSize = new THREE.Vector3()
+        userBricks.forEach((brick) => {
+            const b = new Brick2(brick.position, brick.size, brick.color)
+            b.rotation.copy(brick.rotation)
+            this.scene.add(b)
+            this.bricks2.push(b)
+            collidingBoxSize.copy(brick.size).sub(this.subV)
+            this.physics.addBuilding(b, brick.position, collidingBoxSize, b.rotation)
+        })
+    }
+    CreateInstacedMesh(userBricks: Lego[]) {
+        if(!userBricks?.length) {
+            return
+        }
+        const geometry = new THREE.BoxGeometry(1, 1, 1)
+        const material = new THREE.MeshToonMaterial({ 
+            //color: 0xD9AB61,
+            color: 0xffffff,
+            transparent: true,
+        })
+        const instancedBlock = new THREE.InstancedMesh(
+            geometry, material, userBricks.length
+        )
+        instancedBlock.castShadow = true
+        instancedBlock.receiveShadow = true
+        const matrix = new THREE.Matrix4()
+        const collidingBoxSize = new THREE.Vector3()
+        const q = new THREE.Quaternion()
+
+        userBricks.forEach((brick, i) => {
+            q.setFromEuler(brick.rotation)
+            matrix.compose(brick.position, q, brick.size)
+            instancedBlock?.setColorAt(i, new THREE.Color(brick.color))
+            instancedBlock?.setMatrixAt(i, matrix)
+
+            collidingBoxSize.copy(brick.size).sub(this.subV)
+            const eventbrick = new EventBrick(this.brickSize, brick.position)
+            this.eventbricks.push(eventbrick)
+            this.physics.addBuilding(eventbrick, brick.position, collidingBoxSize, brick.rotation)
+        })
+        return instancedBlock
+    }
+    drawHtml(dom: HTMLDivElement) {
+        dom.className = "brickctrl border rounded p-2 m-1"
+        dom.innerHTML = `
+        <div class="row">
+            <div class="col text-white">
+                <div class="border rounded bg-secondary p-2 d-inline-block">space</div> or
+                <span class="material-symbols-outlined align-middle">
+                close
+                </span> = 삭제
+            </div>
+            <div class="col p-2 text-center handcursor">
+                <span class="material-symbols-outlined" id="lego_exit">
+                    disabled_by_default
+                </span>
+            </div>
+        </div>
+        `
+        dom.style.display = "none"
+        document.body.appendChild(dom)
+        const exit = document.getElementById("lego_exit")
+        if(exit)exit.onclick = () => {
+            this.eventCtrl.OnAppModeEvent(AppMode.EditPlay)
+            exit.style.display = "none"
+        }
     }
 }

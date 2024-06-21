@@ -29,5 +29,13 @@ export class Terrainer extends GhostModel2 implements IPhysicsObject {
         const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
         this.Meshs.add(arrowHelper)
     }
+    Copy(src: Terrainer) {
+        this.position.copy(src.position)
+        this.rotation.copy(src.rotation)
+    }
+    Set(pos: THREE.Vector3, rot: THREE.Euler) {
+        this.position.copy(pos)
+        this.rotation.copy(rot)
+    }
 }
 
