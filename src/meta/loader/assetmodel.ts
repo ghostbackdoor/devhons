@@ -83,6 +83,7 @@ export enum Char{
     Gun,
     WarteringCan,
     Hammer,
+    Grass,
     AppleTree,
     Apple,
     CoconutTree,

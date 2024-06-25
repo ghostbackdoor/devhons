@@ -99,17 +99,17 @@ export class Hons extends Page {
     public CanvasRenderer() {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
+        this.alarmOn("정보를 불러오고 있습니다.")
         this.meta.RegisterInitEvent(() => {
             //this.meta.ModeChange(AppMode.Long, false)
             this.ui.UiOn()
             this.meta.render()
+            this.alarmOff()
         })
-        this.alarmOn("정보를 불러오고 있습니다.")
         const myModel = this.blockStore.GetModel(this.session.UserId)
         this.blockStore.FetchModels(this.m_masterAddr)
             .then(async (result) => {
                 await this.meta.LoadVillage(result, myModel?.models)
-                this.alarmOff()
             })
 
         const play = document.getElementById("playBtn") as HTMLButtonElement

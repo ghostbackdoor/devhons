@@ -78,7 +78,11 @@ export class ModelStore {
 
     get UserHouseData() { return this.userdata } // indivisual user
     get CityHouses() { return this.cityData.house }
-    get CityPortal() { return this.cityData.portal }
+    get CityPortal(): THREE.Vector3 | undefined { return this.cityData.portal }
+    set CityPortal(pos: THREE.Vector3) { 
+        this.cityData.portal = (this.cityData.portal == undefined) ? 
+            new THREE.Vector3().copy(pos) : this.cityData.portal.copy(pos)
+    }
     set Portal(pos: THREE.Vector3) { 
         this.data.portal = (this.data.portal == undefined) ? 
             new THREE.Vector3().copy(pos) : this.data.portal.copy(pos)
@@ -102,7 +106,10 @@ export class ModelStore {
     get OwnerAction() { return this.data.ownerAction }
     get PlayerModel() { return this.playerModel }
     get Name() {return this.name}
-    constructor(private eventCtrl: EventController, private invenFab: InvenFactory) {
+    constructor(
+        private eventCtrl: EventController, 
+        private invenFab: InvenFactory
+    ) {
         this.eventCtrl.RegisterReloadEvent(async () => {
             const promise = this.mgrs.map(async (mgr) => {
                 await mgr.Reload()

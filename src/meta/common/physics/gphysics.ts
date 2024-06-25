@@ -157,7 +157,6 @@ export class GPhysics {
     }
     addBoxs(box: PhysicBox) {
         const p = box.pos
-
         const keys = this.makeHash(p, box.box.getSize(new THREE.Vector3))
         keys.forEach((key) => {
             const boxs = this.pboxs.get(key)
@@ -167,6 +166,7 @@ export class GPhysics {
                 boxs.push(box)
             }
         })
+        box.model.Key = keys
     }
     Check(obj: IPhysicsObject): boolean {
         const pos = obj.BoxPos

@@ -46,6 +46,7 @@ import { OfficeGirlFab } from "./officegirl";
 import { WizardFab } from "./wizardfab";
 import { TwoBFab } from "./twobfab";
 import { ArrowFab } from "./arrowfab";
+import { GrassFab } from "./plant/grassfab";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -124,6 +125,8 @@ export class Loader {
     private carrot1 = new Carrot1Fab(this)
     private carrot2 = new Carrot2Fab(this)
 
+    private grass = new GrassFab(this)
+
     private wartercan = new WarteringCanFab(this)
     private hammer = new HammerFab(this)
 
@@ -190,6 +193,8 @@ export class Loader {
     get Carrot0Asset(): IAsset { return this.carrot0 }
     get Carrot1Asset(): IAsset { return this.carrot1 }
     get Carrot2Asset(): IAsset { return this.carrot2 }
+
+    get GrassAsset(): IAsset { return this.grass }
 
     get EmptyAsset(): IAsset { return this.empty }
 
@@ -260,6 +265,8 @@ export class Loader {
         this.assets.set(Char.Carrot0, this.carrot0)
         this.assets.set(Char.Carrot1, this.carrot1)
         this.assets.set(Char.Carrot2, this.carrot2)
+
+        this.assets.set(Char.Grass, this.grass)
 
         this.assets.set(Char.Stone, this.stone)
         this.assets.set(Char.Bed, this.bed)

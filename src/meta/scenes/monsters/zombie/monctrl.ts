@@ -4,12 +4,12 @@ import { Zombie } from "./zombie"
 import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./monstate"
 import { IPhysicsObject } from "../../models/iobject";
 import { Legos } from "../../bricks/legos";
-import { EventBricks } from "../../bricks/eventbricks";
 import { IMonsterCtrl, IMonsterAction, MonsterBox } from "../monsters";
 import { EventController } from "../../../event/eventctrl";
 import { MonsterProperty } from "../monsterdb";
 import { EffectType } from "../../../effects/effector";
 import { NonLegos } from "../../bricks/nonlegos";
+import { Terrain } from "../../terrain/terrain";
 
 
 
@@ -35,7 +35,7 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
         private zombie: Zombie, 
         private legos: Legos,
         private nonlegos: NonLegos,
-        private eventBricks: EventBricks,
+        private terrain: Terrain,
         private gphysic: GPhysics,
         private eventCtrl: EventController,
         private property: MonsterProperty
@@ -70,6 +70,12 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
             this.raycast.set(this.zombie.CenterPos, this.dir.normalize())
 
             let find = false
+
+            if (this.terrain.InstancedMeshs.length > 0) {
+                this.terrain.InstancedMeshs.forEach(m => {
+                    this.CheckVisible(m, dist)
+                })
+            }
             if (this.legos.instancedBlock != undefined)
                 find = this.CheckVisible(this.legos.instancedBlock, dist)
             if (this.legos.bricks2.length > 0 && !find)
@@ -78,10 +84,6 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
                 find = this.CheckVisible(this.nonlegos.instancedBlock, dist)
             if (this.nonlegos.bricks2.length > 0 && !find)
                 find = this.CheckVisibleMeshs(this.nonlegos.bricks2, dist)
-            if (this.eventBricks.instancedBlock != undefined && !find)
-                find = this.CheckVisible(this.eventBricks.instancedBlock, dist)
-            if (this.eventBricks.bricks2.length > 0 && !find)
-                find = this.CheckVisibleMeshs(this.eventBricks.bricks2, dist)
 
             if (find) {
                 // not visible player

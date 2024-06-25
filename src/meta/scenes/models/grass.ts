@@ -2,10 +2,9 @@ import * as THREE from "three";
 import { GhostModel } from "./ghostmodel";
 import { IAsset } from "../../loader/assetmodel";
 
-export class DeadTree extends GhostModel {
+export class Grass extends GhostModel {
     constructor(asset: IAsset) {
         super(asset)
-        this.meshs = new THREE.Group
     }
 
     async Init() {
@@ -15,11 +14,11 @@ export class DeadTree extends GhostModel {
         this.meshs = await this.asset.CloneModel()
         this.meshs.scale.set(scale, scale, scale)
         this.meshs.position.set(position.x, position.y, position.z)
-        this.meshs.castShadow = false
-        this.meshs.receiveShadow = true
+        this.meshs.castShadow = true
+        this.meshs.receiveShadow = false
         this.meshs.traverse(child => {
-            child.castShadow = false
-            child.receiveShadow = true
+            child.castShadow = true
+            child.receiveShadow = false
         })
         this.meshs.rotateY(x)
     }

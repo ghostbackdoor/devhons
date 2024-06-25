@@ -33,17 +33,19 @@ export class TerrainCtrl {
             switch (e) {
                 case EventFlag.Start:
                     this.mode = true
+                    console.log("start==>", this.terrainer.position)
                     game.add(this.terrainer, this.arrow.Meshs)
                     break
                 case EventFlag.End:
                     this.mode = false
+                    console.log("end==>", this.terrainer.position)
                     game.remove(this.terrainer, this.arrow.Meshs)
                     break
             }
         })
         eventCtrl.RegisterTerrainInfo((opt: TerrainOption) => {
             if(opt.to == TerOptType.Rotate) {
-                this.terrainer.rotateZ(Math.PI / 2)
+                this.terrainer.rotateZ(Math.PI / 4)
             }
         })
         eventCtrl.RegisterKeyDownEvent((keyCommand: IKeyCommand) => {

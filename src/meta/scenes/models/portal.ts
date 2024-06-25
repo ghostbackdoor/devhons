@@ -73,17 +73,24 @@ export class Portal extends GhostModel implements IPhysicsObject, IModelReload {
         }
 
         this.store.Portal = this.meshs.position
+        this.store.CityPortal = this.meshs.position
         console.log(this.meshs.position)
     }
     async Viliageload(): Promise<void> {
         this.meshs.position.copy(SConf.DefaultPortalPosition)
-        
     }
 
     async Reload(): Promise<void> {
         this.meshs.position.copy(SConf.DefaultPortalPosition)
 
         const pos = this.store.Portal
+        if (pos != undefined) {
+            this.meshs.position.copy(pos)
+        }
+    }
+    async Cityload(): Promise<void> {
+        this.meshs.position.copy(SConf.DefaultPortalPosition)
+        const pos = this.store.CityPortal
         if (pos != undefined) {
             this.meshs.position.copy(pos)
         }

@@ -136,16 +136,16 @@ export class Materials implements IViewer {
         const meshs = await this.loader.TreeAsset.CloneModel()
         const pos = new THREE.Vector3()
         const radius = this.worldSize / 2
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < 300; i++) {
             const phi = Math.random() * Math.PI * 2
-            const r = THREE.MathUtils.randFloat(radius * 0.8, radius * 1.5)
+            const r = THREE.MathUtils.randFloat(radius * 1, radius * 2.5)
             pos.set(
                 r * Math.cos(phi),
                 0,
                 r * (-Math.abs(Math.sin(phi)))
             )
             
-            const scale = math.rand_int(9, 15)
+            const scale = math.rand_int(10, 20)
             const tree = new Tree(this.loader.TreeAsset)
             tree.MassLoad(meshs, scale, pos)
             this.trees.push(tree)

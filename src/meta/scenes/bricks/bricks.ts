@@ -20,10 +20,10 @@ export class EventBrick implements IBuildingObject {
     brick?: Brick2
     get Size() { return this.size }
     get BoxPos() { return this.position }
-    set Key(k: string) { this.key = k }
+    set Key(k: string[]) { this.key = k }
     get Key() { return this.key }
 
-    key = ""
+    key: string[] = []
     constructor(private size: THREE.Vector3, private position: THREE.Vector3) {
     }
     Dispose() {
@@ -239,7 +239,7 @@ export class Bricks {
             this.brickGuide.CannonPos.y += .5
         }
       
-        if (this.currentMode != AppMode.LegoDelete && this.checkEx) this.checkEx()
+        if ( this.checkEx) this.checkEx()
     }
     ChangeEvent(e: EventFlag) {
         if (this.brickGuide == undefined) {
@@ -253,7 +253,7 @@ export class Bricks {
                 this.brickfield.visible = true
                 if (this.deleteMode) {
                     this.dom.style.display = "block"
-                    this.brickGuide.scale.set(1, 1, 1)
+                    this.brickGuide.DeleteMode(true)
                     this.brickSize.set(1, 1, 1)
                     console.log(this.brickGuide.position)
                 }
@@ -263,6 +263,7 @@ export class Bricks {
             case EventFlag.End:
                 if (this.deleteMode) {
                     this.dom.style.display = "none"
+                    this.brickGuide.DeleteMode(false)
                 }
                 this.brickGuide.ControllerEnable = false
                 this.brickGuide.Visible = false

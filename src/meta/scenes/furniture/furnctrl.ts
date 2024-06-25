@@ -23,7 +23,8 @@ export class FurnCtrl {
     dom: HTMLDivElement
     msg: HTMLLabelElement
     progress: HTMLProgressElement
-    get State() { return this.state }
+    get State() { return this.saveEntry.state }
+    get Entry() { return this.saveEntry }
 
     constructor(
         id: number, 
@@ -32,7 +33,7 @@ export class FurnCtrl {
         private property: FurnProperty,
         private gphysic: GPhysics,
         private save: FurnEntry[],
-        private state: FurnState,
+        private saveEntry: FurnEntry,
     ) {
         this.position = funi.CannonPos
         const size = funi.Size
@@ -49,7 +50,7 @@ export class FurnCtrl {
         this.phybox.scale.set(scale, 1, scale)
         this.phybox.position.copy(this.funi.BoxPos)
         this.phybox.rotation.copy(this.funi.Meshs.rotation)
-        if(state == FurnState.Done) {
+        if(saveEntry.state == FurnState.Done) {
             this.treeMotion.Done()
         }
         this.dom = document.getElementById("edit-progress-bar-container") as HTMLDivElement
@@ -58,29 +59,29 @@ export class FurnCtrl {
 
     }
     BuildingStart() {
-        if(this.state == FurnState.Done) return
+        if(this.saveEntry.state == FurnState.Done) return
         this.timer = 0
-        this.state = FurnState.Building
+        this.saveEntry.state = FurnState.Building
         const now = new Date().getTime() // ms, 0.001 sec
         this.lastBuildingTime = now - this.property.buildingTime
         this.msg.innerText = "제작하고 있습니다."
         this.dom.style.display = "block"
     }
     BuildingCancel() {
-        if(this.state == FurnState.Building)
-            this.state = FurnState.Suspend
+        if(this.saveEntry.state == FurnState.Building)
+            this.saveEntry.state = FurnState.Suspend
         this.dom.style.display = "none"
     }
 
     BuildingDone() {
-        this.state = FurnState.Done
+        this.saveEntry.state = FurnState.Done
         this.timer = 0 
         this.lastBuildingTime = new Date().getTime() // ms, 0.001 sec
         this.treeMotion.Done()
         this.save.push({
             id: this.property.id, 
             createTime: this.lastBuildingTime, 
-            state: this.state,
+            state: this.saveEntry.state,
             position: this.funi.CannonPos,
             rotation: this.funi.Meshs.rotation
         })
@@ -107,16 +108,19 @@ export class FurnCtrl {
         if (this.gphysic.Check(this.funi)) {
             do {
                 this.funi.CannonPos.y += 0.2
-            } while (!this.gphysic.Check(this.funi))
+            } while (this.gphysic.Check(this.funi))
         } else {
             do {
                 this.funi.CannonPos.y -= 0.2
             } while (!this.gphysic.Check(this.funi) && this.funi.CannonPos.y >= 0)
             this.funi.CannonPos.y += 0.2
         }
+        this.saveEntry.position.x = this.funi.CannonPos.x
+        this.saveEntry.position.y = this.funi.CannonPos.y
+        this.saveEntry.position.z = this.funi.CannonPos.z
         this.phybox.position.copy(this.funi.BoxPos)
 
-        switch(this.state) {
+        switch(this.saveEntry.state) {
             case FurnState.NeedBuilding:
                 return;
             case FurnState.Building:

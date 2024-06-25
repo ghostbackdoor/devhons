@@ -45,11 +45,13 @@ export class CityMain extends Page {
     public async CanvasRenderer(cityKey: string) {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
         canvas.style.display = "block"
+        this.alarmOn("마을 정보를<br>불러오고 있습니다.")
+
         this.meta.RegisterInitEvent(() => {
             this.ui.UiOn()
             this.meta.render()
+            this.alarmOff()
         })
-        this.alarmOn("마을 정보를<br>불러오고 있습니다.")
         const myModel = this.blockStore.GetModel(this.session.UserId)
 
         /* load city & citizen */
@@ -57,7 +59,6 @@ export class CityMain extends Page {
             this.blockStore.FetchCity(this.masterAddr, cityKey),
             this.blockStore.FetchCitizenList(this.masterAddr, cityKey),
         ])
-        /* load data model */
         const data = new Map<string, string>()
         await Promise.all(citizen.map(async (e) => {
             const modelEntry = await this.blockStore.FetchModel(this.masterAddr, e)

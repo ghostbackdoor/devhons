@@ -16,8 +16,9 @@ export class Game extends THREE.Scene implements IScene {
         this.objs = objs
         this.models = objs.map((child: IObject) => child.Meshs)
 
-        //this.fog = new THREE.FogExp2(0x66ccff, 0.0025);
-        this.fog = new THREE.Fog(0x66ccff, 100, 400)
+        const fogColor = 0x87ceeb
+        this.fog = new THREE.FogExp2(fogColor, 0.0025);
+        //this.fog = new THREE.Fog(fogColor, 100, 400)
         this.add(
             abmbient, 
             hemispherelight, //new THREE.HemisphereLightHelper(hemispherelight, 5),

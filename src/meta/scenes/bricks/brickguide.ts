@@ -12,6 +12,7 @@ export enum BrickGuideType {
 
 export class BrickGuide extends GhostModel2 implements IPhysicsObject{
     ShapeType = BrickShapeType.Rectangle
+    deleteMode = false
 
     get Creation() { return this.creationFlag }
     set Creation(flag: boolean) {
@@ -20,6 +21,7 @@ export class BrickGuide extends GhostModel2 implements IPhysicsObject{
         } else {
             (this.material as THREE.MeshBasicMaterial).color.setHex(0xff0000)
         }
+        if (this.deleteMode) this.Visible = flag
         this.creationFlag = flag
     }
     private contollerEnable: boolean = true
@@ -51,5 +53,9 @@ export class BrickGuide extends GhostModel2 implements IPhysicsObject{
         const z = pos.z - pos.z % this.Size.z
         this.position.set(x, pos.y, z)
         this.position.y = this.CenterPos.y
+    }
+    DeleteMode(mode: boolean) {
+        if(mode) this.scale.set(1, 1, 1)
+        this.deleteMode = mode
     }
 }

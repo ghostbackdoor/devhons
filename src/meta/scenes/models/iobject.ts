@@ -21,6 +21,8 @@ export interface IPhysicsObject {
 export interface IBuildingObject {
     get Size() : THREE.Vector3
     get BoxPos() : THREE.Vector3
+    get Key(): string[]
+    set Key(k: string[])
 }
 
 export interface ICtrlObject {

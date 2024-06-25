@@ -3,9 +3,10 @@ import { GhostModel2 } from "../models/ghostmodel";
 
 
 export class Brick2 extends GhostModel2 {
-    get BoxPos() {
-        return this.position
-    }
+    get BoxPos() { return this.position }
+    set Key(k: string[]) { this.key = k }
+    get Key() { return this.key }
+    key: string[] = []
 
     _geometry: THREE.BoxGeometry
     _material: THREE.MeshStandardMaterial

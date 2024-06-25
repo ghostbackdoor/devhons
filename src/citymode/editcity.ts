@@ -9,11 +9,13 @@ import { BlockStore } from "../store";
 import { UiBrick } from "../module/uibrick";
 import { TerOptType } from "../meta/scenes/terrain/terrainctrl";
 import { GlobalSaveTxId } from "../models/tx";
+import { CityMessage } from "../meta/scenes/terrain/terrain";
 
 export class EditCity extends Page {
     masterAddr = ""
     ui = new Ui(this.meta, AppMode.EditCity)
     mode = AppMode.EditCity
+    locationMode = CityMessage.ChangeLocationE
 
     brickSize = new THREE.Vector3(3, 3, 1)
     brickRotate = new THREE.Vector3()
@@ -83,8 +85,20 @@ export class EditCity extends Page {
         rotate.onclick = () => {
             this.meta.ChangeTerrainInfo({ to: TerOptType.Rotate })
         }
+        const modify = document.getElementById("modifyhome") as HTMLDivElement
+        modify.onclick = () => {
+            if(this.locationMode == CityMessage.ChangeLocationE) {
+                this.meta.SendModeMessage(CityMessage.ChangeLocationS)
+                this.UpdateMenu()
+                explain.innerText = "마을 주민의 집 위치를 수정합니다."
+            } else {
+                this.locationMode = CityMessage.ChangeLocationE
+                this.meta.SendModeMessage(this.locationMode)
+            }
+        }
         const city = document.getElementById("editcity") as HTMLDivElement
         city.onclick = () => {
+            this.meta.SendModeMessage(CityMessage.ChangeLocationE)
             this.meta.ModeChange(AppMode.EditCity)
             this.UpdateMenu()
             explain.innerText = "마을 주민의 집 위치를 지정합니다."

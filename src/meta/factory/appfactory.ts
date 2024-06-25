@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Game } from "../scenes/game";
 import { Floor } from "../scenes/models/floor";
+import { SkyBox } from "../scenes/models/skybox";
 import { Canvas } from "../common/canvas";
 import { Camera } from "../common/camera";
 import { Renderer } from "../common/renderer";
@@ -12,6 +13,7 @@ import { Loader } from "../loader/loader";
 import { math } from "../../libs/math";
 import { Mushroom } from "../scenes/models/mushroom";
 import { DeadTree } from "../scenes/models/deadtree";
+import { Grass } from "../scenes/models/grass";
 import { Portal } from "../scenes/models/portal";
 import { EventBricks } from "../scenes/bricks/eventbricks";
 import { NpcManager } from "../scenes/npcmanager";
@@ -43,6 +45,7 @@ import { Projectile } from "../scenes/projectile/projectile";
 import { Terrainer } from "../scenes/terrain/terrainer";
 import { CityCenter } from "../scenes/citycenter";
 import { Terrain } from "../scenes/terrain/terrain";
+import { EditCenter } from "../scenes/editcenter";
 
 export class AppFactory {
     phydebugger: any
@@ -55,6 +58,7 @@ export class AppFactory {
     deckDb = new Deck()
     private gameCenter: GameCenter
     cityCenter: CityCenter
+    editCenter: EditCenter
 
     private store: ModelStore
     input: Input
@@ -67,6 +71,8 @@ export class AppFactory {
     private furnDb = new FurnDb()
     private plantDb = new PlantDb()
     monDeck: MonDeck
+
+    private skyBox = new SkyBox()
 
     private terrainer: Terrainer
     terrain: Terrain
@@ -84,8 +90,9 @@ export class AppFactory {
 
     private buff: Buff
     
-    private deadtrees: DeadTree[]
-    private mushrooms: Mushroom[]
+    private grass: Grass[] = []
+    private deadtrees: DeadTree[] = []
+    private mushrooms: Mushroom[] = []
     //island: Island
 
     private camera: Camera
@@ -120,8 +127,6 @@ export class AppFactory {
     constructor() {
         this.worldSize = 300
         this.floor = new Floor(this.worldSize)
-        this.mushrooms = []
-        this.deadtrees = []
 
         this.invenFab = new InvenFactory(this.loader, this.alarm)
 
@@ -143,13 +148,15 @@ export class AppFactory {
         this.brick = new EventBricks(this.game, this.eventCtrl, this.store, this.gphysics, this.player)
         this.legos = new Legos(this.game, this.eventCtrl, this.store, this.Physics, this.player)
         this.nonLegos = new NonLegos(this.game, this.eventCtrl, this.store, this.Physics, this.player)
+        this.terrainer = new Terrainer()
+        this.terrain = new Terrain(this.terrainer, this.eventCtrl, this.game, this.gphysics, this.loader)
+
+
         this.npcs = new NpcManager(this.loader, this.eventCtrl, this.game, this.canvas, this.store, this.gphysics)
-        this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.brick, this.gphysics, this.drop, this.monDb)
+        this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.terrain, this.gphysics, this.drop, this.monDb)
         this.friendly = new Friendly(this.loader, this.eventCtrl, this.gphysics, this.game, this.player, this.playerCtrl, this.monDb)
         this.projectile = new Projectile(this.loader, this.canvas, this.eventCtrl, this.game, this.playerCtrl, this.monDb)
 
-        this.terrainer = new Terrainer()
-        this.terrain = new Terrain(this.terrainer, this.eventCtrl, this.game, this.gphysics, this.loader)
 
         this.buff = new Buff(this.eventCtrl, this.playerCtrl)
         this.materials = new Materials(this.player, this.playerCtrl, this.worldSize, this.loader, this.eventCtrl, this.game, this.canvas, this.drop, this.monDb)
@@ -159,11 +166,13 @@ export class AppFactory {
 
         this.gameCenter = new GameCenter(this.player, this.playerCtrl, this.portal, this.monsters, this.friendly, this.invenFab, this.canvas, this.alarm, this.game, this.eventCtrl, this.store)
         this.cityCenter = new CityCenter(this.terrain, this.eventCtrl, this.canvas, this.store)
+        this.editCenter = new EditCenter(this.eventCtrl)
 
         this.camera = new Camera(this.canvas, this.player, this.terrainer, this.npcs, this.brick, this.legos, this.nonLegos, this.portal, this.farmer, this.carp, this.eventCtrl)
         this.rayViewer = new RayViwer(this.player, this.camera, this.legos, this.nonLegos, this.terrain, this.canvas, this.eventCtrl)
         this.renderer = new Renderer(this.camera, this.game, this.canvas)
         this.currentScene = this.game
+        this.terrain.SetCamera(this.camera)
     }
     async MassMushroomLoader(type: number) {
         const mushasset = (type == 1) ? this.loader.Mushroom1Asset : this.loader.Mushroom2Asset
@@ -183,7 +192,6 @@ export class AppFactory {
         }
     }
     async MassDeadTreeLoader() {
-        const meshs = await this.loader.DeadTreeAsset.CloneModel()
         const pos = new THREE.Vector3()
         const radius = this.worldSize / 2
         for (let i = 0; i < 30; i++) {
@@ -197,8 +205,26 @@ export class AppFactory {
             const type = math.rand_int(0, 2)
             const scale = math.rand_int(5, 9)
             const tree = new DeadTree(this.loader.DeadTreeAsset)
-            tree.MassLoader(meshs, scale, pos, type)
+            await tree.MassLoader(scale, pos, type)
             this.deadtrees.push(tree)
+        }
+    }
+    async MassGrassLoader() {
+        const pos = new THREE.Vector3()
+        const radius = this.worldSize / 2
+        for (let i = 0; i < 1000; i++) {
+            const phi = Math.random() * Math.PI * 2
+            const r = THREE.MathUtils.randFloat(radius * 0.3, radius * 1.5)
+            pos.set(
+                r * Math.cos(phi),
+                0,
+                r * Math.sin(phi),
+            )
+            const type = math.rand_int(0, 2)
+            const scale = math.rand_int(4, 5)
+            const tree = new Grass(this.loader.GrassAsset)
+            await tree.MassLoader(scale, pos, type)
+            this.grass.push(tree)
         }
     }
 
@@ -211,6 +237,7 @@ export class AppFactory {
             await this.MassMushroomLoader(1),
             await this.MassMushroomLoader(2),
             await this.MassDeadTreeLoader(),
+            //await this.MassGrassLoader(),
             await this.materials.MassLoader(),
             await this.npcs.NpcLoader(),
             await this.farmer.FarmLoader(),
@@ -227,6 +254,7 @@ export class AppFactory {
             this.player.Meshs, 
             this.floor.Meshs, 
             this.portal.Meshs, 
+            this.skyBox.Meshs,
         )
         
         this.deadtrees.forEach((tree) => {
@@ -235,6 +263,12 @@ export class AppFactory {
         this.mushrooms.forEach((mushroom) => {
             this.game.add(mushroom.Meshs)
         })
+        /*
+        this.grass.forEach((g) => {
+            this.game.add(g.Meshs)
+        })
+        */
+
         this.npcs.InitScene()
 
         this.Helper = new Helper(

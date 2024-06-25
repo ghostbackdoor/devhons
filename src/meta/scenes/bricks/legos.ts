@@ -13,6 +13,7 @@ export enum BrickShapeType {
 }
 
 export class Legos extends Bricks implements IModelReload {
+    viliage?: THREE.InstancedMesh
     get Size(): THREE.Vector3 { return (this.brickGuide) ? this.brickGuide.Size : this.brickSize }
 
     constructor(
@@ -57,24 +58,30 @@ export class Legos extends Bricks implements IModelReload {
                 this.brickGuide.Creation = false
             }
         }
+        eventCtrl.RegisterSceneClearEvent(() => {
+            this.ClearBlock()
+            this.ClearEventBrick()
+            this.DeleteViliage()
+        })
     }
     EditMode() {
         this.ClearBlock()
         this.CreateBricks(this.store.Legos)
     }
     async Viliageload(): Promise<void> {
-        this.ClearBlock()
-        this.ClearEventBrick()
-        
         this.LegoStore = this.store.Legos
-        const b = this.CreateInstacedMesh(this.store.Legos)
-        if (b) this.scene.add(b)
+        this.viliage = this.CreateInstacedMesh(this.store.Legos)
+        if (this.viliage) this.scene.add(this.viliage)
     }
     async Reload(): Promise<void> {
-        this.ClearBlock()
-        this.ClearEventBrick()
-
         this.LegoStore = this.store.Legos
         this.CreateBricks(this.store.Legos)
+    }
+
+    DeleteViliage() {
+        if (!this.viliage) return
+
+        this.scene.remove(this.viliage)
+        this.viliage.dispose()
     }
 }

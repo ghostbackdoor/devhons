@@ -156,7 +156,6 @@ export class Farmer implements IModelReload, IViewer {
             })
         })
     }
-    resize(): void { }
     update(delta: number): void {
         for (let i = 0; i < this.plantset.length; i++) {
             this.plantset[i].plantCtrl.update(delta)
@@ -172,7 +171,9 @@ export class Farmer implements IModelReload, IViewer {
         if (this.saveData) this.saveData.forEach((e) => {
             this.CreatePlant(e)
         })
-        
+    }
+    async Cityload(): Promise<void> {
+        this.ReleaseAllPlantPool()
     }
     CheckPlantAPlant() {
         const obj = this.target
@@ -207,8 +208,9 @@ export class Farmer implements IModelReload, IViewer {
         const property = this.plantDb.get(plantEntry.id)
         if (!property) return
         
-        let plantset = this.AllocatePlantPool(property, plantEntry.position)
-        if (!plantset) plantset = await this.NewPlantEntryPool(plantEntry, property)
+        //let plantset = this.AllocatePlantPool(property, plantEntry.position)
+        //if (!plantset) plantset = await this.NewPlantEntryPool(plantEntry, property)
+        const plantset = await this.NewPlantEntryPool(plantEntry, property)
         this.playerCtrl.add(plantset.plantCtrl.phybox)
         this.game.add(plantset.plant.Meshs, plantset.plantCtrl.phybox)
     }
@@ -259,6 +261,7 @@ export class Farmer implements IModelReload, IViewer {
             this.playerCtrl.remove(set.plantCtrl.phybox)
             this.game.remove(set.plant.Meshs, set.plantCtrl.phybox)
         })
+        this.plantset.length = 0
     }
     async NewPlantEntryPool(plantEntry: PlantEntry, property: PlantProperty): Promise<PlantSet> {
         const tree = await this.allocModel(plantEntry.id, plantEntry)

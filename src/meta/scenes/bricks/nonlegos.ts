@@ -55,23 +55,17 @@ export class NonLegos extends Bricks implements IModelReload {
                 this.brickGuide.Creation = true
             }
         }
+        eventCtrl.RegisterSceneClearEvent(() => {
+            this.ClearBlock()
+            this.ClearEventBrick()
+        })
     }
     EditMode() {
         this.ClearBlock()
         this.CreateBricks(this.store.NonLegos)
     }
-    async Viliageload(): Promise<void> {
-        this.ClearBlock()
-        this.ClearEventBrick()
-        
-        this.LegoStore = this.store.NonLegos
-        const b = this.CreateInstacedMesh(this.store.NonLegos)
-        if (b) this.scene.add(b)
-    }
+    async Viliageload(): Promise<void> { }
     async Reload(): Promise<void> {
-        this.ClearBlock()
-        this.ClearEventBrick()
-
         this.LegoStore = this.store.NonLegos
         this.CreateBricks(this.store.NonLegos)
     }

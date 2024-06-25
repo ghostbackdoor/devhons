@@ -74,6 +74,7 @@ export class TreeCtrl {
         this.needHavest = false
         this.save.state = PlantState.NeedSeed
         this.treeMotion.Delete()
+        this.progress.value = 0
     }
     AfterHavest() {
         this.lv = 1
@@ -94,6 +95,7 @@ export class TreeCtrl {
         if(this.save.state == PlantState.Seeding)
             this.save.state = PlantState.NeedSeed
         this.dom.style.display = "none"
+        this.progress.value = 0
     }
     WarteringStart() {
         if(this.save.state == PlantState.Death) return
@@ -156,6 +158,7 @@ export class TreeCtrl {
         this.AfterHavest()
         this.save.lastHarvestTime = new Date().getTime() // ms, 0.001 sec
         this.treeMotion.Havest()
+        console.log(this)
     }
 
     CheckWartering() {

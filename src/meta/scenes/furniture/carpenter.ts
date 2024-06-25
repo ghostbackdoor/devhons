@@ -148,7 +148,6 @@ export class Carpenter implements IModelReload, IViewer {
         dst.y = src.y
         dst.z = Math.ceil(src.z)
     }
-    resize(): void { }
     update(delta: number): void {
         for (let i = 0; i < this.furnitures.length; i++) {
             this.furnitures[i].furnCtrl.update(delta)
@@ -177,7 +176,9 @@ export class Carpenter implements IModelReload, IViewer {
         if (this.saveData) this.saveData.forEach((e) => {
             this.CreateFurn(e)
         })
-
+    }
+    async Cityload(): Promise<void> {
+        this.ReleaseAllFurnPool()
     }
     CheckMaterial(id: FurnId) {
         const property = this.furnDb.get(id)
@@ -211,8 +212,9 @@ export class Carpenter implements IModelReload, IViewer {
         const property = this.furnDb.get(furnEntry.id)
         if (!property) return
         
-        let furnset = this.AllocateFurnPool(property, furnEntry)
-        if (!furnset) furnset = await this.NewFurnEntryPool(furnEntry, property)
+        //let furnset = this.AllocateFurnPool(property, furnEntry)
+        //if (!furnset) furnset = await this.NewFurnEntryPool(furnEntry, property)
+        const furnset = await this.NewFurnEntryPool(furnEntry, property)
 
         this.playerCtrl.add(furnset.furnCtrl.phybox)
         this.game.add(furnset.furn.Meshs, furnset.furnCtrl.phybox)
@@ -226,7 +228,6 @@ export class Carpenter implements IModelReload, IViewer {
         this.playerCtrl.remove(furnset.furnCtrl.phybox)
         this.game.remove(furnset.furn.Meshs, furnset.furnCtrl.phybox)
     }
-
     
     moveEvent(v: THREE.Vector3) {
         if(!this.target) return
@@ -275,6 +276,7 @@ export class Carpenter implements IModelReload, IViewer {
             this.playerCtrl.remove(set.furnCtrl.phybox)
             this.game.remove(set.furn.Meshs, set.furnCtrl.phybox)
         })
+        this.furnitures.length = 0
     }
     async NewFurnEntryPool(furnEntry: FurnEntry, property: FurnProperty): Promise<FurnSet> {
         const furn = this.getModel(furnEntry.id)
@@ -284,7 +286,7 @@ export class Carpenter implements IModelReload, IViewer {
         furn.Create()
         furn.Visible = true
         const treeCtrl = new FurnCtrl(this.furnitures.length, furn, furn, property, 
-            this.gphysic, this.saveData, furnEntry.state) 
+            this.gphysic, this.saveData, furnEntry) 
         
         const furnset: FurnSet = { id: furnEntry.id, furn: furn, furnCtrl: treeCtrl, used: true }
         this.furnitures.push(furnset)

@@ -93,6 +93,9 @@ export class NpcManager implements IModelReload {
                     break
             }
         })
+        eventCtrl.RegisterSceneClearEvent(() => {
+            this.game.remove(this.owner.Meshs)
+        })
     }
     async CreateOwner(info: UserInfo) {
         if (info.model != this.ownerModel) {
@@ -114,9 +117,6 @@ export class NpcManager implements IModelReload {
             this.helper2.Loader(this.loader.FemaleAsset, new THREE.Vector3(p.x - 4, 0, p.z + 10), "Eve"),
             this.owner.Loader(this.loader.GetAssets(this.ownerModel), new THREE.Vector3(10, 0, 15), "unknown")
         ])
-    }
-    async Viliageload(): Promise<void> {
-        this.game.remove(this.owner.Meshs)
     }
     async Reload(): Promise<void> {
         this.game.add(this.owner.Meshs)

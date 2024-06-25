@@ -27,6 +27,7 @@ export class PickFruitState extends State implements IPlayerAction {
     }
     Init(): void {
         console.log("Pick!!")
+        this.next = this
         this.player.ChangeAction(ActionType.PickFruit) ?? 2
         this.playerCtrl.RunSt.PreviousState(this.playerCtrl.IdleSt)
         const p = this.havest()
@@ -110,6 +111,7 @@ export class PickFruitTreeState extends State implements IPlayerAction {
     }
     Init(): void {
         console.log("Pick Tree!!")
+        this.next = this
         this.player.ChangeAction(ActionType.PickFruitTree) ?? 2
         this.playerCtrl.RunSt.PreviousState(this.playerCtrl.IdleSt)
         const p = this.havest()

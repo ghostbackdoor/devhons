@@ -5,7 +5,6 @@ import { Game } from "../game"
 import { GPhysics } from "../../common/physics/gphysics";
 import { AppMode } from "../../app";
 import { Legos } from "../bricks/legos";
-import { EventBricks } from "../bricks/eventbricks";
 import { Player } from "../player/player";
 import { AttackOption, PlayerCtrl } from "../player/playerctrl";
 import { math } from "../../../libs/math";
@@ -17,6 +16,7 @@ import { CreateMon } from "./createmon";
 import { MonsterId } from "./monsterid";
 import { NonLegos } from "../bricks/nonlegos";
 import { DeckType } from "../../inventory/items/deck";
+import { Terrain } from "../terrain/terrain";
 
 export type MonsterSet = {
     monModel: IPhysicsObject,
@@ -52,7 +52,7 @@ export class Monsters {
     keytimeout?:NodeJS.Timeout
     respawntimeout?:NodeJS.Timeout
     mode = AppMode.Close
-    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.eventBricks, this.gphysic, this.game, this.monDb)
+    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.terrain, this.gphysic, this.game, this.monDb)
 
     constructor(
         private loader: Loader,
@@ -62,7 +62,7 @@ export class Monsters {
         private playerCtrl: PlayerCtrl,
         private legos: Legos,
         private nonlegos: NonLegos,
-        private eventBricks: EventBricks,
+        private terrain: Terrain,
         private gphysic: GPhysics,
         private drop: Drop,
         private monDb: MonsterDb

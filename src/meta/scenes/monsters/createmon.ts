@@ -4,7 +4,6 @@ import { MonsterSet } from "./monsters"
 import { EventController } from "../../event/eventctrl"
 import { Player } from "../player/player"
 import { Legos } from "../bricks/legos"
-import { EventBricks } from "../bricks/eventbricks"
 import { GPhysics } from "../../common/physics/gphysics"
 import { Zombie } from "./zombie/zombie"
 import { MonsterCtrl } from "./zombie/monctrl"
@@ -13,6 +12,7 @@ import { MonsterId } from "./monsterid";
 import { NonLegos } from "../bricks/nonlegos";
 import { Game } from "../game";
 import { Effector } from "../../effects/effector";
+import { Terrain } from "../terrain/terrain";
 
 export class CreateMon {
     constructor(
@@ -21,7 +21,7 @@ export class CreateMon {
         private player: Player,
         private legos: Legos,
         private nonlegos: NonLegos,
-        private eventBricks: EventBricks,
+        private terrain: Terrain,
         private gphysic: GPhysics,
         private game: Game,
         private monDb: MonsterDb,
@@ -34,7 +34,7 @@ export class CreateMon {
         const monster = new Zombie(asset, monId, new Effector(this.game))
         await monster.Loader(pos, monId as string, id)
 
-        const zCtrl = new MonsterCtrl(id, this.player, monster, this.legos, this.nonlegos, this.eventBricks, this.gphysic,
+        const zCtrl = new MonsterCtrl(id, this.player, monster, this.legos, this.nonlegos, this.terrain, this.gphysic,
             this.eventCtrl, property)
         const monSet: MonsterSet =  { 
             monModel: monster, monCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
