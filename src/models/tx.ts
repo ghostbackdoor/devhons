@@ -15,6 +15,7 @@ export const HonTxId = GlobalLoadTx
 export const HonDetailTxId = HonTxId
 export const NewHonTxId = "5ie8zKOfGRGkbEBo/N5wuL5jzIfxwWq9BgzoLqz19K8="
 // New Feed: 5ie8zKOfGRGkbEBo/N5wuL5jzIfxwWq9BgzoLqz19K8=
+export const NewCityHonTxId = "V09zf4GdJt96cvgscme8qG7yt2OQ/cSeqi3jCzJeqVA="
 export const UploadTxId = "";
 export const NewProfileTxId = "zdER15Xm3UHCouCRy3W/pVpkqDV72BK04jPkLroP75U="
 // profile save: zdER15Xm3UHCouCRy3W/pVpkqDV72BK04jPkLroP75U=

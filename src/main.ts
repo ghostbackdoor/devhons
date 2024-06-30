@@ -1,5 +1,8 @@
+import App, { AppMode } from "./meta/app";
+import { gsap } from "gsap"
 import { ProfileEntry } from "./models/param";
 import { GlobalLoadListTx } from "./models/tx";
+import { Ui } from "./models/ui";
 import { Page } from "./page";
 import { BlockStore } from "./store";
 
@@ -8,9 +11,16 @@ export class Main extends Page {
     targetloadCnt = 0
     currenloadCnt = 0
     userlist: string[] = []
+    ui = new Ui(this.meta, AppMode.Intro)
+    masterAddr = ""
+    firstLoading = false
 
-    public constructor(private blockStore: BlockStore, url: string) {
-            super(url)
+    constructor(
+        private blockStore: BlockStore, 
+        private meta: App, 
+        url: string
+    ) {
+        super(url)
     }
 
     tagResult(ret: any): string[] {
@@ -118,6 +128,77 @@ export class Main extends Page {
         const joypad_buttons = document.getElementById("joypad_buttons") as HTMLDivElement
         joypad_buttons.style.display = "none"
     }
+    public CanvasRenderer() {
+        const email = "ghost"
+        const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
+        canvas.style.display = "block"
+        this.alarmOn("이동중입니다.")
+
+        const play = document.getElementById("playBtn") as HTMLButtonElement
+        if (play) play.onclick = () => { 
+            //this.ui.UiOff(AppMode.Play)
+            window.ClickLoadPage("play", false, `&email=${email}`)
+        }
+
+        this.meta.RegisterInitEvent(() => {
+            const myModel = this.blockStore.GetModel(email)
+            this.blockStore.FetchModel(this.masterAddr, email)
+                .then(async (result) => {
+                    await this.meta.LoadModel(result.models, result.id, myModel?.models)
+                })
+                .then(() => {
+                    this.meta.render()
+                    this.alarmOff()
+                    if(!this.firstLoading) {
+                        this.DrawIntro()
+                        this.firstLoading = true
+                    } else {
+                        this.ui.UiOn()
+                    }
+                })
+                .catch(async () => {
+                    this.alarmOff()
+                    await this.meta.LoadModelEmpty(email, myModel?.models)
+                    this.meta.ModeChange(AppMode.Close)
+                })
+        })
+
+        const space = document.getElementById("view-space") as HTMLAnchorElement
+        space.style.height = window.innerHeight - 250 + "px"
+    }
+    DrawIntro() {
+        const foot = document.getElementById("footer")
+        if(foot) foot.style.display = "none"
+        this.meta.ModeChange(AppMode.Intro)
+        const dom = document.getElementById("citybigtitle")
+        if (dom) {
+            dom.innerText = "Hons.Multiverse"
+            dom.style.fontSize = "xxx-large"
+        }
+        const timeline = gsap.timeline()
+        timeline.add(gsap.to(dom, {
+                duration: 2, opacity: 1
+            }))
+        timeline.add(gsap.to(dom, {
+                duration: 2, opacity: 0, delay: 1, 
+                onComplete: () =>{
+                    if (dom) {
+                        dom.innerText = "다른 세계에 나와\n연결해주세요."
+                        dom.style.fontSize = "x-large"
+                    }
+                }
+            }))
+        timeline.add(gsap.to(dom, {
+                duration: 2, opacity: 1
+            }))
+        timeline.add(gsap.to(dom, {
+                duration: 2, opacity: 0, delay: 1, 
+                onComplete: () =>{
+                    this.ui.UiOn()
+                    if (foot) foot.style.display = "block"
+                }
+            }))
+    }
     async loadTutorial() {
         await fetch("views/tutorial/sns.html")
             .then(response => { return response.text(); })
@@ -151,11 +232,10 @@ export class Main extends Page {
             })
 
     }
-    public CanvasRenderer() {
-    }
     
-    public async Run(): Promise<boolean> {
+    public async Run(masterAddr: string): Promise<boolean> {
         await this.LoadHtml()
+        this.masterAddr = masterAddr;
         this.disableMeta()
         this.RequestTaglist(20)
         this.RequestUserlist()

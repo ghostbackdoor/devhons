@@ -1,4 +1,5 @@
 import App, { AppMode } from "../meta/app";
+import { gsap } from "gsap"
 import { ProfileEntry } from "../models/param";
 import { GlobalSaveTxId } from "../models/tx";
 import { Ui } from "../models/ui";
@@ -48,9 +49,10 @@ export class CityMain extends Page {
         this.alarmOn("마을 정보를<br>불러오고 있습니다.")
 
         this.meta.RegisterInitEvent(() => {
-            this.ui.UiOn()
             this.meta.render()
-            this.alarmOff()
+            const space = document.getElementById("avatar-space") as HTMLAnchorElement
+            space.style.height = window.innerHeight - 230 + "px"
+            this.ui.UiOn()
         })
         const myModel = this.blockStore.GetModel(this.session.UserId)
 
@@ -67,6 +69,7 @@ export class CityMain extends Page {
         }))
 
         this.meta.ModelClear()
+        console.log(city.models)
         await this.meta.LoadCity(data, city.models, myModel?.models)
         this.alarmOff()
 
@@ -75,9 +78,19 @@ export class CityMain extends Page {
             //this.ui.UiOff(AppMode.Play) 
             window.ClickLoadPage("play", false)
         }
-
-        const space = document.getElementById("avatar-space") as HTMLAnchorElement
-        space.style.height = window.innerHeight - 230 + "px"
+    }
+    DrawCityTitle(title: string) {
+        const dom = document.getElementById("citybigtitle")
+        if (dom) dom.innerText = title
+        const s1 = gsap.to(dom, {
+            duration: 2, opacity: 1
+        })
+        const s2 = gsap.to(dom, {
+            duration: 2, opacity: 0, delay: 1
+        })
+        const timeline = gsap.timeline()
+        timeline.add(s1)
+        timeline.add(s2)
     }
 
     async RequestCityInfo(city: string) {
@@ -87,10 +100,11 @@ export class CityMain extends Page {
         if (title) title.innerText = data.citytitle
         const explain = document.getElementById("explain")
         if (explain) explain.innerText = data.cityexplain
+        this.DrawCityTitle(data.citytitle)
     }
 
     popupVisible = false
-    public PopupMenu(cityKey: string) {
+    public BindingMenu(cityKey: string) {
         const btn = document.getElementById("menuBtn") as HTMLSpanElement
         const pop = document.getElementById("popmenu") as HTMLDivElement
         btn.onclick = () => {
@@ -125,14 +139,16 @@ export class CityMain extends Page {
         }
         const exit = document.getElementById("exit") as HTMLAnchorElement
         exit.onclick = () => {
+        } 
+        const newfeed = document.getElementById("newfeed") as HTMLAnchorElement
+        newfeed.onclick = () => {
+            window.ClickLoadPage("newhon", false, "&from=city&city=" + cityKey)
         }
     }
     public makeMemberHtml(email: string) {
         if (!this.active) return
-        console.log(email)
         this.blockStore.FetchProfile(window.MasterAddr, email)
             .then((ret: ProfileEntry) => {
-                console.log(ret)
                 const uniqId = ret.id + ret.time.toString()
                 const memberrTag = document.getElementById("memberlist") as HTMLDivElement;
                 memberrTag.insertAdjacentHTML("beforeend", `
@@ -168,7 +184,7 @@ export class CityMain extends Page {
         const cityKey = this.getParam("city") ?? "ghost"
         this.CanvasRenderer(cityKey)
         this.RequestCityInfo(cityKey)
-        this.PopupMenu(cityKey)
+        this.BindingMenu(cityKey)
         return true
     }
     public Release(): void {

@@ -69,4 +69,9 @@ export class NonLegos extends Bricks implements IModelReload {
         this.LegoStore = this.store.NonLegos
         this.CreateBricks(this.store.NonLegos)
     }
+    async Cityload(): Promise<void> {
+        this.LegoStore = this.store.CityNonlego
+        this.CreateBricks(this.store.CityNonlego)
+        
+    }
 }

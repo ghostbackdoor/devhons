@@ -100,6 +100,7 @@ export class EventController {
     curMode = AppMode.Long
     // GAME MODE
     OnAppModeEvent(mode: AppMode, ...arg: any) {
+        if(mode == this.curMode) return
         this.eventEmitter.emit(SConf.AppMode, this.curMode, EventFlag.End, ...arg)
         this.eventEmitter.emit(SConf.AppMode, mode, EventFlag.Start, ...arg)
         this.curMode = mode

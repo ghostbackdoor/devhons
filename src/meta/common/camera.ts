@@ -30,11 +30,13 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
     private owner: Npc | undefined
     private viewMode: ViewMode
     private animate: gsap.core.Tween[] = []
+    private timeline?: gsap.core.Timeline
 
     cityPos = new THREE.Vector3(-40, 50, 100)
     longPos = new THREE.Vector3(16, 24, 79)
     shortPos = new THREE.Vector3(0, 0, 0)
     debugMode = false
+    backup = new THREE.Vector3()
 
     constructor(
         canvas: Canvas,
@@ -59,8 +61,59 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
 
         this.eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag, orbit: any[]) => {
             this.controls.enabled = false
-            if (this.animate != undefined) this.animate.forEach(e => e.kill())
+            if (this.animate) this.animate.forEach(e => e.kill())
+            if (this.timeline) this.timeline.kill()
             switch(mode) {
+                case AppMode.Intro:
+                    if (e == EventFlag.Start) {
+                        this.viewMode = ViewMode.Long
+                        this.eventCtrl.OnChangeCtrlObjEvent(this.portal)
+
+                        this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                        this.rotation.x = -Math.PI / 4
+                        this.position.set(this.cityPos.x, this.cityPos.y, this.cityPos.z)
+                        
+
+                        if(this.timeline) this.timeline.kill()
+                        this.timeline = gsap.timeline()
+                        this.timeline
+                            .to(this.cityPos, {
+                                x: 10, y: 30, z: this.portal.CannonPos.z + 50,
+                                duration: 10, ease: "power1.inOut", onUpdate: () => {
+                                    this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                                    this.position.set(this.cityPos.x, this.cityPos.y,
+                                        this.cityPos.z)
+                                }
+                            })
+                            .to(this.cityPos, {
+                                x: this.portal.CannonPos.x + 10, 
+                                z: this.portal.CannonPos.z + 30,
+                                duration: 10, ease: "power1.inOut", 
+                                onUpdate: () => {
+                                    this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                                    this.position.set(this.cityPos.x, this.cityPos.y,
+                                        this.cityPos.z)
+                                    this.lookAt(this.portal.CannonPos)
+                                },
+                            })
+
+                        const owner = this.npcs.Owner
+                        if (owner == undefined) break
+                        this.timeline.to(this.cityPos, {
+                                x: owner.CannonPos.x, 
+                                y: 20,
+                                z: owner.CannonPos.z + 20,
+                                duration: 10, ease: "power1.inOut", onStart: () => {
+                                    console.log(this.cityPos)
+                                }, onUpdate: () => {
+                                    this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                                    this.position.set(this.cityPos.x, this.cityPos.y,
+                                        this.cityPos.z)
+                                    this.lookAt(owner.CannonPos)
+                                },
+                            })
+                    }
+                    break;
                 case AppMode.CityView:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Long
@@ -119,19 +172,27 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                     break;
                 case AppMode.NonLego:
                     if (e == EventFlag.Start) {
-                        this.viewMode = ViewMode.Target
+                        this.backup.copy(this.position)
+                        this.viewMode = ViewMode.Edit
                         this.target = this.nonlegos.GetBrickGuide(this.player.CenterPos)
 
                         this.focusAt(this.target.position)
+                    } else if (e == EventFlag.End) {
+                        this.position.copy(this.backup)
+                        this.focusAt(this.player.CenterPos)
                     }
                     break;
                 case AppMode.LegoDelete:
                 case AppMode.Lego:
                     if (e == EventFlag.Start) {
-                        this.viewMode = ViewMode.Target
+                        this.backup.copy(this.position)
+                        this.viewMode = ViewMode.Edit
                         this.target = this.legos.GetBrickGuide(this.player.CenterPos)
 
                         this.focusAt(this.target.position)
+                    } else if (e == EventFlag.End) {
+                        this.position.copy(this.backup)
+                        this.focusAt(this.player.CenterPos)
                     }
                     break;
                 case AppMode.Brick:
@@ -224,7 +285,14 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
 
     update() {
         switch (this.viewMode) {
-            case ViewMode.Edit:
+            case ViewMode.Edit: {
+                const target = this.target?.position
+                if (target == undefined) return
+                this.controls.enabled = true
+                this.controls.update()
+                this.lookAt(target)
+                break
+            }
             case ViewMode.Target: {
                     const target = this.target?.position
                     if (target == undefined) return

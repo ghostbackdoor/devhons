@@ -41,6 +41,7 @@ export type StoreData = {
 }
 type StoreCityData = {
     house: House[]
+    nonlegos: Lego[]
     portal: THREE.Vector3 | undefined
 }
 
@@ -69,6 +70,7 @@ export class ModelStore {
     }
     private cityData: StoreCityData = {
         house: [],
+        nonlegos: [],
         portal: undefined,
     }
     private userdata?: Map<string, string>
@@ -77,6 +79,7 @@ export class ModelStore {
     private name: string = "unknown"
 
     get UserHouseData() { return this.userdata } // indivisual user
+    get CityNonlego() { return this.cityData.nonlegos }
     get CityHouses() { return this.cityData.house }
     get CityPortal(): THREE.Vector3 | undefined { return this.cityData.portal }
     set CityPortal(pos: THREE.Vector3) { 
@@ -186,6 +189,11 @@ export class ModelStore {
         })
         await Promise.all(promise)
     }
+    CheckStoreInstance() {
+        if(!this.cityData.house) this.cityData.house = []
+        if(!this.cityData.nonlegos) this.cityData.nonlegos = []
+        console.log("city load", this.cityData.portal)
+    }
     async LoadModels(data: string, name: string, playerModel: string | undefined) {
         if (playerModel != undefined) {
             const playerData = JSON.parse(playerModel)
@@ -208,6 +216,8 @@ export class ModelStore {
             this.cityData = JSON.parse(city)
         }
         this.userdata = users
+
+        this.CheckStoreInstance()
         const promise = this.mgrs.map(async (mgr) => {
             await mgr.Cityload?.()
         })

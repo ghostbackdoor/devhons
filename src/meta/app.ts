@@ -13,6 +13,7 @@ import { LoadingManager } from "three";
 import { TerrainOption } from "./scenes/terrain/terrainctrl";
 
 export enum AppMode {
+    Intro,
     Long,
     Close,
     Play,
@@ -115,7 +116,6 @@ export default class App {
             this.eventCtrl.OnKeyDownEvent(new KeySystem0)
         }
 
-        progressBarContainer.style.display = 'none'
 
         if (this.initCallbackFunc) this.initCallbackFunc(true)
         return true
@@ -153,6 +153,8 @@ export default class App {
         if(this.renderFlag) return
         this.renderFlag = true
         this.loop()
+        const progressBarContainer = document.querySelector('#progress-bar-container') as HTMLDivElement
+        progressBarContainer.style.display = 'none'
     }
     ChangeCharactor(model: Char) {
         this.factory.ModelStore.ChangeCharactor(model)

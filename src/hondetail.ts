@@ -20,8 +20,12 @@ export class HonDetail extends Page {
     honsData: HonsData[] = []
     ui = new Ui(this.meta, AppMode.Close)
 
-    public constructor(private blockStore: BlockStore
-        , private session: Session, private meta: App, url: string) {
+    public constructor(
+        private blockStore: BlockStore,
+        private session: Session,
+        private meta: App, 
+        url: string
+    ) {
         super(url)
     }
     drawHtml(ret: any) {

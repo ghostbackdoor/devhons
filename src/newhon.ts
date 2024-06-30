@@ -1,6 +1,6 @@
 import { FetchResult } from "./models/param";
 import { Session } from "./session";
-import { NewHonTxId } from "./models/tx";
+import { NewCityHonTxId, NewHonTxId } from "./models/tx";
 import { Channel } from "./models/com";
 import { Page } from "./page";
 import { StableDiffusionAi } from "./module/sdai";
@@ -73,6 +73,37 @@ export class NewHon extends Page{
             .then((result) => this.newHonResult(result))
             .catch(() => { this.warningMsg("Server에 문제가 생긴듯 합니다;;") });
     }
+    public RequestNewCityHon() {
+        const masterAddr = this.m_masterAddr;
+        const user = this.session.GetHonUser();
+        const inputContent = document.getElementById("inputContent") as HTMLTextAreaElement;
+        const addr = masterAddr + "/glambda?txid=" + encodeURIComponent(NewCityHonTxId);
+        const city = super.getParam("city") ?? "ghost"
+
+        this.alarmOn("등록중입니다.")
+        const threadTag = document.getElementById("thread") as HTMLInputElement
+        const tag = "#" + ((threadTag.value == "") ? "daliy log" : threadTag.value.replace("#", ""))
+        const formData = new FormData()
+        formData.append("file", this.sdai.Image)
+        formData.append("key", encodeURIComponent(user.Email))
+        formData.append("email", encodeURIComponent(user.Email))
+        formData.append("password", user.Password)
+        formData.append("id", user.Nickname)
+        formData.append("table", "cityfeeds@" + city)
+        formData.append("time", (new Date()).getTime().toString())
+        formData.append("tag", btoa(encodeURIComponent(tag)))
+        console.log("register tag", tag)
+        formData.append("content", inputContent?.value)
+        fetch(addr, {
+            method: "POST",
+            cache: "no-cache",
+            headers: {},
+            body: formData
+        })
+            .then((response) => response.json())
+            .then((result) => this.newHonResult(result))
+            .catch(() => { this.warningMsg("Server에 문제가 생긴듯 합니다;;") });
+    }
     
     getParam(): string | null {
         const urlParams = new URLSearchParams(window.location.search);
@@ -91,7 +122,11 @@ export class NewHon extends Page{
         } else {
             btn.onclick = () => {
                 btn.disabled = true
-                this.RequestNewHon();
+                const from = super.getParam("from")
+                if(!from || from == "hon")
+                    this.RequestNewHon();
+                else if(from == "city")
+                    this.RequestNewCityHon();
             }
         }
         const cont = document.getElementById("inputContent") as HTMLTextAreaElement;

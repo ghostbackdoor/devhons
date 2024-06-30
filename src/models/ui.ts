@@ -1,4 +1,5 @@
 import App, { AppMode } from "../meta/app"
+import { gsap } from "gsap"
 
 export class Ui {
     profileVisible = true
@@ -41,8 +42,18 @@ export class Ui {
         if (inven) inven.style.display = "none"
         if (health) health.style.display = "none"
 
-        if (wrapper) wrapper.style.display = "block"
-        footer.style.display = "block"
+        if (wrapper) {
+            wrapper.style.display = "block"
+            wrapper.style.opacity = "0"
+            gsap.to(wrapper, {
+                duration: 2, autoAlpha: 1, delay: 1
+            })
+            footer.style.display = "block"
+            footer.style.opacity = "0"
+            gsap.to(footer, {
+                duration: 2, autoAlpha: 1, delay: 1
+            })
+        }
         header.style.display = "block"
         this.meta.ModeChange(this.from, false)
         this.profileVisible = true

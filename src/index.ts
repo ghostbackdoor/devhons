@@ -81,7 +81,7 @@ class Index {
         "newhon": this.newHon,
         "uploadhon": new UploadHon(this.urlhtml["uploadhon"]),
         "profile": this.profile,
-        "main": new Main(this.blockStore, this.urlhtml["main"]),
+        "main": new Main(this.blockStore, this.meta, this.urlhtml["main"]),
         "edithome": new EditHome(this.blockStore, this.session, this.meta, this.inven, this.brick, this.urlhtml["edithome"]),
         "play": new Play(this.blockStore, this.session, this.meta, this.inven, this.urlhtml["play"]),
         "newcity": new NewCity(this.session, this.urlhtml["newcity"]),

@@ -45,7 +45,7 @@ export class TerrainCtrl {
         })
         eventCtrl.RegisterTerrainInfo((opt: TerrainOption) => {
             if(opt.to == TerOptType.Rotate) {
-                this.terrainer.rotateZ(Math.PI / 4)
+                this.terrainer.rotateZ(Math.PI / 2)
             }
         })
         eventCtrl.RegisterKeyDownEvent((keyCommand: IKeyCommand) => {

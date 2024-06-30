@@ -102,14 +102,16 @@ export class Hons extends Page {
         this.alarmOn("정보를 불러오고 있습니다.")
         this.meta.RegisterInitEvent(() => {
             //this.meta.ModeChange(AppMode.Long, false)
-            this.ui.UiOn()
             this.meta.render()
-            this.alarmOff()
+            const space = document.getElementById("avatar-space") as HTMLAnchorElement
+            space.style.height = window.innerHeight - 230 + "px"
+            this.ui.UiOn()
         })
         const myModel = this.blockStore.GetModel(this.session.UserId)
         this.blockStore.FetchModels(this.m_masterAddr)
             .then(async (result) => {
                 await this.meta.LoadVillage(result, myModel?.models)
+                this.alarmOff()
             })
 
         const play = document.getElementById("playBtn") as HTMLButtonElement
@@ -117,9 +119,6 @@ export class Hons extends Page {
             //this.ui.UiOff(AppMode.Play) 
             window.ClickLoadPage("play", false)
         }
-
-        const space = document.getElementById("avatar-space") as HTMLAnchorElement
-        space.style.height = window.innerHeight - 230 + "px"
     }
     
     public async Run(masterAddr: string): Promise<boolean> {

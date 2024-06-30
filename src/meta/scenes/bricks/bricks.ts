@@ -315,7 +315,7 @@ export class Bricks {
         this.eventbricks.length = 0
     }
     CreateBricks(userBricks: Lego[]) {
-
+        if(!userBricks || userBricks.length == 0) return
         const collidingBoxSize = new THREE.Vector3()
         userBricks.forEach((brick) => {
             const b = new Brick2(brick.position, brick.size, brick.color)
