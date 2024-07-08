@@ -9,6 +9,7 @@ import { BlockStore } from "../store";
 
 export class CityMain extends Page {
     masterAddr = ""
+    cityTitle?: string
     ui = new Ui(this.meta, AppMode.CityView)
 
     constructor(
@@ -72,6 +73,7 @@ export class CityMain extends Page {
         console.log(city.models)
         await this.meta.LoadCity(data, city.models, myModel?.models)
         this.alarmOff()
+        this.DrawCityTitle()
 
         const play = document.getElementById("playBtn") as HTMLButtonElement
         play.onclick = () => {
@@ -79,11 +81,12 @@ export class CityMain extends Page {
             window.ClickLoadPage("play", false)
         }
     }
-    DrawCityTitle(title: string) {
+    DrawCityTitle() {
+        if(!this.cityTitle) return
         const dom = document.getElementById("citybigtitle")
-        if (dom) dom.innerText = title
+        if (dom) dom.innerText = this.cityTitle
         const s1 = gsap.to(dom, {
-            duration: 2, opacity: 1
+            duration: 2, opacity: 1, delay: 1
         })
         const s2 = gsap.to(dom, {
             duration: 2, opacity: 0, delay: 1
@@ -100,7 +103,7 @@ export class CityMain extends Page {
         if (title) title.innerText = data.citytitle
         const explain = document.getElementById("explain")
         if (explain) explain.innerText = data.cityexplain
-        this.DrawCityTitle(data.citytitle)
+        this.cityTitle = data.citytitle
     }
 
     popupVisible = false

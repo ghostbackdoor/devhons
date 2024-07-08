@@ -285,12 +285,12 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
 
     update() {
         switch (this.viewMode) {
-            case ViewMode.Edit: {
+            case ViewMode.Edit: 
+            {
                 const target = this.target?.position
                 if (target == undefined) return
                 this.controls.enabled = true
                 this.controls.update()
-                this.lookAt(target)
                 break
             }
             case ViewMode.Target: {

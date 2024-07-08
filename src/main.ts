@@ -177,7 +177,7 @@ export class Main extends Page {
         }
         const timeline = gsap.timeline()
         timeline.add(gsap.to(dom, {
-                duration: 2, opacity: 1
+            duration: 2, opacity: 1, delay: 1,
             }))
         timeline.add(gsap.to(dom, {
                 duration: 2, opacity: 0, delay: 1, 
