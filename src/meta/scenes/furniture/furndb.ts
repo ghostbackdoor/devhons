@@ -27,6 +27,9 @@ export enum FurnType {
     Bed, Bath, BookShelf, Closet, Desk, Kitchen, Table, Oven, Refrigerator,
     Sink, Toilet, Tv
 }
+export enum LocType {
+    Living, Dining, Master, Kitchen, Bath
+}
 
 export type MadeBy = {
     itemId: string,
@@ -35,6 +38,7 @@ export type MadeBy = {
 export type FurnProperty = {
     id: FurnId
     type: FurnType
+    loc: LocType
     assetId: Char
     name: string
     namekr: string
@@ -49,6 +53,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultBed, {
             id: FurnId.DefaultBed,
             type: FurnType.Bed,
+            loc: LocType.Master,
             assetId: Char.Bed,
             name: "Bed",
             namekr: "침대",
@@ -62,6 +67,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultBath, {
             id: FurnId.DefaultBath,
             type: FurnType.Bath,
+            loc: LocType.Bath,
             assetId: Char.Bath,
             name: "Bath",
             namekr: "욕조",
@@ -73,6 +79,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultBookShelf, {
             id: FurnId.DefaultBookShelf,
             type: FurnType.BookShelf,
+            loc: LocType.Living,
             assetId: Char.Bookshelf,
             name: "BookShelf",
             namekr: "책장",
@@ -84,6 +91,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultCloset, {
             id: FurnId.DefaultCloset,
             type: FurnType.Closet,
+            loc: LocType.Master,
             assetId: Char.Closet,
             name: "Closet",
             namekr: "옷장",
@@ -95,6 +103,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultDesk, {
             id: FurnId.DefaultDesk,
             type: FurnType.Desk,
+            loc: LocType.Master,
             assetId: Char.Desk,
             name: "Desk",
             namekr: "컴퓨터책상",
@@ -106,6 +115,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultKitchen, {
             id: FurnId.DefaultKitchen,
             type: FurnType.Kitchen,
+            loc: LocType.Kitchen,
             assetId: Char.Kitchen,
             name: "Kitchen",
             namekr: "부엌",
@@ -119,6 +129,7 @@ export class FurnDb {
             id: FurnId.DefaultKitTable,
             type: FurnType.Table,
             assetId: Char.KitTable,
+            loc: LocType.Dining,
             name: "Kitchen Table",
             namekr: "식탁",
             buildingTime: 1000 * 60, // a min
@@ -129,6 +140,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultOven, {
             id: FurnId.DefaultOven,
             type: FurnType.Oven,
+            loc: LocType.Kitchen,
             assetId: Char.Oven,
             name: "Oven",
             namekr: "오븐",
@@ -141,6 +153,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultRefrigerator, {
             id: FurnId.DefaultRefrigerator,
             type: FurnType.Refrigerator,
+            loc: LocType.Kitchen,
             assetId: Char.Refrigerator,
             name: "Refrigerator",
             namekr: "냉장고",
@@ -149,6 +162,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultSink, {
             id: FurnId.DefaultSink,
             type: FurnType.Sink,
+            loc: LocType.Bath,
             assetId: Char.Sink,
             name: "Sink",
             namekr: "세면대",
@@ -160,6 +174,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultTable, {
             id: FurnId.DefaultTable,
             type: FurnType.Table,
+            loc: LocType.Master,
             assetId: Char.Table,
             name: "Table",
             namekr: "책상",
@@ -168,6 +183,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultToilet, {
             id: FurnId.DefaultToilet,
             type: FurnType.Toilet,
+            loc: LocType.Bath,
             assetId: Char.Toilet,
             name: "Toilet",
             namekr: "변기",
@@ -179,6 +195,7 @@ export class FurnDb {
         this.furnDb.set(FurnId.DefaultTv, {
             id: FurnId.DefaultTv,
             type: FurnType.Tv,
+            loc: LocType.Living,
             assetId: Char.TV,
             name: "TV",
             namekr: "티비",

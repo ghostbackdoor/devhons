@@ -82,6 +82,8 @@ export class PlayerCtrl implements IGPhysic {
     DeleteSt = new DeleteState(this, this.player, this.gphysic, this.eventCtrl)
     currentState: IPlayerAction = this.IdleSt
 
+    worker = new Worker(new URL('./player.worker.ts', import.meta.url))
+
     get Health() { return this.spec.Health }
     set Enable(mode: boolean) { 
         this.playEnable = mode 
@@ -98,6 +100,7 @@ export class PlayerCtrl implements IGPhysic {
         private eventCtrl: EventController
     ) {
         gphysic.Register(this)
+        this.worker.onmessage = (e: any) => { console.log(e) }
 
         eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
             this.mode = mode
@@ -205,7 +208,9 @@ export class PlayerCtrl implements IGPhysic {
         this.moveDirection.z = 0
         this.inputVQueue.length = 0
     }
+    checkPlayerMode() {
 
+    }
     update(delta: number) {
         this.updateInputVector()
         this.updateDownKey()

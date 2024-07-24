@@ -145,7 +145,7 @@ export class Materials implements IViewer {
                 r * (-Math.abs(Math.sin(phi)))
             )
             
-            const scale = math.rand_int(10, 20)
+            const scale = math.rand_int(15, 20)
             const tree = new Tree(this.loader.TreeAsset)
             tree.MassLoad(meshs, scale, pos)
             this.trees.push(tree)

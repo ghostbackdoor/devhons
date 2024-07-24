@@ -1,5 +1,6 @@
 import { ItemId } from "../../inventory/items/itemdb"
 import { Char } from "../../loader/assetmodel"
+import { MadeBy } from "../furniture/furndb"
 import { MonDrop } from "../monsters/monsterdb"
 
 export class PlantId {
@@ -29,6 +30,7 @@ export type PlantProperty = {
     maxLevel: number
     levelUpTime: number
     warteringTime: number
+    madeby?: MadeBy[]
     drop?: MonDrop[]
 }
 

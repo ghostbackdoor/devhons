@@ -19,17 +19,13 @@ export class EditGame {
     constructor(private meta: App) { 
     }
 
-    LoadHtml() {
-        return fetch("views/editmode/editgame.html")
-            .then(response => { return response.text(); })
-            .then((res) => {
-                const ex = document.getElementById("extension") as HTMLDivElement
-                ex.insertAdjacentHTML("beforeend", res)
-                const dom = document.getElementById("cardlocation") as HTMLDivElement
-                dom.style.display = "none"
-            })
-            .then(() => {
-            })
+    async LoadHtml() {
+        const response = await fetch("views/editmode/editgame.html");
+        const res = await response.text();
+        const ex = document.getElementById("extension") as HTMLDivElement;
+        ex.insertAdjacentHTML("beforeend", res);
+        const dom = document.getElementById("cardlocation") as HTMLDivElement;
+        dom.style.display = "none";
     }
     OnOff(on: boolean, inven: Inventory | undefined) {
         if(!inven) return

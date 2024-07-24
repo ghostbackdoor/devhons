@@ -143,6 +143,9 @@ export class Hon extends Page{
         this.m_masterAddr = masterAddr;
         const key = this.getParam("key");
         if (key == null) return false
+        const wrapper = document.getElementById("wrapper-profile") as HTMLDivElement
+        wrapper.style.display = "block"
+
         //this.canvasVisible(false)
         this.RequestHon(key).then(() => {
             this.drawHtmlUserReply()

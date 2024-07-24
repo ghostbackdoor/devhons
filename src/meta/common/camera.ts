@@ -3,7 +3,7 @@ import { gsap } from "gsap"
 import { IViewer } from "../scenes/models/iviewer";
 import { IPhysicsObject } from "../scenes/models/iobject";
 import { Canvas } from "./canvas";
-import { OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { Npc } from "../scenes/models/npc";
 import { NpcManager } from "../scenes/npcmanager";
 import { EventController, EventFlag } from "../event/eventctrl";
@@ -23,7 +23,7 @@ enum ViewMode {
     Play, PlayDone,
 }
 
-export class Camera extends THREE.PerspectiveCamera implements IViewer{
+export class Camera extends THREE.PerspectiveCamera implements IViewer {
     private controls: OrbitControls
     private bakRotation: THREE.Euler
     private target: THREE.Mesh | THREE.Group | undefined
@@ -55,7 +55,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
         canvas.RegisterViewer(this)
         this.controls = new OrbitControls(this, canvas.Canvas)
         this.bakRotation = new THREE.Euler().copy(this.rotation.set(-0.27, 0.0, 0.03))
-        
+
         this.viewMode = ViewMode.Long
         this.position.set(this.longPos.x, this.longPos.y, this.longPos.z)
 
@@ -63,7 +63,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
             this.controls.enabled = false
             if (this.animate) this.animate.forEach(e => e.kill())
             if (this.timeline) this.timeline.kill()
-            switch(mode) {
+            switch (mode) {
                 case AppMode.Intro:
                     if (e == EventFlag.Start) {
                         this.viewMode = ViewMode.Long
@@ -72,9 +72,9 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                         this.rotation.x = -Math.PI / 4
                         this.position.set(this.cityPos.x, this.cityPos.y, this.cityPos.z)
-                        
 
-                        if(this.timeline) this.timeline.kill()
+
+                        if (this.timeline) this.timeline.kill()
                         this.timeline = gsap.timeline()
                         this.timeline
                             .to(this.cityPos, {
@@ -86,9 +86,9 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                                 }
                             })
                             .to(this.cityPos, {
-                                x: this.portal.CannonPos.x + 10, 
+                                x: this.portal.CannonPos.x + 10,
                                 z: this.portal.CannonPos.z + 30,
-                                duration: 10, ease: "power1.inOut", 
+                                duration: 10, ease: "power1.inOut",
                                 onUpdate: () => {
                                     this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                                     this.position.set(this.cityPos.x, this.cityPos.y,
@@ -100,18 +100,18 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         const owner = this.npcs.Owner
                         if (owner == undefined) break
                         this.timeline.to(this.cityPos, {
-                                x: owner.CannonPos.x, 
-                                y: 20,
-                                z: owner.CannonPos.z + 20,
-                                duration: 10, ease: "power1.inOut", onStart: () => {
-                                    console.log(this.cityPos)
-                                }, onUpdate: () => {
-                                    this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
-                                    this.position.set(this.cityPos.x, this.cityPos.y,
-                                        this.cityPos.z)
-                                    this.lookAt(owner.CannonPos)
-                                },
-                            })
+                            x: owner.CannonPos.x,
+                            y: 20,
+                            z: owner.CannonPos.z + 20,
+                            duration: 10, ease: "power1.inOut", onStart: () => {
+                                console.log(this.cityPos)
+                            }, onUpdate: () => {
+                                this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
+                                this.position.set(this.cityPos.x, this.cityPos.y,
+                                    this.cityPos.z)
+                                this.lookAt(owner.CannonPos)
+                            },
+                        })
                     }
                     break;
                 case AppMode.CityView:
@@ -175,8 +175,13 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         this.backup.copy(this.position)
                         this.viewMode = ViewMode.Edit
                         this.target = this.nonlegos.GetBrickGuide(this.player.CenterPos)
+                        this.position.x = this.target.position.x + 10
+                        this.position.y = this.target.position.y + 10
+                        this.position.z = this.target.position.z + 10
+                        this.controls.target.copy(this.target.position)
+                        this.controls.enabled = true
+                        this.controls.update()
 
-                        this.focusAt(this.target.position)
                     } else if (e == EventFlag.End) {
                         this.position.copy(this.backup)
                         this.focusAt(this.player.CenterPos)
@@ -188,8 +193,12 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         this.backup.copy(this.position)
                         this.viewMode = ViewMode.Edit
                         this.target = this.legos.GetBrickGuide(this.player.CenterPos)
-
-                        this.focusAt(this.target.position)
+                        this.position.x = this.target.position.x + 10
+                        this.position.y = this.target.position.y + 10
+                        this.position.z = this.target.position.z + 10
+                        this.controls.target.copy(this.target.position)
+                        this.controls.enabled = true
+                        this.controls.update()
                     } else if (e == EventFlag.End) {
                         this.position.copy(this.backup)
                         this.focusAt(this.player.CenterPos)
@@ -240,7 +249,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                     }
                     break;
                 case AppMode.Long:
-                    if(orbit && orbit[0]) {
+                    if (orbit && orbit[0]) {
                         this.controls.enabled = true
                     } else {
                         this.controls.enabled = false
@@ -251,7 +260,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
                         this.rotation.set(this.bakRotation.x, this.bakRotation.y, this.bakRotation.z)
                         this.rotation.x = -Math.PI / 4
                         this.position.set(this.longPos.x, this.longPos.y, this.longPos.z)
-                        
+
                         this.animate.push(gsap.to(this.longPos, {
                             x: 16, y: 4, z: 36,
                             duration: 4, ease: "power1.inOut", onUpdate: () => {
@@ -277,7 +286,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
         this.position.copy(position)
         this.lookAt(position)
 
-        if (cameraPos) 
+        if (cameraPos)
             this.shortPos.copy(cameraPos)
         else
             this.shortPos.set(0, 13, 13)
@@ -285,52 +294,52 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer{
 
     update() {
         switch (this.viewMode) {
-            case ViewMode.Edit: 
-            {
-                const target = this.target?.position
-                if (target == undefined) return
-                this.controls.enabled = true
-                this.controls.update()
-                break
-            }
-            case ViewMode.Target: {
+            case ViewMode.Edit:
+                {
                     const target = this.target?.position
                     if (target == undefined) return
-                    if (this.debugMode) {
-                        this.controls.enabled = true
-                        this.controls.update()
-                        return
-                    } else {
-                        this.controls.enabled = false
-                    }
-                    this.rotation.x = -Math.PI / 4
-                    this.position.set(
-                        target.x + this.shortPos.x,
-                        target.y + this.shortPos.y,
-                        target.z + this.shortPos.z)
-                    break;
+                    this.controls.enabled = true
+                    this.controls.update()
+                    break
                 }
-            case ViewMode.Close: {
-                    const target = this.owner?.CannonPos
-                    if (target == undefined) return
-                    this.rotation.x = -Math.PI / 4
-                    this.position.set(
-                        target.x + this.shortPos.x,
-                        target.y + this.shortPos.y,
-                        target.z + this.shortPos.z)
-                    break;
+            case ViewMode.Target: {
+                const target = this.target?.position
+                if (target == undefined) return
+                if (this.debugMode) {
+                    this.controls.enabled = true
+                    this.controls.update()
+                    return
+                } else {
+                    this.controls.enabled = false
                 }
-            case ViewMode.Long:
-                if(this.controls.enabled) this.controls.update()
+                this.rotation.x = -Math.PI / 4
+                this.position.set(
+                    target.x + this.shortPos.x,
+                    target.y + this.shortPos.y,
+                    target.z + this.shortPos.z)
                 break;
-            case ViewMode.Play:break;
+            }
+            case ViewMode.Close: {
+                const target = this.owner?.CannonPos
+                if (target == undefined) return
+                this.rotation.x = -Math.PI / 4
+                this.position.set(
+                    target.x + this.shortPos.x,
+                    target.y + this.shortPos.y,
+                    target.z + this.shortPos.z)
+                break;
+            }
+            case ViewMode.Long:
+                if (this.controls.enabled) this.controls.update()
+                break;
+            case ViewMode.Play: break;
             case ViewMode.PlayDone:
                 //this.lookAt(position.x, position.y, position.z)
                 const position = this.player.CannonPos
                 this.rotation.x = -Math.PI / 4
                 this.position.set(
-                    position.x + this.shortPos.x, 
-                    position.y + this.shortPos.y, 
+                    position.x + this.shortPos.x,
+                    position.y + this.shortPos.y,
                     position.z + this.shortPos.z)
                 break;
         }

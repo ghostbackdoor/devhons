@@ -9,7 +9,6 @@ import { Page } from "../page";
 import { Ui } from "../models/ui";
 import { UiInven } from "../playmode/play_inven";
 import { InvenData } from "../meta/inventory/inventory";
-import { EditPlant } from "./editplant";
 import { EditFurniture } from "./editfurniture";
 import { EditGame } from "./editgame";
 import { UiBrick } from "../module/uibrick";
@@ -21,7 +20,6 @@ export class EditHome extends Page {
     brickSize = new THREE.Vector3(3, 3, 1)
     brickRotate = new THREE.Vector3()
     ui = new Ui(this.meta, AppMode.EditPlay)
-    plant = new EditPlant(this.meta, this)
     furn = new EditFurniture(this.meta, this)
     game = new EditGame(this.meta)
 
@@ -181,11 +179,6 @@ export class EditHome extends Page {
             this.meta.ModeChange(this.mode)
             this.UpdateMenu()
         }
-        const plant = document.getElementById("tree") as HTMLDivElement
-        plant.onclick = () => {
-            this.plant.toggle()
-            this.UpdateMenu()
-        }
         const furn = document.getElementById("chair") as HTMLDivElement
         furn.onclick = () => {
             this.furn.toggle()
@@ -292,6 +285,5 @@ export class EditHome extends Page {
         this.ui.UiOn()
         this.ReleaseHtml()
         this.furn.htmlRelease()
-        this.plant.htmlRelease()
     }
 }

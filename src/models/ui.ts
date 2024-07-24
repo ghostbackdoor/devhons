@@ -42,7 +42,7 @@ export class Ui {
         if (inven) inven.style.display = "none"
         if (health) health.style.display = "none"
 
-        if (wrapper) {
+        if (wrapper && wrapper.style.display != "block") {
             wrapper.style.display = "block"
             wrapper.style.opacity = "0"
             gsap.to(wrapper, {

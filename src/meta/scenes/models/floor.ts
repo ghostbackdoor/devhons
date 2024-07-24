@@ -32,8 +32,11 @@ export class Floor extends GhostModel2 implements IObject, IPhysicsObject {
         // Default
         const geometry = new THREE.CircleGeometry(width, 6)
         const material = new THREE.MeshStandardMaterial({ 
+            //map: Floor.createCheckerboardTexture(256, 0xB2C655, 0x81A23E)
+            //color: 0x9BF22B,
+            color: 0xB2C655,
             //color: 0x81D287,
-            color: 0xffcc66,
+            //color: 0xffcc66,
            //map: baseColor,
            //metalnessMap: metallic,
            //normalMap: normal,
@@ -68,5 +71,25 @@ export class Floor extends GhostModel2 implements IObject, IPhysicsObject {
         const g = 0.1 + Math.random() * 0.5
         const b = Math.random() * 0.2
         return new THREE.Color(r, g, b)
+    }
+    static createCheckerboardTexture(size: number, color1: any, color2: any) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const context = canvas.getContext('2d');
+        if(!context) throw new Error("null");
+
+        const halfSize = size / 2;
+        context.fillStyle = color1;
+        context.fillRect(0, 0, halfSize, halfSize);
+        context.fillRect(halfSize, halfSize, halfSize, halfSize);
+
+        context.fillStyle = color2;
+        context.fillRect(halfSize, 0, halfSize, halfSize);
+        context.fillRect(0, halfSize, halfSize, halfSize);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true
+        return texture
     }
 }
