@@ -94,6 +94,7 @@ export class AppFactory {
     private deadtrees: DeadTree[] = []
     private mushrooms: Mushroom[] = []
     //island: Island
+    //private zeldaGrass: ZeldaGrass
 
     private camera: Camera
     private light: Light
@@ -150,6 +151,7 @@ export class AppFactory {
         this.nonLegos = new NonLegos(this.game, this.eventCtrl, this.store, this.Physics, this.player)
         this.terrainer = new Terrainer()
         this.terrain = new Terrain(this.terrainer, this.eventCtrl, this.game, this.gphysics, this.loader)
+        //this.zeldaGrass = new ZeldaGrass(this.canvas)
 
 
         this.npcs = new NpcManager(this.loader, this.eventCtrl, this.game, this.canvas, this.store, this.gphysics)
@@ -255,6 +257,7 @@ export class AppFactory {
             this.floor.Meshs, 
             this.portal.Meshs, 
             this.skyBox.Meshs,
+            //this.zeldaGrass.mesh,
         )
         
         this.deadtrees.forEach((tree) => {

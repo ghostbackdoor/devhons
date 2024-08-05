@@ -183,7 +183,7 @@ export class Main extends Page {
                 duration: 2, opacity: 0, delay: 1, 
                 onComplete: () =>{
                     if (dom) {
-                        dom.innerText = "다른 세계에 나와\n연결해주세요."
+                        dom.innerText = "Developed by Ghost"
                         dom.style.fontSize = "x-large"
                     }
                 }

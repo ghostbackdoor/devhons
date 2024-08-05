@@ -110,7 +110,7 @@ export class Materials implements IViewer {
         const radius = this.worldSize / 2
         for (let i = 0; i < 10; i++) {
             const phi = Math.random() * Math.PI * 2
-            const r = THREE.MathUtils.randFloat(radius * 0.3, radius * .6)
+            const r = THREE.MathUtils.randFloat(radius * 0.5, radius * .8)
             pos.set(
                 r * Math.cos(phi),
                 2,

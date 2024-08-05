@@ -3,6 +3,7 @@ import App, { AppMode } from "../meta/app"
 import { FurnProperty, LocType } from "../meta/scenes/furniture/furndb"
 import { ItemParam, MenuParam, TabList } from "./tablist"
 import { PlantProperty, PlantType } from "../meta/scenes/plants/plantdb"
+import { Char } from "../meta/loader/assetmodel"
 
 
 
@@ -32,7 +33,7 @@ export class EditFurniture {
     <div class="row handcursor" id="furnslot_${v.id}">
         <div class="col-auto ms-1 me-0 pb-1">
             <div class="rounded inven_slot p-1">
-                <img src="assets/icons/Misc/Crate.png">
+                <img src="assets/thumb/${Char[v.assetId]}_thumb.png" style="width:32px">
             </div>
         </div>
         <div class="col p-1 pe-3 text-start"> ${v.namekr}를 만듭니다.<br>${this.makeMaterial(v)} (beta)</div>
@@ -52,7 +53,7 @@ export class EditFurniture {
     <div class="row handcursor" id="plantslot_${v.plantId}">
         <div class="col-auto ms-1 me-0 pb-1">
             <div class="rounded inven_slot p-1">
-                <img src="assets/icons/Misc/Crate.png">
+                <img src="assets/thumb/${Char[v.assetId]}_thumb.png" style="width:32px">
             </div>
         </div>
         <div class="col p-1 pe-3 text-start"> ${v.namekr}를 만듭니다.<br>${this.makeMaterial(v)} (beta)</div>
