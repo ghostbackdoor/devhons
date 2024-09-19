@@ -1,13 +1,11 @@
 import * as THREE from "three";
-import { IViewer } from "../scenes/models/iviewer";
-import { Player } from "../scenes/player/player";
-import { Canvas } from "../common/canvas";
-import SConf from "../configs/staticconf";
-import { MonDrop } from "../scenes/monsters/monsterdb";
-import { Inventory } from "../inventory/inventory";
-import { Alarm, AlarmType } from "../common/alarm";
-import { EventController, EventFlag } from "../event/eventctrl";
-import { AppMode } from "../app";
+import { IViewer } from "@Models/iviewer";
+import { Player } from "@Player/player";
+import { Canvas } from "@Commons/canvas";
+import { MonDrop } from "@Monsters/monsterdb";
+import { Inventory } from "./inventory";
+import { Alarm, AlarmType } from "@Commons/alarm";
+import { EventController, EventFlag } from "@Event/eventctrl";
 
 type DropBox = {
     id: number
@@ -18,7 +16,7 @@ type DropBox = {
 export class Drop implements IViewer {
     dropBox: DropBox[] = []
     activeDropBox: DropBox[] = []
-    resetPos = new THREE.Vector3(SConf.StartPosition.x, -10, SConf.StartPosition.z)
+    resetPos = new THREE.Vector3(0, -10, 0)
     pointsGeometry?: THREE.BufferGeometry
     points: THREE.Points | THREE.InstancedMesh;
     head = 0
@@ -36,8 +34,7 @@ export class Drop implements IViewer {
         private scene: THREE.Scene,
         eventCtrl: EventController,
     ) {
-        eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
-            if(mode != AppMode.Play) return
+        eventCtrl.RegisterPlayModeEvent((e: EventFlag) => {
             switch (e) {
                 case EventFlag.Start:
                     break

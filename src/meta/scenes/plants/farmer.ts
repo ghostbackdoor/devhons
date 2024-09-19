@@ -17,7 +17,7 @@ import { TreeCtrl } from "./treectrl";
 import { AttackOption, AttackType, PlayerCtrl } from "../player/playerctrl";
 import { Alarm, AlarmType } from "../../common/alarm";
 import { Tomato } from "./tomato";
-import { Drop } from "../../drop/drop";
+import { Drop } from "../../inventory/drop";
 
 export enum PlantState {
     NeedSeed,

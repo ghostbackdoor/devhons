@@ -1,29 +1,24 @@
 import * as THREE from "three";
-import { Loader } from "../../loader/loader"
+import { Loader } from "@Loader/loader"
 import { MonsterSet } from "./monsters"
-import { EventController } from "../../event/eventctrl"
-import { Player } from "../player/player"
-import { Legos } from "../bricks/legos"
-import { GPhysics } from "../../common/physics/gphysics"
+import { EventController } from "@Event/eventctrl"
+import { Player } from "@Player/player"
+import { GPhysics } from "@Commons/physics/gphysics"
 import { Zombie } from "./zombie/zombie"
 import { MonsterCtrl } from "./zombie/monctrl"
 import { MonsterDb } from "./monsterdb"
 import { MonsterId } from "./monsterid";
-import { NonLegos } from "../bricks/nonlegos";
-import { Game } from "../game";
-import { Effector } from "../../effects/effector";
-import { Terrain } from "../terrain/terrain";
+import { Effector } from "@Effector/effector";
 
 export class CreateMon {
     constructor(
         private loader: Loader,
         private eventCtrl: EventController,
         private player: Player,
-        private legos: Legos,
-        private nonlegos: NonLegos,
-        private terrain: Terrain,
+        private instanceBlock: (THREE.InstancedMesh | undefined)[],
+        private meshBlock: THREE.Mesh[],
         private gphysic: GPhysics,
-        private game: Game,
+        private game: THREE.Scene,
         private monDb: MonsterDb,
     ) {
     }
@@ -34,8 +29,8 @@ export class CreateMon {
         const monster = new Zombie(asset, monId, new Effector(this.game))
         await monster.Loader(pos, monId as string, id)
 
-        const zCtrl = new MonsterCtrl(id, this.player, monster, this.legos, this.nonlegos, this.terrain, this.gphysic,
-            this.eventCtrl, property)
+        const zCtrl = new MonsterCtrl(id, this.player, monster, 
+            this.instanceBlock, this.meshBlock, this.gphysic, this.eventCtrl, property)
         const monSet: MonsterSet =  { 
             monModel: monster, monCtrl: zCtrl, live: true, respawn: false, deadtime: new Date().getTime()
         }

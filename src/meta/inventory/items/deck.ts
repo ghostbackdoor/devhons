@@ -1,4 +1,4 @@
-import { MonsterId } from "../../scenes/monsters/monsterid"
+import { MonsterId } from "@Monsters/monsterid"
 
 /*
 추가 Effect

@@ -1,5 +1,5 @@
-import { Bind, IAsset } from "../../loader/assetmodel"
-import { Loader } from "../../loader/loader"
+import { Bind, IAsset } from "@Loader/assetmodel"
+import { Loader } from "@Loader/loader"
 import { Deck, DeckType } from "./deck"
 import { AttackItemType, ItemType, Level } from "./item"
 

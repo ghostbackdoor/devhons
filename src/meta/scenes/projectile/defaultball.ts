@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GhostModel2 } from "../models/ghostmodel";
+import { GhostModel2 } from "@Models/ghostmodel";
 import { IProjectileModel } from "./projectile";
 
 export class DefaultBall extends GhostModel2 implements IProjectileModel {

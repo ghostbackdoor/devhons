@@ -85,6 +85,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer {
                                         this.cityPos.z)
                                 }
                             })
+                            /*
                             .to(this.cityPos, {
                                 x: this.portal.CannonPos.x + 10,
                                 z: this.portal.CannonPos.z + 30,
@@ -96,6 +97,7 @@ export class Camera extends THREE.PerspectiveCamera implements IViewer {
                                     this.lookAt(this.portal.CannonPos)
                                 },
                             })
+                            */
 
                         const owner = this.npcs.Owner
                         if (owner == undefined) break

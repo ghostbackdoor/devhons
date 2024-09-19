@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { GhostModel } from "./ghostmodel";
-import { IAsset } from "../../loader/assetmodel";
-import { EventController, EventFlag } from "../../event/eventctrl";
-import { IKeyCommand } from "../../event/keycommand";
-import { GPhysics } from "../../common/physics/gphysics";
+import { IAsset } from "@Loader/assetmodel";
+import { EventController, EventFlag } from "@Event/eventctrl";
+import { IKeyCommand } from "@Event/keycommand";
+import { GPhysics } from "@Commons/physics/gphysics";
 import { IPhysicsObject } from "./iobject";
 import { AppMode } from "../../app";
 import { IModelReload, ModelStore } from "../../common/modelstore";

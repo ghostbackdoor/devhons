@@ -11,7 +11,7 @@ import { MonsterBox } from "./monsters/monsters";
 import { AttackOption, PlayerCtrl } from "./player/playerctrl";
 import { EffectType, Effector } from "../effects/effector";
 import { Player } from "./player/player";
-import { Drop } from "../drop/drop";
+import { Drop } from "../inventory/drop";
 import { MonsterDb } from "./monsters/monsterdb";
 import { IViewer } from "./models/iviewer";
 import { MonsterId } from "./monsters/monsterid";

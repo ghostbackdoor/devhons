@@ -28,7 +28,7 @@ import { RayViwer } from "../common/raycaster";
 import { Monsters } from "../scenes/monsters/monsters";
 import { InvenFactory } from "../inventory/invenfactory";
 import { Buff } from "../buff/buff";
-import { Drop } from "../drop/drop";
+import { Drop } from "../inventory/drop";
 import { MonsterDb } from "../scenes/monsters/monsterdb";
 import { Alarm } from "../common/alarm";
 import { Materials } from "../scenes/materials";
@@ -155,7 +155,10 @@ export class AppFactory {
 
 
         this.npcs = new NpcManager(this.loader, this.eventCtrl, this.game, this.canvas, this.store, this.gphysics)
-        this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, this.legos, this.nonLegos, this.terrain, this.gphysics, this.drop, this.monDb)
+        this.monsters = new Monsters(this.loader, this.eventCtrl, this.game, this.player, this.playerCtrl, 
+            [this.legos.instancedBlock, this.nonLegos.instancedBlock, ...this.terrain.InstancedMeshs],
+            [...this.legos.bricks2, ...this.nonLegos.bricks2],
+            this.gphysics, this.drop, this.monDb)
         this.friendly = new Friendly(this.loader, this.eventCtrl, this.gphysics, this.game, this.player, this.playerCtrl, this.monDb)
         this.projectile = new Projectile(this.loader, this.canvas, this.eventCtrl, this.game, this.playerCtrl, this.monDb)
 

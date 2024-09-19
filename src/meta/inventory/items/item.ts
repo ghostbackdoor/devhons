@@ -1,4 +1,4 @@
-import { Bind } from "../../loader/assetmodel"
+import { Bind } from "@Loader/assetmodel"
 import { DeckType } from "./deck"
 import { ItemProperty } from "./itemdb"
 

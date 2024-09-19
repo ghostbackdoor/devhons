@@ -11,6 +11,7 @@ export enum EffectType {
     Lightning,
     Damage,
     Explosion,
+    CartoonLightningBall,
     BloodExplosion,
     Trail,
     PointTrail,
@@ -45,6 +46,11 @@ export class Effector {
                 const explosion = new QuarksVfx('assets/vfx/ps.json')
                 explosion.initEffect(arg[0], this.game)
                 this.effects[EffectType.Explosion] = explosion
+                break;
+            case EffectType.CartoonLightningBall:
+                const cartoonlighting = new QuarksVfx('assets/vfx/Cartoon Lightning Ball.json')
+                cartoonlighting.initEffect(arg[0], this.game)
+                this.effects[EffectType.CartoonLightningBall] = cartoonlighting
                 break;
             case EffectType.BloodExplosion:
                 const blood = new QuarksVfx('assets/vfx/BloodExplosion.json')

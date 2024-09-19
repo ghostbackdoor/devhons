@@ -46,13 +46,13 @@ export class CityMain extends Page {
     }
     public async CanvasRenderer(cityKey: string) {
         const canvas = document.getElementById("avatar-bg") as HTMLCanvasElement
-        canvas.style.display = "block"
+        if (canvas) canvas.style.display = "block"
         this.alarmOn("마을 정보를<br>불러오고 있습니다.")
 
         this.meta.RegisterInitEvent(() => {
             this.meta.render()
             const space = document.getElementById("avatar-space") as HTMLAnchorElement
-            space.style.height = window.innerHeight - 230 + "px"
+            if (space) space.style.height = window.innerHeight - 230 + "px"
             this.ui.UiOn()
         })
         const myModel = this.blockStore.GetModel(this.session.UserId)
@@ -76,7 +76,7 @@ export class CityMain extends Page {
         this.DrawCityTitle()
 
         const play = document.getElementById("playBtn") as HTMLButtonElement
-        play.onclick = () => {
+        if (play) play.onclick = () => {
             //this.ui.UiOff(AppMode.Play) 
             window.ClickLoadPage("play", false)
         }
@@ -110,7 +110,7 @@ export class CityMain extends Page {
     public BindingMenu(cityKey: string) {
         const btn = document.getElementById("menuBtn") as HTMLSpanElement
         const pop = document.getElementById("popmenu") as HTMLDivElement
-        btn.onclick = () => {
+        if (btn && pop) btn.onclick = () => {
             if (this.popupVisible) {
                 pop.style.display = "none"
                 this.popupVisible = false
@@ -121,15 +121,15 @@ export class CityMain extends Page {
         }
 
         const city = document.getElementById("editcity") as HTMLAnchorElement
-        city.onclick = () => {
+        if (city) city.onclick = () => {
             window.ClickLoadPage("editcity", false, "&city=" + cityKey)
         }
         const setup = document.getElementById("setupcity") as HTMLAnchorElement
-        setup.onclick = () => {
+        if (setup) setup.onclick = () => {
             window.ClickLoadPage("setupcity", false, "&city=" + cityKey)
         }
         const join = document.getElementById("join") as HTMLAnchorElement
-        join.onclick = () => {
+        if (join) join.onclick = () => {
             if (!this.session.CheckLogin()) {
                 this.confirmOn("로그인이 필요합니다.", "로그인", () => {
                     window.ClickLoadPage("signin", false)
@@ -141,10 +141,10 @@ export class CityMain extends Page {
             })
         }
         const exit = document.getElementById("exit") as HTMLAnchorElement
-        exit.onclick = () => {
+        if (exit) exit.onclick = () => {
         } 
         const newfeed = document.getElementById("newfeed") as HTMLAnchorElement
-        newfeed.onclick = () => {
+        if (newfeed) newfeed.onclick = () => {
             window.ClickLoadPage("newhon", false, "&from=city&city=" + cityKey)
         }
     }
@@ -154,7 +154,7 @@ export class CityMain extends Page {
             .then((ret: ProfileEntry) => {
                 const uniqId = ret.id + ret.time.toString()
                 const memberrTag = document.getElementById("memberlist") as HTMLDivElement;
-                memberrTag.insertAdjacentHTML("beforeend", `
+                if (memberrTag) memberrTag.insertAdjacentHTML("beforeend", `
                 <div class="row p-1 border-top handcursor" onclick="ClickLoadPage('hondetail', false, '&email=${ret.email}')">
                     <div class="col-auto">
                             <span id="${uniqId}" class="m-1"></span>

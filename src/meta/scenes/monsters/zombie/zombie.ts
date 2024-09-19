@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { FloatingName } from "../../../common/floatingtxt";
-import { GhostModel } from "../../models/ghostmodel";
-import { Ani, IAsset } from "../../../loader/assetmodel";
-import { IPhysicsObject } from "../../models/iobject";
-import { ActionType } from "../../player/player";
-import { EffectType, Effector } from "../../../effects/effector";
+import { FloatingName } from "@Commons/floatingtxt";
+import { GhostModel } from "@Models/ghostmodel";
+import { Ani, IAsset } from "@Loader/assetmodel";
+import { IPhysicsObject } from "@Models/iobject";
+import { EffectType, Effector } from "@Effector/effector";
 import { MonsterId } from "../monsterid";
+import { ActionType } from "@Player/player";
 
 export class Zombie extends GhostModel implements IPhysicsObject {
     mixer?: THREE.AnimationMixer

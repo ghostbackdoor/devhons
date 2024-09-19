@@ -1,5 +1,5 @@
-import { Alarm } from "../common/alarm";
-import { Loader } from "../loader/loader";
+import { Alarm } from "@Commons/alarm";
+import { Loader } from "@Loader/loader";
 import { Inventory } from "./inventory";
 import { Item } from "./items/item";
 import { ItemDb } from "./items/itemdb";

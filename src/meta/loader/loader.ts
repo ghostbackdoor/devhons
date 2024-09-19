@@ -47,6 +47,7 @@ import { WizardFab } from "./wizardfab";
 import { TwoBFab } from "./twobfab";
 import { ArrowFab } from "./arrowfab";
 import { GrassFab } from "./plant/grassfab";
+import { FluffyTreeFab } from "./plant/fluffytree";
 
 export class Loader {
     private fbxLoader = new FBXLoader()
@@ -110,6 +111,7 @@ export class Loader {
     private tv = new TvFab(this)
 
 
+    private fluffyTree = new FluffyTreeFab(this)
     private appleTree = new AppleTreeFab(this)
     private apple = new AppleFab(this)
     private coconutTree = new CoconutTreeFab(this)
@@ -180,6 +182,7 @@ export class Loader {
     get WarteringCanAsset(): IAsset { return this.wartercan }
     get HammerAsset(): IAsset { return this.hammer }
 
+    get FluffyTreeAsset(): IAsset { return this.fluffyTree }
     get AppleTreeAsset(): IAsset { return this.appleTree }
     get AppleAsset(): IAsset { return this.apple }
     get CoconutTreeAsset(): IAsset { return this.coconutTree }
@@ -251,6 +254,7 @@ export class Loader {
         this.assets.set(Char.WarteringCan, this.wartercan)
         this.assets.set(Char.Hammer, this.hammer)
 
+        this.assets.set(Char.FluffyTree, this.fluffyTree)
         this.assets.set(Char.AppleTree, this.appleTree)
         this.assets.set(Char.Apple, this.apple)
         this.assets.set(Char.CoconutTree, this.coconutTree)

@@ -1,5 +1,5 @@
-import { Alarm, AlarmType } from "../common/alarm";
-import { Bind } from "../loader/assetmodel";
+import { Alarm, AlarmType } from "@Commons/alarm";
+import { Bind } from "@Loader/assetmodel";
 import { IItem, Item } from "./items/item";
 import { ItemDb, ItemId } from "./items/itemdb";
 

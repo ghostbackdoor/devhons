@@ -49,7 +49,7 @@ export class DogFab extends AssetModel implements IAsset {
         if (this.meshs == undefined) this.meshs = mesh
         if (this.size) return this.size
 
-        const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
+        const bbox = new THREE.Box3().setFromObject(this.meshs)
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
         this.size.y = 3//Math.ceil(this.size.z)

@@ -15,7 +15,7 @@ import { RayViwer } from "./raycaster";
 import { IViewer } from "../scenes/models/iviewer";
 import { Canvas } from "./canvas";
 import { PlayerCtrl } from "../scenes/player/playerctrl";
-import { Drop } from "../drop/drop";
+import { Drop } from "../inventory/drop";
 import { Light } from "./light";
 
 export const gui = new GUI()

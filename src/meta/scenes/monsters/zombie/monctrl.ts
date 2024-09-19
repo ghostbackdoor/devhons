@@ -1,15 +1,12 @@
 import * as THREE from "three";
-import { GPhysics, IGPhysic } from "../../../common/physics/gphysics"
+import { EventController } from "@Event/eventctrl";
+import { IPhysicsObject } from "@Event/3d/scene/models/iobject";
+import { EffectType } from "@Effector/effector";
 import { Zombie } from "./zombie"
 import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./monstate"
-import { IPhysicsObject } from "../../models/iobject";
-import { Legos } from "../../bricks/legos";
 import { IMonsterCtrl, IMonsterAction, MonsterBox } from "../monsters";
-import { EventController } from "../../../event/eventctrl";
 import { MonsterProperty } from "../monsterdb";
-import { EffectType } from "../../../effects/effector";
-import { NonLegos } from "../../bricks/nonlegos";
-import { Terrain } from "../../terrain/terrain";
+import { GPhysics, IGPhysic } from "@Commons/physics/gphysics";
 
 
 
@@ -33,9 +30,8 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
         id: number,
         private player: IPhysicsObject, 
         private zombie: Zombie, 
-        private legos: Legos,
-        private nonlegos: NonLegos,
-        private terrain: Terrain,
+        private instanceBlock: (THREE.InstancedMesh | undefined)[],
+        private meshBlock: THREE.Mesh[],
         private gphysic: GPhysics,
         private eventCtrl: EventController,
         private property: MonsterProperty
@@ -71,11 +67,11 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
 
             let find = false
 
-            if (this.terrain.InstancedMeshs.length > 0) {
-                this.terrain.InstancedMeshs.forEach(m => {
-                    this.CheckVisible(m, dist)
-                })
-            }
+            this.instanceBlock.forEach((block) => {
+                if (block) find = this.CheckVisible(block, dist)
+            })
+            find = this.CheckVisibleMeshs(this.meshBlock, dist)
+            /*
             if (this.legos.instancedBlock != undefined)
                 find = this.CheckVisible(this.legos.instancedBlock, dist)
             if (this.legos.bricks2.length > 0 && !find)
@@ -84,6 +80,7 @@ export class MonsterCtrl implements IGPhysic, IMonsterCtrl {
                 find = this.CheckVisible(this.nonlegos.instancedBlock, dist)
             if (this.nonlegos.bricks2.length > 0 && !find)
                 find = this.CheckVisibleMeshs(this.nonlegos.bricks2, dist)
+                */
 
             if (find) {
                 // not visible player

@@ -1,22 +1,16 @@
 import * as THREE from "three";
-import { Loader } from "../../loader/loader"
-import { EventController, EventFlag } from "../../event/eventctrl"
-import { Game } from "../game"
-import { GPhysics } from "../../common/physics/gphysics";
-import { AppMode } from "../../app";
-import { Legos } from "../bricks/legos";
-import { Player } from "../player/player";
-import { AttackOption, PlayerCtrl } from "../player/playerctrl";
-import { math } from "../../../libs/math";
-import { Drop } from "../../drop/drop";
+import { Loader } from "@Loader/loader"
+import { EventController } from "@Event/eventctrl"
+import { GPhysics } from "@Commons/physics/gphysics";
+import { Player } from "@Player/player";
+import { AttackOption, PlayerCtrl } from "@Player/playerctrl";
+import { Drop } from "@Inven/drop";
 import { MonDrop, MonsterDb  } from "./monsterdb";
-import { EffectType } from "../../effects/effector";
-import { IPhysicsObject } from "../models/iobject";
+import { EffectType } from "@Effector/effector";
+import { IPhysicsObject } from "@Event/3d/scene/models/iobject";
 import { CreateMon } from "./createmon";
 import { MonsterId } from "./monsterid";
-import { NonLegos } from "../bricks/nonlegos";
-import { DeckType } from "../../inventory/items/deck";
-import { Terrain } from "../terrain/terrain";
+import { DeckType } from "@Inven/items/deck";
 
 export type MonsterSet = {
     monModel: IPhysicsObject,
@@ -51,36 +45,30 @@ export class Monsters {
     monsters = new Map<MonsterId, MonsterSet[]>()
     keytimeout?:NodeJS.Timeout
     respawntimeout?:NodeJS.Timeout
-    mode = AppMode.Close
-    createMon = new CreateMon(this.loader, this.eventCtrl, this.player, this.legos, this.nonlegos, this.terrain, this.gphysic, this.game, this.monDb)
+    mode = false
+    createMon = new CreateMon(this.loader, this.eventCtrl, this.player,
+        this.instanceBlock, this.meshBlock, this.gphysic, this.game, this.monDb)
+
+    get Enable() { return this.mode }
+    set Enable(flag: boolean) { 
+        this.mode = flag 
+        if(!this.mode) { this.ReleaseMonster() }
+    }
 
     constructor(
         private loader: Loader,
         private eventCtrl: EventController,
-        private game: Game,
+        private game: THREE.Scene,
         private player: Player,
         private playerCtrl: PlayerCtrl,
-        private legos: Legos,
-        private nonlegos: NonLegos,
-        private terrain: Terrain,
+        private instanceBlock: (THREE.InstancedMesh | undefined)[],
+        private meshBlock: THREE.Mesh[],
         private gphysic: GPhysics,
         private drop: Drop,
         private monDb: MonsterDb
     ) {
-        eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
-            this.mode = mode
-            if(mode != AppMode.Play) return
-            switch (e) {
-                case EventFlag.Start:
-                    //this.InitMonster()
-                    break
-                case EventFlag.End:
-                    this.ReleaseMonster()
-                    break
-            }
-        })
         eventCtrl.RegisterAttackEvent("mon", (opts: AttackOption[]) => {
-            if(this.mode != AppMode.Play) return
+            if (!this.mode) return
             opts.forEach((opt) => {
                 let obj = opt.obj as MonsterBox
                 if (obj == null) return
@@ -95,7 +83,7 @@ export class Monsters {
             })
         })
         eventCtrl.RegisterAttackEvent("monster", (opts: AttackOption[]) => {
-            if(this.mode != AppMode.Play) return
+            if (!this.mode) return
             const pos = this.player.CannonPos
             const dist = opts[0].distance
             const damage = opts[0].damage
@@ -184,7 +172,7 @@ export class Monsters {
 
     async Spawning(monId: MonsterId, respawn:boolean, monSet?: MonsterSet, pos?: THREE.Vector3) {
         //const zSet = await this.CreateZombie()
-        if (this.mode != AppMode.Play) return
+        if (!this.mode) return
         let mon = this.monsters.get(monId)
         if (!mon) {
             mon = []
@@ -197,8 +185,8 @@ export class Monsters {
         mon.push(monSet)
 
         if(!pos) {
-            monSet.monModel.CannonPos.x = this.player.CannonPos.x + math.rand_int(-20, 20)
-            monSet.monModel.CannonPos.z = this.player.CannonPos.z + math.rand_int(-20, 20)
+            monSet.monModel.CannonPos.x = this.player.CannonPos.x + THREE.MathUtils.randInt(-20, 20)
+            monSet.monModel.CannonPos.z = this.player.CannonPos.z + THREE.MathUtils.randInt(-20, 20)
         } else {
             monSet.monModel.CannonPos.copy(pos)
             monSet.initPos = pos

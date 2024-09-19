@@ -84,6 +84,7 @@ export enum Char{
     WarteringCan,
     Hammer,
     Grass,
+    FluffyTree,
     AppleTree,
     Apple,
     CoconutTree,

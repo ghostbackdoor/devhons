@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { AttackType, PlayerCtrl } from "../player/playerctrl";
-import { MonsterProperty } from "../monsters/monsterdb";
-import { EventController } from "../../event/eventctrl";
+import { AttackType, PlayerCtrl } from "@Player/playerctrl";
+import { MonsterProperty } from "@Monsters/monsterdb";
+import { EventController } from "@Event/eventctrl";
 import { IProjectileModel } from "./projectile";
 
 

@@ -111,6 +111,12 @@ export class EventController {
     RegisterAppModeEvent(callback: (...e: any[]) => void) {
         this.eventEmitter.on(SConf.AppMode, callback)
     }
+    OnPlayModeEvent(...arg: any) {
+        this.eventEmitter.emit(SConf.PlayMode, arg)
+    }
+    RegisterPlayModeEvent(callback: (...e: any[]) => void) {
+        this.eventEmitter.on(SConf.PlayMode, callback)
+    }
 
     // Player Health Monitor
     OnChangePlayerStatusEvent(status: PlayerStatus) {

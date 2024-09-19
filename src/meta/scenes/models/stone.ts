@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GhostModel } from "./ghostmodel";
-import { IAsset } from "../../loader/assetmodel";
+import { IAsset } from "@Loader/assetmodel";
 
 export class Stone extends GhostModel {
     constructor(asset: IAsset) {

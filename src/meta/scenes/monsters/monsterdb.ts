@@ -1,5 +1,5 @@
-import { ItemId } from "../../inventory/items/itemdb"
-import { Char } from "../../loader/assetmodel"
+import { ItemId } from "@Inven/items/itemdb"
+import { Char } from "@Loader/assetmodel"
 import { MonsterId, MonsterType } from "./monsterid"
 
 

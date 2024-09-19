@@ -73,7 +73,10 @@ export class GameCenter implements IViewer, IModelReload {
         console.log(this.playerCtrl, this.monster)
         store.RegisterStore(this)
         eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
+            this.monster.Enable = (mode == AppMode.Play)
             if(mode != AppMode.Play) return
+            eventCtrl.OnPlayModeEvent(e)
+
             switch (e) {
                 case EventFlag.Start:
                     this.safe = true

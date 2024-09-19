@@ -1,12 +1,10 @@
-import { AppMode } from "../../app";
-import { Canvas } from "../../common/canvas";
-import { EventController, EventFlag } from "../../event/eventctrl";
-import { Loader } from "../../loader/loader";
-import { Game } from "../game";
-import { IViewer } from "../models/iviewer";
-import { MonsterDb } from "../monsters/monsterdb";
-import { MonsterId } from "../monsters/monsterid";
-import { PlayerCtrl } from "../player/playerctrl";
+import { Canvas } from "@Commons/canvas";
+import { EventController, EventFlag } from "@Event/eventctrl";
+import { Loader } from "@Loader/loader";
+import { IViewer } from "@Models/iviewer";
+import { MonsterDb } from "@Monsters/monsterdb";
+import { MonsterId } from "@Monsters/monsterid";
+import { PlayerCtrl } from "@Player/playerctrl";
 import { Bullet3 } from "./bullet3";
 import { DefaultBall } from "./defaultball";
 import { ProjectileCtrl } from "./projectilectrl";
@@ -32,21 +30,18 @@ export type ProjectileSet = {
 
 export class Projectile implements IViewer {
     projectiles = new Map<MonsterId, ProjectileSet[]>()
-    mode = AppMode.Close
     processing = false
 
     constructor(
         _: Loader,
         canvas: Canvas,
         private eventCtrl: EventController,
-        private game: Game,
+        private game: THREE.Scene,
         private playerCtrl: PlayerCtrl,
         private monDb: MonsterDb,
     ) {
         canvas.RegisterViewer(this)
-        eventCtrl.RegisterAppModeEvent((mode: AppMode, e: EventFlag) => {
-            this.mode = mode
-            if(mode != AppMode.Play) return
+        eventCtrl.RegisterPlayModeEvent((e: EventFlag) => {
             switch (e) {
                 case EventFlag.Start:
                     this.processing = true
