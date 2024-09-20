@@ -19,7 +19,7 @@ export class QuarksVfx implements IEffect {
     groups: THREE.Object3D[] = []
     constructor(private vfxPath: string) {}
 
-     initEffect(pos: THREE.Vector3, game: THREE.Scene) {
+    initEffect(pos: THREE.Vector3, game: THREE.Scene) {
         if(this.loaded) return
         this.loaded = true
         new QuarksLoader().load(this.vfxPath, (obj) => {

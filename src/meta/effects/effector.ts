@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Damage } from "./damage"
-import { Lightning } from "./lightning"
+import { LightningVfx } from "./lightning/lightning"
 import { TextStatus } from "./status"
 import { QuarksVfx } from "./quarksvfx";
 import { Trail } from "./trail";
@@ -8,7 +8,7 @@ import { PointTrail } from "./pointtrail";
 import { TestVfx } from "./testvfx";
 
 export enum EffectType {
-    Lightning,
+    LightningStrike,
     Damage,
     Explosion,
     CartoonLightningBall,
@@ -32,10 +32,9 @@ export class Effector {
     }
     Enable(type: EffectType, ...arg: any) {
         switch (type) {
-            case EffectType.Lightning:
-                const lightning = new Lightning()
-                this.effects[EffectType.Lightning] = lightning
-                this.meshs.add(lightning.points)
+            case EffectType.LightningStrike:
+                const lightningStrike = new LightningVfx(this.game)
+                this.effects[EffectType.LightningStrike] = lightningStrike
                 break;
             case EffectType.Status:
                 const status = new TextStatus("0", "#ff0000")
@@ -48,7 +47,7 @@ export class Effector {
                 this.effects[EffectType.Explosion] = explosion
                 break;
             case EffectType.CartoonLightningBall:
-                const cartoonlighting = new QuarksVfx('assets/vfx/Cartoon Lightning Ball.json')
+                const cartoonlighting = new QuarksVfx('assets/vfx/CartoonLightningBall.json')
                 cartoonlighting.initEffect(arg[0], this.game)
                 this.effects[EffectType.CartoonLightningBall] = cartoonlighting
                 break;
