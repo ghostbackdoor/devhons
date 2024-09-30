@@ -30,6 +30,7 @@ export class QuarksVfx implements IEffect {
             });
             if (obj instanceof ParticleEmitter) {
                 this.batchRenderer.addSystem(obj.system);
+                this.refreshTime = obj.system.duration
             }
             game.add(this.batchRenderer, obj)
             this.groups.push(obj);

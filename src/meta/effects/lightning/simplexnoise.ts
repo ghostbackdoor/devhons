@@ -286,7 +286,7 @@ class SimplexNoise {
 		const gi1 = perm[ii + i1 + perm[jj + j1 + perm[kk + k1 + perm[ll + l1]]]] % 32;
 		const gi2 = perm[ii + i2 + perm[jj + j2 + perm[kk + k2 + perm[ll + l2]]]] % 32;
 		const gi3 = perm[ii + i3 + perm[jj + j3 + perm[kk + k3 + perm[ll + l3]]]] % 32;
-		const gi4 = perm[ii + 1 + perm[jj + 1 + perm[kk + 1 + perm[ll + 1]]]] % 32;
+		//const gi4 = perm[ii + 1 + perm[jj + 1 + perm[kk + 1 + perm[ll + 1]]]] % 32;
 		// Calculate the contribution from the five corners
 		var t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0 - w0 * w0;
 		if (t0 < 0) n0 = 0.0;

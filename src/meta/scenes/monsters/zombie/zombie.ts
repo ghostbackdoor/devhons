@@ -143,7 +143,7 @@ export class Zombie extends GhostModel implements IPhysicsObject {
                 //this.effector.StartEffector(EffectType.Lightning)
                 this.effector.StartEffector(EffectType.BloodExplosion)
                 break;
-            case EffectType.Lightning:
+            case EffectType.LightningStrike:
                 this.effector.StartEffector(EffectType.Damage)
                 //this.effector.StartEffector(EffectType.Lightning)
                 break;

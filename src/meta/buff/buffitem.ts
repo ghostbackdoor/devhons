@@ -49,7 +49,7 @@ export class AreaAttack implements IBuffItem {
 
         this.eventCtrl.OnAttackEvent("monster", [{
             type: AttackType.AOE,
-            effect: EffectType.Lightning,
+            effect: EffectType.LightningStrike,
             damage: this.damage * this.lv,
             distance: this.area + this.lv,
         }])

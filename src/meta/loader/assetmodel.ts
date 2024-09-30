@@ -152,7 +152,7 @@ export class AssetModel {
         protected clips = new Map<Ani, THREE.AnimationClip | undefined>()
     private models = new Map<string, THREE.Group>()
     private mixers = new Map<string, THREE.AnimationMixer>()
-    protected boxMat = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true})
+    protected boxMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, lightMapIntensity: 0 })
     protected info?: AssetInfo
 
     get Clips() { return this.clips }
@@ -220,12 +220,8 @@ export class AssetModel {
 
     async CloneModel(): Promise<THREE.Group> {
         if(this.meshs != undefined) {
-            return this.meshs.clone()
-            /*
-                    if(this.meshs instanceof THREE.Mesh) {
-                        this.meshs.material = this.meshs.material.clone()
-                    }
-            */
+            const clone = this.meshs.clone()
+            return clone
         }
         return await this.NewModel()
     }

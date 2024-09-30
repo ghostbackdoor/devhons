@@ -37,6 +37,7 @@ export class FatLineVfx implements IEffect {
             color.setHSL(t, 1.0, 0.5, THREE.SRGBColorSpace)
             colors.push(color.r, color.g, color.b)
         }
+
         const geometry = new LineGeometry()
         geometry.setPositions(positions)
         geometry.setColors(colors)

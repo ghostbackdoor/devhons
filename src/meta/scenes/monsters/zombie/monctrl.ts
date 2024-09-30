@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { EventController } from "@Event/eventctrl";
-import { IPhysicsObject } from "@Event/3d/scene/models/iobject";
+import { IPhysicsObject } from "@Models/iobject";
 import { EffectType } from "@Effector/effector";
 import { Zombie } from "./zombie"
 import { AttackZState, DyingZState, IdleZState, JumpZState, RunZState } from "./monstate"

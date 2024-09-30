@@ -38,14 +38,15 @@ module.exports = {
     modules: [path.join(__dirname, "src"), "node_modules"], // 모듈 위치
     extensions: [".ts", ".js"],
     alias: {
+      "@Assets": path.resolve(__dirname, "assets"),
       "@Commons": path.resolve(__dirname, "src/meta/common"),
       "@Loader": path.resolve(__dirname, "src/meta/loader"),
       "@Event": path.resolve(__dirname, "src/meta/event"),
       "@Inven": path.resolve(__dirname, "src/meta/inventory"),
-      "@Player": path.resolve(__dirname, "src/meta/scene/player"),
+      "@Player": path.resolve(__dirname, "src/meta/scenes/player"),
       "@Effector": path.resolve(__dirname, "src/meta/effects"),
-      "@Models": path.resolve(__dirname, "src/meta/models"),
-      "@Monsters": path.resolve(__dirname, "src/meta/monsters"),
+      "@Models": path.resolve(__dirname, "src/meta/scenes/models"),
+      "@Monsters": path.resolve(__dirname, "src/meta/scenes/monsters"),
     }
   },
   plugins: [

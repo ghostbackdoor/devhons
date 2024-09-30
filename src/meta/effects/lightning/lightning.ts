@@ -28,7 +28,9 @@ export class LightningVfx implements IEffect {
     };
 
     time = 0
-	lightningMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+	lightningMaterial = new THREE.MeshStandardMaterial( { 
+        color: 0xffffff, emissive: "white", emissiveIntensity: 1
+    } );
     lightningStrike = new LightningStrike(this.rayParams);
     lightningStrikeMesh = new THREE.Mesh(this.lightningStrike, this.lightningMaterial);
     outlineMeshArray: THREE.Mesh[] = [];

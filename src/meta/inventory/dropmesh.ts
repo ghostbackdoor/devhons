@@ -1,3 +1,5 @@
+/*
+import * as THREE from 'three';
 import { IViewer } from "@Models/iviewer";
 import { Loader } from "@Loader/loader"
 
@@ -9,8 +11,6 @@ export class DropMesh implements IViewer {
     update() { 
     }
 }
-/*
-import * as THREE from 'three';
 
 // Scene setup
 const scene = new THREE.Scene();

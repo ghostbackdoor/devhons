@@ -7,7 +7,7 @@ import { AttackOption, PlayerCtrl } from "@Player/playerctrl";
 import { Drop } from "@Inven/drop";
 import { MonDrop, MonsterDb  } from "./monsterdb";
 import { EffectType } from "@Effector/effector";
-import { IPhysicsObject } from "@Event/3d/scene/models/iobject";
+import { IPhysicsObject } from "@Models/iobject";
 import { CreateMon } from "./createmon";
 import { MonsterId } from "./monsterid";
 import { DeckType } from "@Inven/items/deck";
