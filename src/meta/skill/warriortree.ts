@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { SkillType } from "./skilltree";
-import { GPhysics } from "../common/physics/gphysics";
-import { IPhysicsObject } from "../scenes/models/iobject";
+import { GPhysics } from "@Commons/physics/gphysics";
+import { IPhysicsObject } from "@Models/iobject";
 
 export class Charge {
     type = SkillType.Warrior

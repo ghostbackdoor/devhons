@@ -15,12 +15,14 @@ export class FlameVfx implements IEffect {
 		this.obj.scale.set(scale, scale, scale)
     }
     Start() {
+		this.exCtrl.reset()
 		this.ctrl.init()
 		this.exCtrl.init()
         this.processFlag = true
 		this.scene.add(this.obj)
     }
     Complet() {
+		this.exCtrl.reset()
         this.processFlag = false
     }
     Update(_: number) {

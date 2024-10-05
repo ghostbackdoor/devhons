@@ -65,7 +65,7 @@ class Controller {
   }
 
   public attachEvent(key: any, callback: Function) {
-    if(this.eventListener) this.eventListener[key].onChange(callback);
+    this.eventListener[key]?.onChange(callback);
   }
 }
 

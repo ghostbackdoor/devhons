@@ -11,12 +11,14 @@ import { AuraVfx } from "./ground/aura";
 import { TestVfx } from "./testvfx";
 import { NebulaVfx } from "./nebula/nebula";
 import { NebulaVfxCustom } from "./nebula/nebulacustom";
+import { CometVfx } from "./fire/comet";
 
 export enum EffectType {
     LightningStrike,
     Fireball,
     Flame,
     Spark,
+    Comet,
     Aura,
     Damage,
     Explosion,
@@ -58,6 +60,9 @@ export class Effector {
                 break;
             case EffectType.Aura:
                 ret = new AuraVfx(this.game, this.nonglow)
+                break;
+            case EffectType.Comet:
+                ret = new CometVfx(this.game)
                 break;
             case EffectType.Flame:
                 ret = new FlameVfx(this.game)

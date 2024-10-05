@@ -7,6 +7,7 @@ export class FireballVfx implements IEffect {
   vshader = shader.fireballVert
   fshader = shader.fireballFrag
   ball: THREE.Mesh
+  mesh = new THREE.Group()
   uniforms = {
     u_time: { value: 0.0 },
     u_mouse: { value: { x: 0.0, y: 0.0 } },
@@ -25,6 +26,8 @@ export class FireballVfx implements IEffect {
 
     this.ball = new THREE.Mesh(geometry, material);
     this.resize()
+    this.mesh.add(this.ball)
+    this.mesh.scale.set(.2, .2, .2)
     window.addEventListener('resize', () => {
       this.resize()
     });
@@ -34,7 +37,7 @@ export class FireballVfx implements IEffect {
     this.uniforms.u_resolution.value.y = window.innerHeight;
   }
   Start() {
-    this.scene.add(this.ball);
+    this.scene.add(this.mesh);
     this.processFlag = true
   }
   Complet() {

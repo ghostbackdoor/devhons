@@ -4,15 +4,20 @@ import shader from "./shader/grounddef"
 
 export class AuraVfx implements IEffect {
     processFlag = false
-    shader = shader.magicCircleFrag
+    shader = shader.magicCircleGreenFrag
     material: THREE.ShaderMaterial
     groundLightMesh: THREE.Mesh
     time = Date.now()
     constructor(private scene: THREE.Scene, private nonglow?: Function) {
         this.material = new THREE.ShaderMaterial({
+            transparent: true, 
+            depthWrite: false,
+            blending: THREE.NormalBlending,
+            premultipliedAlpha: false,
             uniforms: {
                 iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
-                iTime: { value: 0 }
+                iTime: { value: 0 },
+                //iChannel0: { value:}
             },
             vertexShader: `
         varying vec2 vUv;

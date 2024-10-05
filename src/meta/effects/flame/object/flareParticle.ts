@@ -33,7 +33,6 @@ class FlareParticle {
 			},
 			vertexShader: shader.flameParticleVert,
 			fragmentShader: shader.flameParticleFrag,
-			blending: THREE.NormalBlending,
 			depthTest: false,
 			transparent: true
 		});

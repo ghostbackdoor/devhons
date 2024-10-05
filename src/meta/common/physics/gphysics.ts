@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { IBuildingObject, IPhysicsObject } from "../../scenes/models/iobject";
+import { IBuildingObject, IPhysicsObject } from "@Models/iobject";
 import { EventController } from "../../event/eventctrl";
 
 export interface IGPhysic {

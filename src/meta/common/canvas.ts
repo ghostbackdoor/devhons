@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { IViewer } from "../scenes/models/iviewer"
+import { IViewer } from "@Models/iviewer"
 
 
 export class Canvas {

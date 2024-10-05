@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { FloatingName } from "../../common/floatingtxt";
-import { IAsset } from "../../loader/assetmodel";
+import { FloatingName } from "@Commons/floatingtxt";
+import { IAsset } from "@Loader/assetmodel";
 
 
 export class GhostModel {

@@ -111,6 +111,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     vec3 bg = BG_COLOR;
 
-    fragColor.rgb = mix(bg, col.rgb, col.a); //normal blend
+    //fragColor.rgb = mix(bg, col.rgb, col.a); //normal blend
+	float alpha = smoothstep(0.0, 0.9, length(col.rgb));
+	fragColor = vec4(col.rgb, alpha);
 }
 

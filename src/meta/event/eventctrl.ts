@@ -3,9 +3,9 @@ import { IKeyCommand } from "./keycommand";
 import SConf from "../configs/staticconf";
 import { BrickOption } from "../scenes/bricks/bricks";
 import { AppMode } from "../app";
-import { IPhysicsObject } from "../scenes/models/iobject";
-import { AttackOption, PlayerStatus } from "../scenes/player/playerctrl";
-import { Inventory } from "../inventory/inventory";
+import { IPhysicsObject } from "@Models/iobject";
+import { AttackOption, PlayerStatus } from "@Player/playerctrl";
+import { Inventory } from "@Inven/inventory";
 import { ProjectileMsg } from "../scenes/projectile/projectile";
 import { TerrainOption } from "../scenes/terrain/terrainctrl";
 

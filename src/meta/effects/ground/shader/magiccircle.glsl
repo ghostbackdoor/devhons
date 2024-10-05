@@ -132,5 +132,10 @@ vec3 calc(vec2 p) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 	vec2 uv = (iResolution.xy - fragCoord.xy*2.0) / min(iResolution.x, iResolution.y);
-	fragColor = vec4(calc(uv), 1.0);
+	vec3 color = calc(uv);
+	//float alpha = (length(color) > 0.5) ? 1.0 : 0.0; // 배경이 0에 가까울 경우 투명하게 설정
+	float alpha = smoothstep(0.0, 0.8, length(color));
+    //fragColor = vec4(vec3(alpha), alpha);
+	fragColor = vec4(color, alpha);
 }
+
