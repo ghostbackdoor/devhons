@@ -14,12 +14,15 @@ export class QuarksVfx implements IEffect {
     processFlag = false
     batchRenderer = new BatchedParticleRenderer();
     loaded = false
-    target?: THREE.Vector3
+    endCallback?: Function
    
     groups: THREE.Object3D[] = []
-    constructor(private vfxPath: string) {}
+    obj = new THREE.Group()
+    get Mesh() {return this.obj}
 
-    initEffect(pos: THREE.Vector3, game: THREE.Scene) {
+    constructor(private vfxPath: string, private game: THREE.Scene) {}
+
+    initEffect(pos: THREE.Vector3) {
         if(this.loaded) return
         this.loaded = true
         new QuarksLoader().load(this.vfxPath, (obj) => {
@@ -32,14 +35,15 @@ export class QuarksVfx implements IEffect {
                 this.batchRenderer.addSystem(obj.system);
                 this.refreshTime = obj.system.duration
             }
-            game.add(this.batchRenderer, obj)
+            this.obj.add(this.batchRenderer, obj)
             this.groups.push(obj);
-            this.target = pos
+            this.game.add(this.obj)
         });
     }
 
-    Start(): void {
+    Start(pos: THREE.Vector3, callback: Function): void {
         if (this.processFlag || !this.loaded) return
+        this.endCallback = callback
         try {
             this.groups[this.refreshIndex].traverse((object) => {
                 if (object instanceof ParticleEmitter) {
@@ -49,10 +53,16 @@ export class QuarksVfx implements IEffect {
         } catch (e) {
             console.log(e, this.groups)
         }
-        if (this.target) this.groups[this.refreshIndex].position.copy(this.target)
-        console.log(this.target)
+        this.groups[this.refreshIndex].position.copy(pos)
+        console.log(pos)
 
         this.processFlag = true
+    }
+    Complete(): void {
+        this.totalTime = 0;
+        this.processFlag = false
+        //this.game.remove(this.obj)
+        this.endCallback?.()
     }
 
     Update(delta: number): void {
@@ -66,8 +76,7 @@ export class QuarksVfx implements IEffect {
         );
         this.totalTime += delta;
         if (this.totalTime > this.refreshTime) {
-            this.totalTime = 0;
-            this.processFlag = false
+            this.Complete()
         }
         if (this.batchRenderer) {
             const tmp = console.warn

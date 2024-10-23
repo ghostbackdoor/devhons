@@ -21,6 +21,8 @@ export class FatLineVfx implements IEffect {
     matLineBasic = new THREE.LineBasicMaterial({ vertexColors: true })
     line: Line2
     line1: THREE.Line
+	obj = new THREE.Group()
+    get Mesh() {return this.obj}
 
     constructor(private scene: THREE.Scene) {
         const positions: number[] = []
@@ -52,15 +54,16 @@ export class FatLineVfx implements IEffect {
         this.line1 = new THREE.Line(geo, this.matLineBasic)
         this.line1.computeLineDistances()
         this.line1.visible = false
+        this.obj.add(this.line, this.line1)
     }
     Start() {
         this.processFlag = true
-        this.scene.add(this.line, this.line1)
-        setTimeout(() => { this.Complet() }, 5000)
+        this.scene.add(this.obj)
+        setTimeout(() => { this.Complete() }, 5000)
     }
-    Complet() {
+    Complete() {
         this.processFlag = false
-        this.scene.remove(this.line, this.line1)
+        this.scene.remove(this.obj)
     }
     Update(_: number) {
         if (!this.processFlag) return

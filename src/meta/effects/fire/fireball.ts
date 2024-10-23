@@ -14,7 +14,8 @@ export class FireballVfx implements IEffect {
     u_resolution: { value: { x: 0, y: 0 } },
     u_tex: { value: new THREE.TextureLoader().load("assets/texture/explosion.png") }
   }
-  constructor(private scene: THREE.Scene) {
+    get Mesh() {return this.mesh}
+  constructor(private scene: THREE.Scene, scale: number = .2) {
 
     const geometry = new THREE.IcosahedronGeometry(3, 4);
 
@@ -27,7 +28,7 @@ export class FireballVfx implements IEffect {
     this.ball = new THREE.Mesh(geometry, material);
     this.resize()
     this.mesh.add(this.ball)
-    this.mesh.scale.set(.2, .2, .2)
+    this.mesh.scale.set(scale, scale, scale)
     window.addEventListener('resize', () => {
       this.resize()
     });
@@ -40,7 +41,8 @@ export class FireballVfx implements IEffect {
     this.scene.add(this.mesh);
     this.processFlag = true
   }
-  Complet() {
+  Complete() {
+    this.scene.remove(this.mesh)
     this.processFlag = false
   }
   Update(delta: number) {

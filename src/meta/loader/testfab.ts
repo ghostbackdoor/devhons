@@ -27,7 +27,7 @@ export class TestFab extends AssetModel implements IAsset {
 
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
                 if (child instanceof THREE.Mesh) {
                     const materials = Array.isArray(child.material) ? child.material : [child.material];
                     materials.forEach(material => {
@@ -121,11 +121,11 @@ export class TestFab extends AssetModel implements IAsset {
 
         if (this.size != undefined) return this.size
 
-        const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
+        const bbox = new THREE.Box3().setFromObject(this.meshs)
         this.size = bbox.getSize(new THREE.Vector3)
-        this.size.x = Math.ceil(this.size.x)
-        this.size.z = Math.ceil(this.size.z)
-        this.size.y *= 4
+        this.size.x = 1
+        this.size.z = 1
+        this.size.y = 4
         console.log(this.meshs, this.size)
         return this.size 
     }

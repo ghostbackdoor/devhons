@@ -13,7 +13,7 @@ export class TreeFab extends AssetModel {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
         })
     }
@@ -56,7 +56,7 @@ export class DeadTree2Fab extends AssetModel {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = 0.005
             this.meshs.scale.set(scale, scale, scale)

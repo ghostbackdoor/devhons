@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { IEffect } from "./effector";
+import { IEffect } from "../effector";
 
 
 export class PointTrail implements IEffect {
@@ -13,6 +13,8 @@ export class PointTrail implements IEffect {
     life = 5
     speed: number = 0
 
+	obj = new THREE.Group()
+    get Mesh() {return this.obj}
 
     constructor(
         position: THREE.Vector3,
@@ -21,6 +23,7 @@ export class PointTrail implements IEffect {
         this.points = this.CreatePoints(position)
         this.points.frustumCulled = false
         this.points.renderOrder = 1
+        this.obj.add(this.points)
     }
 
     Start(
@@ -32,7 +35,7 @@ export class PointTrail implements IEffect {
         this.alive = true;
 
         // Particle 기반의 총알 모델 생성
-        this.scene.add(this.points);       
+        this.scene.add(this.obj);       
     }
     Update(deltaTime: number, position: THREE.Vector3): void {
         if (!this.alive) return;
@@ -52,8 +55,10 @@ export class PointTrail implements IEffect {
         this.life -= deltaTime;
         if (this.life <= 0) {
             this.alive = false;
-            this.scene.remove(this.points);
+            this.scene.remove(this.obj);
         }   
+    }
+    Complete(): void {
     }
     GetGeometry(pos: THREE.Vector3) {
         const colors: number[] = []

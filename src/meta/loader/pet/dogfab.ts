@@ -16,7 +16,6 @@ export class DogFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse((child: any) => {
                 child.castShadow = true
-                child.receiveShadow = true
                 child.receiveShadow = false
                 if (child.isMesh) {
                     child.material = new THREE.MeshToonMaterial({ map: child.material.map })

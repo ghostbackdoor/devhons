@@ -15,7 +15,7 @@ export class PortalFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             this.meshs.children[0].position.y += .8
         })

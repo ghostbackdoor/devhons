@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { SkillType } from "./skilltree";
+import { SkillJob } from "./skilltree";
 import { GPhysics } from "@Commons/physics/gphysics";
 import { IPhysicsObject } from "@Models/iobject";
 
 export class Charge {
-    type = SkillType.Warrior
+    type = SkillJob.Warrior
     target?: IPhysicsObject
     speed = 15
 

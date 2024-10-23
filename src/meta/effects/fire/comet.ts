@@ -19,6 +19,7 @@ export class CometVfx implements IEffect {
 	material2?: THREE.ShaderMaterial
 	material3?: THREE.ShaderMaterial
 	obj = new THREE.Group()
+    get Mesh() {return this.obj}
 
 	constructor(private scene: THREE.Scene) {
 		this.mesh()
@@ -29,7 +30,7 @@ export class CometVfx implements IEffect {
 		this.processFlag = true
 		this.scene.add(this.obj)
 	}
-	Complet() {
+	Complete() {
 		this.processFlag = false
 	}
 	time = 0

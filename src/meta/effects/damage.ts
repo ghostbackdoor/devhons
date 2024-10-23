@@ -15,7 +15,8 @@ export class Damage implements IEffect {
     delta: THREE.Vector3[] = []
     velocity = 5 + Math.random() 
     processFlag = false
-    get Mesh() { return this.points }
+    obj = new THREE.Group()
+    get Mesh() { return this.obj }
 
     constructor( r: number, g: number, b: number) {
         const particles = []
@@ -41,6 +42,7 @@ export class Damage implements IEffect {
         this.points = new THREE.Points(this.geometry, this.material)
         this.points.visible = false
         this.points.geometry.attributes.color.needsUpdate = true
+        this.obj.add(this.points)
     }
     Start() {
         // this.scene.add(this.points)
@@ -56,7 +58,7 @@ export class Damage implements IEffect {
         this.points.visible = true
         this.processFlag = true
     }
-    Complet() {
+    Complete() {
         this.points.visible = false
         this.processFlag = false
         // this.scene.remove(this.points)
@@ -79,7 +81,7 @@ export class Damage implements IEffect {
         this.v += 0.1
         this.material.opacity -= (2 * delta)
         if (this.material.opacity <= 0) {
-            this.Complet()
+            this.Complete()
         }
         positions.needsUpdate = true
     }

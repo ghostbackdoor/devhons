@@ -69,7 +69,7 @@ export class BigGolemFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             console.log(this.meshs)
             this.meshs.children[0].scale.set(this.scale, this.scale, this.scale)

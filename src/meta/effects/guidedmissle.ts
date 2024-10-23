@@ -19,8 +19,9 @@ export class GuideMissle implements IEffect {
     velocity = 5 + Math.random() 
     processFlag = false
     lastPos = new THREE.Vector3()
+	obj = new THREE.Group()
 
-    get Mesh() { return this.points }
+    get Mesh() { return this.obj }
 
     constructor(private target: THREE.Vector3) {
         for (let i = 0; i < this.count; i++) {
@@ -34,6 +35,7 @@ export class GuideMissle implements IEffect {
         this.geometry.setFromPoints(this.particles)
 
         this.points = new THREE.Points(this.geometry, this.material)
+        this.obj.add(this.points)
     }
     Start(pos: THREE.Vector3) {
         // this.scene.add(this.points)
@@ -49,7 +51,7 @@ export class GuideMissle implements IEffect {
         this.points.visible = true
         this.processFlag = true
     }
-    Complet() {
+    Complete() {
         this.points.visible = false
         this.processFlag = false
         // this.scene.remove(this.points)
@@ -82,7 +84,7 @@ export class GuideMissle implements IEffect {
         }
         this.v += 0.5
         if (this.target.distanceTo(this.lastPos) < 1) {
-            this.Complet()
+            this.Complete()
         }
         positions.needsUpdate = true
     }

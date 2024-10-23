@@ -19,7 +19,7 @@ export class HellBoyFab extends AssetModel implements IAsset {
             const tloader = new THREE.TextureLoader()
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
                 if (child instanceof THREE.Mesh)
                     tloader.load("assets/cutemonster/monster_Standardmaterial_BaseMap.png", (texture) => {
                         child.material.map = texture

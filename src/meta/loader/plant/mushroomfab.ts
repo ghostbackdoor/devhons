@@ -16,7 +16,7 @@ export class MushroomFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
         })
         this.id = (type == 1)? Char.Mushroom1: Char.Mushroom2

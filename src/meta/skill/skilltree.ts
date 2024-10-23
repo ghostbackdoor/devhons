@@ -1,5 +1,5 @@
 
-export enum SkillType {
+export enum SkillJob {
     Warrior,
     Wizard,
     Archer,

@@ -16,7 +16,7 @@ export class KitchenFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
@@ -64,7 +64,7 @@ export class RefrigeratorFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
@@ -112,7 +112,7 @@ export class KitTableFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)
@@ -160,7 +160,7 @@ export class OvenFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = .8
             this.meshs.children[0].rotateY(Math.PI)

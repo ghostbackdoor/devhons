@@ -14,7 +14,7 @@ export class DeadtreeFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = false
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
         })
     }

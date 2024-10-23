@@ -18,7 +18,7 @@ export class TwoBFab extends AssetModel implements IAsset {
             const hair = await tloader.loadAsync("assets/2b/hair.jpeg")
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
                 if (child instanceof THREE.Mesh) {
                     const materials = Array.isArray(child.material) ? child.material : [child.material];
                     materials.forEach(material => {
@@ -75,7 +75,7 @@ export class TwoBFab extends AssetModel implements IAsset {
 
         if (this.size != undefined) return this.size
 
-        const bbox = new THREE.Box3().setFromObject(this.meshs.children[0])
+        const bbox = new THREE.Box3().setFromObject(this.meshs)
         this.size = bbox.getSize(new THREE.Vector3)
         this.size.x = Math.ceil(this.size.x)
         this.size.z = Math.ceil(this.size.z)

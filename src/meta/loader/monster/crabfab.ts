@@ -16,7 +16,7 @@ export class CrabFab extends AssetModel implements IAsset {
             this.meshs.receiveShadow = true
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
             })
             const scale = 1
             this.meshs.scale.set(scale, scale, scale)

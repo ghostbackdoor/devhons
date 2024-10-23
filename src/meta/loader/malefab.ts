@@ -15,9 +15,9 @@ export class MaleFab extends AssetModel implements IAsset {
             this.gltf = gltf
             this.meshs = gltf.scene
             this.meshs.castShadow = true
-            this.meshs.receiveShadow = false
+            this.meshs.receiveShadow = true
             this.meshs.traverse((child: any) => {
-                child.castShadow = false
+                child.castShadow = true
                 child.receiveShadow = false
                 if (child.isMesh) {
                     child.material = new THREE.MeshToonMaterial({ 

@@ -7,6 +7,7 @@ export class NebulaVfx implements IEffect {
   processFlag = false
   nebula?: Nebula
   obj = new THREE.Group()
+  get Mesh() { return this.obj }
 
   constructor(private game: THREE.Scene, _: any) {
     return
@@ -23,7 +24,7 @@ export class NebulaVfx implements IEffect {
       this.obj.scale.set(scale, scale, scale)
     });
   }
-  Complet() {
+  Complete() {
     this.processFlag = false
   }
   Update(_: number) {

@@ -17,7 +17,7 @@ import {
     ApplyCollision,
     Gradient,
 } from 'three.quarks';
-import { IEffect } from "./effector";
+import { IEffect } from "../effector";
 
 export class Trail implements IEffect {
     totalTime = 0;
@@ -30,6 +30,8 @@ export class Trail implements IEffect {
     textureloader = new THREE.TextureLoader()   
     texture?: THREE.Texture
     groups: THREE.Object3D[] = []
+    obj = new THREE.Group()
+    get Mesh() { return this.obj }
 
     async initTrailEffect(pos: THREE.Vector3, game: THREE.Scene) {
         if(this.loaded) return
@@ -158,5 +160,8 @@ export class Trail implements IEffect {
             this.processFlag = false
         }
         if (this.batchRenderer) this.batchRenderer.update(delta);
+    }
+    Complete(): void {
+        
     }
 }

@@ -10,6 +10,8 @@ export class FlameVfx implements IEffect {
 	exCtrl = new ExplosionController(this.ctrl, this.obj)
 	time = Date.now()
 
+    get Mesh() {return this.obj}
+
     constructor(private scene: THREE.Scene) {
 		const scale = .05
 		this.obj.scale.set(scale, scale, scale)
@@ -21,7 +23,7 @@ export class FlameVfx implements IEffect {
         this.processFlag = true
 		this.scene.add(this.obj)
     }
-    Complet() {
+    Complete() {
 		this.exCtrl.reset()
         this.processFlag = false
     }

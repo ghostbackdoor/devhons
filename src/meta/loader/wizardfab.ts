@@ -19,7 +19,7 @@ export class WizardFab extends AssetModel implements IAsset {
             const tloader = new THREE.TextureLoader()
             this.meshs.traverse(child => {
                 child.castShadow = true
-                child.receiveShadow = true
+                child.receiveShadow = false
                 if (child instanceof THREE.Mesh)
                     tloader.load("assets/wizard/AtlasColorV2.png", (texture) => {
                         child.material.map = texture

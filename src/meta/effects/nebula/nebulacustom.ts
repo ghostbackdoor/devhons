@@ -12,6 +12,8 @@ export class NebulaVfxCustom implements IEffect {
   emitter = new Emitter();
   obj = new THREE.Group()
 
+  get Mesh() { return this.obj }
+
   constructor(private scene: THREE.Scene) {
     // 파티클 방출기 (Emitter) 생성
 
@@ -44,7 +46,7 @@ export class NebulaVfxCustom implements IEffect {
     this.nebula = this.nebula.addRenderer(spriteRenderer);
     this.scene.add(this.obj)
   }
-  Complet() {
+  Complete() {
     this.processFlag = false
   }
   Update(delta: number) {

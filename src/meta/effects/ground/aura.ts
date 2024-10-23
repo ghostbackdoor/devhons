@@ -7,7 +7,11 @@ export class AuraVfx implements IEffect {
     shader = shader.magicCircleGreenFrag
     material: THREE.ShaderMaterial
     groundLightMesh: THREE.Mesh
+    obj = new THREE.Group()
     time = Date.now()
+
+    get Mesh() {return this.obj}
+
     constructor(private scene: THREE.Scene, private nonglow?: Function) {
         this.material = new THREE.ShaderMaterial({
             transparent: true, 
@@ -41,6 +45,7 @@ export class AuraVfx implements IEffect {
         this.groundLightMesh.rotation.x = -Math.PI / 2; // 땅에 평행하게 회전
 
         this.nonglow?.(this.groundLightMesh)
+        this.obj.add(this.groundLightMesh)
 
         window.addEventListener('resize', () => {
             this.material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1);
@@ -48,9 +53,9 @@ export class AuraVfx implements IEffect {
     }
     Start() {
         this.processFlag = true
-        this.scene.add(this.groundLightMesh)
+        this.scene.add(this.obj)
     }
-    Complet() {
+    Complete() {
         this.processFlag = false
     }
     Update(_: number) {

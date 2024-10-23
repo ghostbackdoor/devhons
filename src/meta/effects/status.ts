@@ -10,7 +10,8 @@ export class TextStatus extends THREE.Sprite implements IEffect {
     visible_?: boolean
 
     processFlag = false
-    get Mesh() { return this }
+    obj = new THREE.Group()
+    get Mesh() {return this.obj}
 
 
     constructor(params: string, color: string) {
@@ -49,6 +50,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
         this.params_ = params;
         this.visible_ = true;
         this.visible = false
+        this.obj.add(this)
     }
 
     Destroy() {
@@ -140,7 +142,7 @@ export class TextStatus extends THREE.Sprite implements IEffect {
 
 
         const map = new THREE.CanvasTexture(context2d.canvas);
-        this.renderOrder = 99 || 999
+        this.renderOrder = 99
         this.material =
             new THREE.SpriteMaterial({ 
                 map: map, 

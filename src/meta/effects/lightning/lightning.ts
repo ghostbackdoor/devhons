@@ -34,6 +34,9 @@ export class LightningVfx implements IEffect {
     lightningStrike = new LightningStrike(this.rayParams);
     lightningStrikeMesh = new THREE.Mesh(this.lightningStrike, this.lightningMaterial);
     outlineMeshArray: THREE.Mesh[] = [];
+
+    get Mesh() { return this.lightningStrikeMesh }
+
     constructor(private game: THREE.Scene) {
         this.outlineMeshArray.push(this.lightningStrikeMesh);
     }
@@ -41,7 +44,7 @@ export class LightningVfx implements IEffect {
         this.processFlag = true
         this.game.add(this.lightningStrikeMesh)
     }
-    Complet() {
+    Complete() {
         this.processFlag = false
         this.game.remove(this.lightningStrikeMesh)
     }
