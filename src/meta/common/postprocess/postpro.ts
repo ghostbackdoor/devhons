@@ -7,6 +7,8 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
 import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectionShader'
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader'
+import { ToonShader1 } from 'three/examples/jsm/shaders/ToonShader'
 
 export interface IPostPro {
   setGlow(target: THREE.Mesh | THREE.Group): void
@@ -19,7 +21,7 @@ export class Postpro implements IPostPro {
   renderScene = new RenderPass(this.scene, this.camera)
   bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-    .5, .5, 0
+    .5, .01, .9
   )
   rendertarget1 = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, {
     type: THREE.HalfFloatType,
@@ -33,23 +35,35 @@ export class Postpro implements IPostPro {
     time: { value: 0 },
     globalBloom: { value: 0 }
   }
+  param = {
+    mulR: 1.0,
+    mulG: 1.0,
+    mulB: 1.0,
+    powR: 0.6,
+    powG: 0.6,
+    powB: 0.6,
+  }
   constructor(
     private scene: THREE.Scene,
     private camera: THREE.Camera,
     private renderer: THREE.WebGLRenderer
   ) {
+    this.renderer.toneMapping = THREE.ReinhardToneMapping
+    this.renderer.toneMappingExposure = 1.5
+
     this.bloomComposer = new EffectComposer(this.renderer, this.rendertarget1)
     this.bloomComposer.renderToScreen = false
     this.bloomComposer.addPass(this.renderScene)
     this.bloomComposer.addPass(this.bloomPass)
-    //this.bloomComposer.addPass(new ShaderPass(GammaCorrectionShader))
+    //this.bloomComposer.addPass(new ShaderPass(FXAAShader))
     this.bloomComposer.addPass(new SMAAPass(
       window.innerWidth * this.renderer.getPixelRatio(), 
       window.innerHeight * this.renderer.getPixelRatio()))
     const colorCorrectionPass = new ShaderPass(ColorCorrectionShader);
-    colorCorrectionPass.uniforms['powRGB'].value = new THREE.Vector3(.9, .9, .9);  // 밝기 조절
-    colorCorrectionPass.uniforms['mulRGB'].value = new THREE.Vector3(.9, .9, .9);
-    this.bloomComposer.addPass(colorCorrectionPass)
+    colorCorrectionPass.uniforms['powRGB'].value = new THREE.Vector3(this.param.powR, this.param.powG, this.param.powB);  // 밝기 조절
+    colorCorrectionPass.uniforms['mulRGB'].value = new THREE.Vector3(this.param.mulR, this.param.mulG, this.param.mulB);
+    //this.bloomComposer.addPass(colorCorrectionPass)
+    
     const finalPass = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
@@ -72,6 +86,7 @@ export class Postpro implements IPostPro {
     this.finalComposer = new EffectComposer(renderer, target2);
     this.finalComposer.addPass(this.renderScene);
     this.finalComposer.addPass(finalPass);
+    this.finalComposer.addPass(colorCorrectionPass)
     this.finalComposer.addPass(new SMAAPass(
       window.innerWidth * this.renderer.getPixelRatio(), 
       window.innerHeight * this.renderer.getPixelRatio()))
@@ -107,3 +122,4 @@ export class Postpro implements IPostPro {
     this.finalComposer.render()
   }
 }
+

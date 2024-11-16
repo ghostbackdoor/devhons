@@ -1,12 +1,4 @@
 import * as THREE from 'three'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
-import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
-import { ColorCorrectionShader } from 'three/examples/jsm/shaders/ColorCorrectionShader'
 import { IPostPro } from './postpro'
 
 
